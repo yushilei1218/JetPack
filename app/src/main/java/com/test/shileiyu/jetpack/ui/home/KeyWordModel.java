@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 
 /**
  * @author shilei.yu
@@ -34,11 +33,11 @@ public class KeyWordModel extends AbsModel {
         mTab = tab;
     }
 
-    MutableLiveData<List<KeyWordCategory>> mLiveData = new MutableLiveData<>();
+    MutableLiveData<List<KeyWordCategory>> mKeyWordLiveData = new MutableLiveData<>();
 
     MutableLiveData<KeyWordCategory> mCategoryLiveData = new MutableLiveData<>();
 
-    MutableLiveData<List<KeyWord>> mKeyLiveData = new MutableLiveData<>();
+    MutableLiveData<List<KeyWord>> mKeyChangedLiveData = new MutableLiveData<>();
 
     @SuppressLint("CheckResult")
     public void getKeyWords() {
@@ -49,8 +48,8 @@ public class KeyWordModel extends AbsModel {
                         Util.showToast("keyWord 成功");
                         initKeyWord(data.data);
 
-                        mLiveData.setValue(total);
-                        mKeyLiveData.setValue(getKey());
+                        mKeyWordLiveData.setValue(total);
+                        mKeyChangedLiveData.setValue(getKey());
                     }
 
                     @Override
@@ -96,7 +95,7 @@ public class KeyWordModel extends AbsModel {
                 metadataValues.get(0).isSelect = true;
             }
             mCategoryLiveData.setValue(keyWord.parent);
-            mKeyLiveData.setValue(getKey());
+            mKeyChangedLiveData.setValue(getKey());
         }
     }
 

@@ -14,33 +14,24 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.test.shileiyu.jetpack.R;
-import com.test.shileiyu.jetpack.common.base.AbsBaseAdapter;
 import com.test.shileiyu.jetpack.common.base.AbsRBaseAdapter;
+import com.test.shileiyu.jetpack.common.base.IBaseView;
 import com.test.shileiyu.jetpack.common.bean.KeyWord;
 import com.test.shileiyu.jetpack.common.bean.KeyWordCategory;
-import com.test.shileiyu.jetpack.common.bean.Result;
 import com.test.shileiyu.jetpack.common.bean.SubTab;
-import com.test.shileiyu.jetpack.common.http.NetWork;
 import com.test.shileiyu.jetpack.common.util.Constant;
-import com.test.shileiyu.jetpack.common.util.Util;
-import com.test.shileiyu.jetpack.common.widget.FixedListView;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,15 +63,18 @@ public class KeyWordFragment extends Fragment {
 
     HashMap<KeyWordCategory, RcAdapter> map = new HashMap<>();
 
+    IBaseView mBaseView;
+
     public KeyWordFragment() {
     }
 
-    public static KeyWordFragment instance(SubTab tab, OnKeyWordChangeListener mChangeListener) {
+    public static KeyWordFragment instance(@NonNull IBaseView baseView, SubTab tab, OnKeyWordChangeListener mChangeListener) {
         KeyWordFragment fragment = new KeyWordFragment();
         Bundle args = new Bundle();
         args.putSerializable(Constant.EXTRA, tab);
         fragment.setArguments(args);
         fragment.mChangeListener = mChangeListener;
+        fragment.mBaseView = baseView;
         return fragment;
     }
 
@@ -106,9 +100,10 @@ public class KeyWordFragment extends Fragment {
         mViewModel = ViewModelProviders.of(this).get(KeyWordViewModel.class);
 
         mViewModel.init(mTab);
-        mViewModel.mModel.mLiveData.observe(this, new Observer<List<KeyWordCategory>>() {
+        mViewModel.mModel.mKeyWordLiveData.observe(this, new Observer<List<KeyWordCategory>>() {
             @Override
             public void onChanged(@Nullable List<KeyWordCategory> keyWordCategories) {
+                mBaseView.hideDialogLoading();
                 if (keyWordCategories == null) {
                     return;
                 }
@@ -130,7 +125,7 @@ public class KeyWordFragment extends Fragment {
                 }
             }
         });
-        mViewModel.mModel.mKeyLiveData.observe(this, new Observer<List<KeyWord>>() {
+        mViewModel.mModel.mKeyChangedLiveData.observe(this, new Observer<List<KeyWord>>() {
             @Override
             public void onChanged(@Nullable List<KeyWord> keyWords) {
                 mChangeListener.onChange(keyWords);
@@ -138,6 +133,8 @@ public class KeyWordFragment extends Fragment {
         });
 
         getLifecycle().addObserver(mViewModel.mModel);
+
+        mBaseView.showDialogLoading("1");
         mViewModel.mModel.getKeyWords();
     }
 

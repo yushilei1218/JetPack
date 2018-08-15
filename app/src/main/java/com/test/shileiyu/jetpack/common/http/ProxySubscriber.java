@@ -50,6 +50,7 @@ public abstract class ProxySubscriber<T> implements FlowableSubscriber<T>, Dispo
         @Override
         public void accept(T o) {
             //处理网络的逻辑
+            //登陆失效跳登陆页面
             if (o == null) {
                 onFail(0, "http解析失败");
             } else {

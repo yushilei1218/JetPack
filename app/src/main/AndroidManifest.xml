@@ -20,7 +20,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.home.TabActivity" />
-        <activity android:name=".ui.home.CategoryActivity"></activity>
+        <activity android:name=".ui.home.CategoryActivity" />
+        <activity android:name=".common.base.BaseActivity"></activity>
     </application>
 
 </manifest>

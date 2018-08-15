@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.test.shileiyu.jetpack.R;
 import com.test.shileiyu.jetpack.common.base.AbsRBaseAdapter;
+import com.test.shileiyu.jetpack.common.base.BaseActivity;
 import com.test.shileiyu.jetpack.common.bean.Album;
 import com.test.shileiyu.jetpack.common.bean.LoadState;
 import com.test.shileiyu.jetpack.common.bean.ModelState;
@@ -36,7 +37,7 @@ import butterknife.ButterKnife;
 /**
  * @author shilei.yu
  */
-public class CategoryActivity extends AppCompatActivity {
+public class CategoryActivity extends BaseActivity {
 
     public static final String EXTRA = "EXTRA";
 
@@ -66,17 +67,11 @@ public class CategoryActivity extends AppCompatActivity {
         context.startActivity(intent);
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_category);
-        ButterKnife.bind(this);
-
+    protected void initView(Bundle savedInstanceState) {
         mTab = (SubTab) getIntent().getSerializableExtra(EXTRA);
 
         getSupportActionBar().setTitle(mTab.keywordName);
-
 
         mSwipeRefreshLayout.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
             @Override
@@ -92,7 +87,7 @@ public class CategoryActivity extends AppCompatActivity {
 
         mViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
 
-        mViewModel.init(mTab);
+        mViewModel.init(this, mTab);
 
         getLifecycle().addObserver(mViewModel.dataModel);
 
@@ -104,6 +99,7 @@ public class CategoryActivity extends AppCompatActivity {
                 //3.DialogLoading
                 //4.首页是否有数据
                 //5.是否可以加载更多
+                hideDialogLoading();
 
                 if (mSwipeRefreshLayout.isRefreshing()) {
                     mSwipeRefreshLayout.setRefreshing(false);
@@ -120,12 +116,13 @@ public class CategoryActivity extends AppCompatActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.key_word_layout, KeyWordFragment.instance(mTab, mViewModel))
+                .add(R.id.key_word_layout, KeyWordFragment.instance(this, mTab, mViewModel))
                 .commit();
     }
 
-
-    public void changeLoadState(LoadState state, boolean shouldLoading) {
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_category;
     }
 
     public static class Adapter2 extends AbsRBaseAdapter<Album> implements View.OnClickListener {
