@@ -42,7 +42,11 @@ public abstract class AbsModel implements IDisposableManager, GenericLifecycleOb
             for (Disposable d : data) {
                 if (!d.isDisposed()) {
                     Log.d(TAG, "cancel Disposable " + d.toString() + threadName());
-                    d.dispose();
+                    try {
+                        d.dispose();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

@@ -1,7 +1,6 @@
 package com.test.shileiyu.jetpack.ui.home;
 
 import android.app.Activity;
-import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -10,9 +9,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +31,9 @@ import com.test.shileiyu.jetpack.common.bean.TwoTuple;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
+import in.srain.cube.views.ptr.PtrClassicFrameLayout;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
 
 /**
  * @author shilei.yu
@@ -42,16 +43,16 @@ public class CategoryActivity extends BaseActivity {
     public static final String EXTRA = "EXTRA";
 
     @BindView(R.id.app_bar_layout)
-    AppBarLayout keyWordLayout;
+    AppBarLayout mKeyWordLayout;
 
     @BindView(R.id.act_category_recycler)
     RecyclerView mRecyclerView;
 
-    @BindView(R.id.act_category_swipe)
-    SwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.act_category_ptr)
+    PtrClassicFrameLayout mSwipeRefreshLayout;
 
-    @BindView(R.id.img_error)
-    ImageView imgError;
+    @BindView(R.id.act_category_key_shortcut)
+    View mKeyShortCut;
 
     private SubTab mTab;
 
@@ -73,11 +74,36 @@ public class CategoryActivity extends BaseActivity {
 
         getSupportActionBar().setTitle(mTab.keywordName);
 
-        mSwipeRefreshLayout.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
+        mSwipeRefreshLayout.setPtrHandler(new PtrDefaultHandler() {
             @Override
-            public boolean canChildScrollUp(@NonNull SwipeRefreshLayout parent, @Nullable View child) {
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                mViewModel.onRefresh();
+            }
 
-                return keyWordLayout.getTop() < 0;
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                boolean isAppLayoutShowFull = mKeyWordLayout.getTop() >= 0;
+
+                LinearLayoutManager layoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+                int fp = layoutManager.findFirstVisibleItemPosition();
+
+                boolean isRecyclerViewShowFull = fp == -1 || (fp == 0 && mRecyclerView.getChildAt(0).getTop() >= 0);
+
+
+                return isAppLayoutShowFull && isRecyclerViewShowFull;
+            }
+        });
+        mKeyWordLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                Log.d(getTAG(), "height=" + appBarLayout.getHeight() + " top=" + appBarLayout.getTop() + " y=" + appBarLayout.getY() + " TransitionY=" + appBarLayout.getTranslationY());
+                mKeyShortCut.setVisibility(Math.abs(appBarLayout.getTop()) >= appBarLayout.getHeight() ? View.VISIBLE : View.GONE);
+            }
+        });
+        mKeyShortCut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mKeyWordLayout.setExpanded(true, true);
             }
         });
 
@@ -102,7 +128,7 @@ public class CategoryActivity extends BaseActivity {
                 hideDialogLoading();
 
                 if (mSwipeRefreshLayout.isRefreshing()) {
-                    mSwipeRefreshLayout.setRefreshing(false);
+                    mSwipeRefreshLayout.refreshComplete();
                 }
 
                 boolean isSuccess = tuple.second.isSuccess;
@@ -113,7 +139,6 @@ public class CategoryActivity extends BaseActivity {
                 }
             }
         });
-        mSwipeRefreshLayout.setOnRefreshListener(mViewModel);
 
         getSupportFragmentManager()
                 .beginTransaction()

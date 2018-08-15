@@ -75,4 +75,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     public void hideBaseLayout() {
         mBaseView.hideBaseLayout();
     }
+
+    public String getTAG() {
+        return this.getClass().getSimpleName();
+    }
 }
