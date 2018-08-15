@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="vertical"
+    tools:context=".ui.home.KeyWordFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/key_common_sort"
+            style="@style/Style_Text"
+            android:text="综合排序" />
+
+        <TextView
+            android:id="@+id/key_most_play"
+            style="@style/Style_Text"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/key_common_sort"
+            android:text="最多播放" />
+
+        <TextView
+            android:id="@+id/key_least_update"
+            style="@style/Style_Text"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/key_most_play"
+            android:text="最近更新" />
+
+        <TextView
+            android:id="@+id/key_least_expand"
+            style="@style/Style_Text"
+            android:layout_alignParentRight="true"
+            android:text="展示" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/key_word_sub_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone" />
+
+</LinearLayout>
