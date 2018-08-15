@@ -104,6 +104,7 @@ public class CategoryActivity extends BaseActivity {
                 if (mSwipeRefreshLayout.isRefreshing()) {
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
+
                 boolean isSuccess = tuple.second.isSuccess;
                 if (isSuccess) {
                     //刷新列表数据
