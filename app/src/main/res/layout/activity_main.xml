@@ -8,10 +8,22 @@
     tools:context=".MainActivity">
 
     <Button
+        android:id="@+id/main_2_tab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/main_2_tab"
         android:text="跳分类" />
+
+    <Button
+        android:id="@+id/main_3_tab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="跳Area" />
+
+    <Button
+        android:id="@+id/main_4_tab"
+        android:text="跳Seat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <fragment
         class="com.test.shileiyu.jetpack.ui.album.AlbumFragment"

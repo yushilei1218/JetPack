@@ -21,7 +21,9 @@
         </activity>
         <activity android:name=".ui.home.TabActivity" />
         <activity android:name=".ui.home.CategoryActivity" />
-        <activity android:name=".common.base.BaseActivity"></activity>
+        <activity android:name=".common.base.BaseActivity" />
+        <activity android:name=".ui.AreaViewActivity" />
+        <activity android:name=".ui.SeatActivity"></activity>
     </application>
 
 </manifest>
