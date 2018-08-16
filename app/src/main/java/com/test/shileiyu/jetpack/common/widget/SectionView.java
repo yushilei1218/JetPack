@@ -428,6 +428,7 @@ public class SectionView extends View {
     GestureDetector gestureDetector = new GestureDetector(getContext(),
             new GestureDetector.SimpleOnGestureListener() {
 
+                @Override
                 public boolean onScroll(MotionEvent e1, MotionEvent e2,
                                         float distanceX, float distanceY) {
                     float tempMViewW = column * SeatWidth*scale*scale1+(column -1)*mSpaceX*scale1+mTextWidth-getWidth();

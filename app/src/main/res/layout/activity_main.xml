@@ -25,6 +25,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <Button
+        android:id="@+id/main_5_tab"
+        android:text="跳Matrix"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <fragment
         class="com.test.shileiyu.jetpack.ui.album.AlbumFragment"
         android:layout_width="match_parent"
