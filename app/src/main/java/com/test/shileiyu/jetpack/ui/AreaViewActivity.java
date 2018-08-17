@@ -48,6 +48,11 @@ public class AreaViewActivity extends BaseActivity {
         public boolean isSelect;
 
         @Override
+        public long getId() {
+            return 0;
+        }
+
+        @Override
         public int getXInArea() {
             return x;
         }
@@ -60,6 +65,11 @@ public class AreaViewActivity extends BaseActivity {
         @Override
         public boolean isSelect() {
             return isSelect;
+        }
+
+        @Override
+        public boolean isSold() {
+            return false;
         }
 
         @Override

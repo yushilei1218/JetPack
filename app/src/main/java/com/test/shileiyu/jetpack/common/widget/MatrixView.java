@@ -2,10 +2,14 @@ package com.test.shileiyu.jetpack.common.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PointF;
+import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
@@ -15,7 +19,10 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
+import com.test.shileiyu.jetpack.R;
 import com.test.shileiyu.jetpack.common.util.Util;
+
+import java.util.List;
 
 /**
  * @author shilei.yu
@@ -31,6 +38,34 @@ public class MatrixView extends View {
     private ScaleGestureDetector mScaleGestureDetector;
     private GestureDetector mDetector;
 
+    /**
+     * 场地对象
+     */
+    private Area mArea;
+    /**
+     * 座位
+     */
+    private List<ISeat> mSeats;
+
+    /**
+     * 座位视图初始化宽度
+     */
+    private final float mSeatViewWidth = 0.6f / Area.pxMetreRate;
+    /**
+     * 场地在视图中初始化宽高
+     */
+    private int mAreaViewWidth;
+
+    private int mAreaViewHeight;
+
+    private Bitmap mLockBitmap;
+    private Bitmap mNormalBitmap;
+    private Bitmap mCheckBitmap;
+
+    private final PointF tempPointF = new PointF();
+    private final Rect bitmapBound = new Rect();
+    private final Rect seatBound = new Rect();
+
     public MatrixView(Context context) {
         super(context, null);
     }
@@ -40,6 +75,10 @@ public class MatrixView extends View {
         mPaint.setColor(Color.RED);
         mPaint.setTextAlign(Paint.Align.CENTER);
         mPaint.setTextSize(14);
+
+        mLockBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.seat_lock);
+        mNormalBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.seat_normal);
+        mCheckBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.seat_checked);
 
         mScaleGestureDetector = new ScaleGestureDetector(context, new ScaleGestureDetector.OnScaleGestureListener() {
             @Override
@@ -73,15 +112,15 @@ public class MatrixView extends View {
         mDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
-                float mTranlateX = getMTranlateX();
-                float mTranlateY = getMTranlateY();
+                float translateX = getMTranslateX();
+                float translateY = getMTranslateY();
                 float mScaleX = getMScaleX();
                 float x = e.getX();
                 float y = e.getY();
-                float oldX = (x - mTranlateX) / mScaleX;
-                float oldY = (y - mTranlateY) / mScaleX;
-                String msg = "x =" + x + " y=" + y + " tx=" + mTranlateX + "" +
-                        " ty=" + mTranlateY + " scale=" + mScaleX + " oldx= " + oldX + " oldY=" + oldY;
+                float oldX = (x - translateX) / mScaleX;
+                float oldY = (y - translateY) / mScaleX;
+                String msg = "x =" + x + " y=" + y + " tx=" + translateX + "" +
+                        " ty=" + translateY + " scale=" + mScaleX + " oldx= " + oldX + " oldY=" + oldY;
                 Log.d(TAG, msg);
                 Util.showToast(msg);
                 return super.onSingleTapConfirmed(e);
@@ -100,26 +139,88 @@ public class MatrixView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        if (w <= 0 || h <= 0) {
+            return;
+        }
+        if (!isParamsCanDraw()) {
+            return;
+        }
+        //计算出场地进入视图对应的占用视图的宽、高
+        mAreaViewWidth = (int) (mArea.areaWidth / Area.pxMetreRate);
+        mAreaViewHeight = (int) (mArea.areaHeight / Area.pxMetreRate);
+
+        mMatrix.reset();
+        float cx = w / 2f;
+        float cy = h / 2f;
+        float ax = mAreaViewWidth / 2f;
+        float ay = mAreaViewHeight / 2f;
+        mMatrix.postTranslate(cx - ax, cy - ay);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.translate(getMTranlateX(), getMTranlateY());
+        canvas.drawColor(Color.WHITE);
+
+        if (Util.isEmpty(mSeats)) {
+            return;
+        }
+        //画座位
+        drawSeat(canvas);
+        //画Number装饰
+        drawNumberDecorate();
+        //画缩略图
+        drawOverView();
+    }
+
+    private void drawOverView() {
+
+    }
+
+    private void drawNumberDecorate() {
+
+    }
+
+    private void drawSeat(Canvas canvas) {
+        canvas.save();
+        canvas.translate(getMTranslateX(), getMTranslateY());
         canvas.scale(getMScaleX(), getMScaleX());
 
-        int width = getWidth();
-        int height = getHeight();
-
-        int column = width / per;
-        int row = height / per;
-        for (int i = 0; i < row; i++) {
-            int x = i * per;
-            for (int j = 0; j < column; j++) {
-                int y = j * 100;
-                canvas.drawText(x + "," + y, x, y, mPaint);
+        for (ISeat s : mSeats) {
+            //确定座位在视图上的初始化坐标
+            computeSeatBoundInView(seatBound, s, mArea);
+            Bitmap temp;
+            if (s.isSelect()) {
+                temp = mCheckBitmap;
+            } else if (s.isSold()) {
+                temp = mLockBitmap;
+            } else {
+                temp = mNormalBitmap;
             }
+            bitmapBound.set(0, 0, temp.getWidth(), temp.getHeight());
+            canvas.drawBitmap(temp, bitmapBound, seatBound, mPaint);
         }
+        canvas.restore();
+    }
+
+    private void computeSeatBoundInView(Rect bound, ISeat s, Area area) {
+        int areaWidth = area.areaWidth;
+        int areaHeight = area.areaHeight;
+
+        int xInArea = s.getXInArea();
+        int yInArea = s.getYInArea();
+        float x = ((float) xInArea / areaWidth) * mAreaViewWidth;
+        float y = ((float) yInArea / areaHeight) * mAreaViewHeight;
+        float per = mSeatViewWidth / 2f;
+        int left = (int) (x - per);
+        int top = (int) (y - per);
+        int right = (int) (x + per);
+        int bottom = (int) (y + per);
+        bound.set(left, top, right, bottom);
+    }
+
+    private boolean isParamsCanDraw() {
+        return mArea != null && mArea.areaHeight > 0 && mArea.areaWidth > 0;
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -137,14 +238,20 @@ public class MatrixView extends View {
         return m[Matrix.MSCALE_X];
     }
 
-    private float getMTranlateX() {
+    private float getMTranslateX() {
         mMatrix.getValues(m);
         return m[Matrix.MTRANS_X];
     }
 
-    private float getMTranlateY() {
+    private float getMTranslateY() {
         mMatrix.getValues(m);
         return m[Matrix.MTRANS_Y];
+    }
+
+    public void setUpView(Area area, List<ISeat> seats) {
+        mArea = area;
+        mSeats = seats;
+        invalidate();
     }
 
 }
