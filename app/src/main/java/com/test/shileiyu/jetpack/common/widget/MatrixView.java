@@ -105,7 +105,8 @@ public class MatrixView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.setMatrix(mMatrix);
+        canvas.translate(getMTranlateX(), getMTranlateY());
+        canvas.scale(getMScaleX(), getMScaleX());
 
         int width = getWidth();
         int height = getHeight();

@@ -111,6 +111,7 @@ public class SectionView extends View {
     }
 
     private void init() {
+        tempMatrix.reset();
 
         mTextPaint = new Paint();
         mNumberHeight = mTextPaint.measureText("4");
@@ -122,12 +123,12 @@ public class SectionView extends View {
         mTextPaint.setColor(bacColor);
         mTextPaint.setTextSize(getResources().getDisplayMetrics().density * 16);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
-        if(getWidth()>0&&getHeight()>0){
-            mOverViewWidth = (int) (getResources().getDisplayMetrics().density*getWidth() * 2/5);
-            mOverViewHight = (int) (getResources().getDisplayMetrics().density*getHeight()*2/5);
-        }else{
-            mOverViewWidth = (int) (getResources().getDisplayMetrics().density*140);
-            mOverViewHight = (int) (getResources().getDisplayMetrics().density*100);
+        if (getWidth() > 0 && getHeight() > 0) {
+            mOverViewWidth = (int) (getResources().getDisplayMetrics().density * getWidth() * 2 / 5);
+            mOverViewHight = (int) (getResources().getDisplayMetrics().density * getHeight() * 2 / 5);
+        } else {
+            mOverViewWidth = (int) (getResources().getDisplayMetrics().density * 140);
+            mOverViewHight = (int) (getResources().getDisplayMetrics().density * 100);
         }
 
 
@@ -145,21 +146,20 @@ public class SectionView extends View {
 
         mSpaceX = getResources().getDisplayMetrics().density * 10;
         mSpaceY = getResources().getDisplayMetrics().density * 10;
-        mViewW = (int) (column * SeatWidth * scale + mSpaceX * (column - 1)+mTextWidth);
+        mViewW = (int) (column * SeatWidth * scale + mSpaceX * (column - 1) + mTextWidth);
         mViewH = (int) (row * SeatHight * scale + mSpaceY * (row - 1));
 
-        if(lineNumbers==null){
-            lineNumbers=new ArrayList<String>();
-        }else if(lineNumbers.size()<=0) {
+        if (lineNumbers == null) {
+            lineNumbers = new ArrayList<String>();
+        } else if (lineNumbers.size() <= 0) {
             for (int i = 0; i < row; i++) {
                 lineNumbers.add((i + 1) + "");
             }
         }
 
-        matrix.postTranslate(mTextWidth+mSpaceX, 0);
+        matrix.postTranslate(mTextWidth + mSpaceX, 0);
 
     }
-
 
 
     @Override
@@ -174,52 +174,54 @@ public class SectionView extends View {
         drawOvewRect(canvas);
 
     }
+
     float scaleoverX;
-    float scaleoverY ;
+    float scaleoverY;
+
     private void drawOvewRect(Canvas canvas) {
 
         OverRectPaint = new Paint();
         OverRectPaint.setColor(Color.RED);
         OverRectPaint.setStyle(Paint.Style.STROKE);
         OverRectPaint.setStrokeWidth(overRectLineWidth);
-        int tempViewW ;
+        int tempViewW;
         int tempViewH;
-        if(getMeasuredWidth()<mViewW){
+        if (getMeasuredWidth() < mViewW) {
             tempViewW = getMeasuredWidth();
-        }else{
+        } else {
             tempViewW = mViewW;
         }
-        if(getMeasuredHeight()<mViewH){
+        if (getMeasuredHeight() < mViewH) {
             tempViewH = getMeasuredHeight();
-        }else{
+        } else {
             tempViewH = mViewH;
         }
 
-        try{
-            Rect rect ;
-            if(getMatrixScaleX()>= 1.0f){
-                rect = new Rect((int)(scaleoverX*Math.abs(getTranslateX())/getMatrixScaleX()),
-                        (int)(scaleoverY*Math.abs(getTranslateY())/getMatrixScaleX()),
-                        (int)(scaleoverX*Math.abs(getTranslateX())/getMatrixScaleX()+tempViewW*scaleoverX/getMatrixScaleX()),
-                        (int)(scaleoverY*Math.abs(getTranslateY())/getMatrixScaleX()+tempViewH*scaleoverY/getMatrixScaleX()));
-            }else{
-                rect = new Rect((int)(scaleoverX*Math.abs(getTranslateX())),
-                        (int)(scaleoverY*Math.abs(getTranslateY())),
-                        (int)(scaleoverX*Math.abs(getTranslateX())+tempViewW*scaleoverX),
-                        (int)(scaleoverY*Math.abs(getTranslateY())+tempViewH*scaleoverY));
+        try {
+            Rect rect;
+            if (getMatrixScaleX() >= 1.0f) {
+                rect = new Rect((int) (scaleoverX * Math.abs(getTranslateX()) / getMatrixScaleX()),
+                        (int) (scaleoverY * Math.abs(getTranslateY()) / getMatrixScaleX()),
+                        (int) (scaleoverX * Math.abs(getTranslateX()) / getMatrixScaleX() + tempViewW * scaleoverX / getMatrixScaleX()),
+                        (int) (scaleoverY * Math.abs(getTranslateY()) / getMatrixScaleX() + tempViewH * scaleoverY / getMatrixScaleX()));
+            } else {
+                rect = new Rect((int) (scaleoverX * Math.abs(getTranslateX())),
+                        (int) (scaleoverY * Math.abs(getTranslateY())),
+                        (int) (scaleoverX * Math.abs(getTranslateX()) + tempViewW * scaleoverX),
+                        (int) (scaleoverY * Math.abs(getTranslateY()) + tempViewH * scaleoverY));
             }
             canvas.drawRect(rect, OverRectPaint);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
 
-
     }
+
     int bacColor = Color.parseColor("#7e000000");
 
     private void drawOverView(Canvas canvas) {
-        mBitMapOverView = Bitmap.createBitmap((int)mOverViewWidth,(int)mOverViewHight,Bitmap.Config.ARGB_8888);
+        mBitMapOverView = Bitmap.createBitmap((int) mOverViewWidth, (int) mOverViewHight, Bitmap.Config.ARGB_8888);
         Canvas OverViewCanvas = new Canvas(mBitMapOverView);
         Paint paint = new Paint();
         paint.setColor(bacColor);
@@ -227,16 +229,16 @@ public class SectionView extends View {
         scaleoverY = mOverViewHight / mViewH;
         float tempX = mViewW * scaleoverX;
         float tempY = mViewH * scaleoverY;
-        OverViewCanvas.drawRect(0, 0, (float)tempX, (float)tempY, paint);
+        OverViewCanvas.drawRect(0, 0, (float) tempX, (float) tempY, paint);
 
         Matrix tempoverMatrix = new Matrix();
 
         for (int i = 0; i < row; i++) {
-            float top =  i * SeatHight * scale * scaleoverY+ i * mSpaceY * scaleoverY;
+            float top = i * SeatHight * scale * scaleoverY + i * mSpaceY * scaleoverY;
             for (int j = 0; j < column; j++) {
-                float left = j * SeatWidth * scale * scaleoverX + j * mSpaceX * scaleoverX+mTextWidth*scaleoverX;
+                float left = j * SeatWidth * scale * scaleoverX + j * mSpaceX * scaleoverX + mTextWidth * scaleoverX;
                 tempoverMatrix.setTranslate(left, top);
-                tempoverMatrix.postScale(scale*scaleoverX, scale*scaleoverY, left, top);
+                tempoverMatrix.postScale(scale * scaleoverX, scale * scaleoverY, left, top);
 
                 int state = getSeatType(i, j);
                 switch (state) {
@@ -258,40 +260,38 @@ public class SectionView extends View {
             }
         }
 
-        canvas.drawBitmap(mBitMapOverView,0,0,null);
+        canvas.drawBitmap(mBitMapOverView, 0, 0, null);
 
     }
 
     private void drawText(Canvas canvas) {
         mTextPaint.setColor(bacColor);
         RectF rectF = new RectF();
-        rectF.top = getTranslateY() - mNumberHeight/2;
-        rectF.bottom = getTranslateY()+ mViewH* getMatrixScaleX() + mNumberHeight/2;
+        rectF.top = getTranslateY() - mNumberHeight / 2;
+        rectF.bottom = getTranslateY() + mViewH * getMatrixScaleX() + mNumberHeight / 2;
         rectF.left = 0;
         rectF.right = mTextWidth;
 
 
-        canvas.drawRoundRect(rectF, mTextWidth/2, mTextWidth/2, mTextPaint);
+        canvas.drawRoundRect(rectF, mTextWidth / 2, mTextWidth / 2, mTextPaint);
         mTextPaint.setColor(Color.WHITE);
         for (int i = 0; i < row; i++) {
-            float top = (i *SeatHight*scale + i * mSpaceY) * getMatrixScaleX() + getTranslateY();
-            float bottom = (i * SeatHight*scale + i * mSpaceY + SeatHight) * getMatrixScaleX() + getTranslateY();
-            float baseline = (bottom + top  - lineNumberPaintFontMetrics.bottom - lineNumberPaintFontMetrics.top ) / 2-6;
+            float top = (i * SeatHight * scale + i * mSpaceY) * getMatrixScaleX() + getTranslateY();
+            float bottom = (i * SeatHight * scale + i * mSpaceY + SeatHight) * getMatrixScaleX() + getTranslateY();
+            float baseline = (bottom + top - lineNumberPaintFontMetrics.bottom - lineNumberPaintFontMetrics.top) / 2 - 6;
             canvas.drawText(lineNumbers.get(i), mTextWidth / 2, baseline, mTextPaint);
         }
-
-
 
 
     }
 
     Matrix tempMatrix = new Matrix();
-    Paint paint  = new Paint();
+    Paint paint = new Paint();
 
 
     private void drawSeat(Canvas canvas) {
         float zoom = getMatrixScaleX();
-        Log.i("lly","getMatrixScaleX = "+getMatrixScaleX()+",getMatrixScaleY = "+getMatrixScaleY());
+        Log.i("lly", "getMatrixScaleX = " + getMatrixScaleX() + ",getMatrixScaleY = " + getMatrixScaleY());
         scale1 = zoom;
         tranlateX = getTranslateX();
         tranlateY = getTranslateY();
@@ -312,7 +312,6 @@ public class SectionView extends View {
                 tempMatrix.setTranslate(left, top);
                 tempMatrix.postScale(scale, scale, left, top);
                 tempMatrix.postScale(scale1, scale1, left, top);
-
 
 
                 int state = getSeatType(i, j);
@@ -379,7 +378,7 @@ public class SectionView extends View {
         return m[Matrix.MSCALE_X];
     }
 
-    private void setMatrixScale(float scale){
+    private void setMatrixScale(float scale) {
 
         m[Matrix.MSCALE_X] = scale;
         m[Matrix.MSCALE_Y] = scale;
@@ -431,26 +430,26 @@ public class SectionView extends View {
                 @Override
                 public boolean onScroll(MotionEvent e1, MotionEvent e2,
                                         float distanceX, float distanceY) {
-                    float tempMViewW = column * SeatWidth*scale*scale1+(column -1)*mSpaceX*scale1+mTextWidth-getWidth();
-                    float tempmViewH = row * SeatHight * scale * scale1 + (row -1) * mSpaceY * scale1 - getHeight();
-                    if((getTranslateX()>mTextWidth+mSpaceX)&& distanceX<0){
+                    float tempMViewW = column * SeatWidth * scale * scale1 + (column - 1) * mSpaceX * scale1 + mTextWidth - getWidth();
+                    float tempmViewH = row * SeatHight * scale * scale1 + (row - 1) * mSpaceY * scale1 - getHeight();
+                    if ((getTranslateX() > mTextWidth + mSpaceX) && distanceX < 0) {
                         distanceX = 0;
                     }
-                    if((Math.abs(getTranslateX())>tempMViewW)&&(distanceX>0)){
+                    if ((Math.abs(getTranslateX()) > tempMViewW) && (distanceX > 0)) {
                         distanceX = 0;
                     }
 
-                    if((getTranslateY()>0)&&distanceY<0){
-                        distanceY=0;
+                    if ((getTranslateY() > 0) && distanceY < 0) {
+                        distanceY = 0;
                     }
-                    if((Math.abs(getTranslateY())>tempmViewH)&&(distanceY>0)){
+                    if ((Math.abs(getTranslateY()) > tempmViewH) && (distanceY > 0)) {
                         distanceY = 0;
                     }
 
                     matrix.postTranslate(-distanceX, -distanceY);
 
-                    Log.i("lly","distanceX =="+distanceX+",distanceY ="+distanceY+",tempMViewW ="+tempMViewW
-                            +",getTranslateX()="+getTranslateX());
+                    Log.i("lly", "distanceX ==" + distanceX + ",distanceY =" + distanceY + ",tempMViewW =" + tempMViewW
+                            + ",getTranslateX()=" + getTranslateX());
 
                     invalidate();
                     return false;
@@ -480,7 +479,7 @@ public class SectionView extends View {
                                 } else {
                                     addChooseSeat(i, j);
 
-                                    Log.i("lly","i === "+i+",j === "+j);
+                                    Log.i("lly", "i === " + i + ",j === " + j);
 
                                 }
                                 float currentScaleY = getMatrixScaleY();
