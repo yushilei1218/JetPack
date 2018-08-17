@@ -63,6 +63,14 @@ public class MatrixView extends View {
     private final Rect bitmapBound = new Rect();
     private final Rect seatBound = new Rect();
 
+    private boolean isNeedDrawOverView = true;
+
+    /**
+     * 缩略图宽高
+     */
+    private int mXhumbnailWidth;
+    private int mXhumbnailHeight;
+
     public MatrixView(Context context) {
         super(context, null);
     }
@@ -182,16 +190,19 @@ public class MatrixView extends View {
         //画座位
         drawSeat(canvas);
         //画Number装饰
-        drawNumberDecorate();
+        drawNumberDecorate(canvas);
         //画缩略图
-        drawOverView();
+        drawOverView(canvas);
     }
 
-    private void drawOverView() {
+    private void drawOverView(Canvas canvas) {
+        if (!isNeedDrawOverView) {
+            return;
+        }
 
     }
 
-    private void drawNumberDecorate() {
+    private void drawNumberDecorate(Canvas canvas) {
 
     }
 
