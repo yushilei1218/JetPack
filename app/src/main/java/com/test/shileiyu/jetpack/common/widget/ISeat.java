@@ -28,5 +28,7 @@ public interface ISeat {
      */
     boolean isSold();
 
+    void setSelect(boolean is);
+
     String getName();
 }

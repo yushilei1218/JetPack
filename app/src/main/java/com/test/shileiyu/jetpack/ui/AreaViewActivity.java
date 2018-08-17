@@ -73,6 +73,11 @@ public class AreaViewActivity extends BaseActivity {
         }
 
         @Override
+        public void setSelect(boolean is) {
+
+        }
+
+        @Override
         public String getName() {
             return name;
         }

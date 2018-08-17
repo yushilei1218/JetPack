@@ -22,14 +22,14 @@ public class MatrixActivity extends BaseActivity {
     @Override
     protected void initView(Bundle savedInstanceState) {
         Area area = new Area();
-        area.areaHeight = 50;
-        area.areaWidth = 50;
+        area.areaHeight = 10;
+        area.areaWidth = 20;
         Random random = new Random();
 
         List<ISeat> data = new ArrayList<>();
-        for (int i = 0; i < 48; i++) {
+        for (int i = 0; i < 18; i++) {
             int x = 1 + i;
-            for (int j = 0; j < 48; j++) {
+            for (int j = 0; j < 8; j++) {
                 int y = 1 + j;
                 int ran = random.nextInt(9);
                 data.add(new Seat(x, y, false, ran % 3 == 0, i + "排" + j + "列"));
@@ -86,8 +86,18 @@ public class MatrixActivity extends BaseActivity {
         }
 
         @Override
+        public void setSelect(boolean is) {
+            isSelect = is;
+        }
+
+        @Override
         public String getName() {
             return name;
+        }
+
+        @Override
+        public String toString() {
+            return " " + name;
         }
     }
 }

@@ -8,7 +8,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.text.TextPaint;
@@ -31,7 +30,6 @@ import java.util.List;
 
 public class MatrixView extends View {
     String TAG = "MatrixView";
-    private int per = 100;
     TextPaint mPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 
     Matrix mMatrix = new Matrix();
@@ -50,7 +48,7 @@ public class MatrixView extends View {
     /**
      * 座位视图初始化宽度
      */
-    private final float mSeatViewWidth = 0.6f / Area.pxMetreRate;
+    private final float SEAT_WIDTH = 0.6f / Area.pxMetreRate;
     /**
      * 场地在视图中初始化宽高
      */
@@ -62,7 +60,6 @@ public class MatrixView extends View {
     private Bitmap mNormalBitmap;
     private Bitmap mCheckBitmap;
 
-    private final PointF tempPointF = new PointF();
     private final Rect bitmapBound = new Rect();
     private final Rect seatBound = new Rect();
 
@@ -123,6 +120,23 @@ public class MatrixView extends View {
                         " ty=" + translateY + " scale=" + mScaleX + " oldx= " + oldX + " oldY=" + oldY;
                 Log.d(TAG, msg);
                 Util.showToast(msg);
+                ISeat temp = null;
+                if (!Util.isEmpty(mSeats)) {
+                    for (ISeat s : mSeats) {
+                        computeSeatBoundInView(seatBound, s, mArea);
+                        if (seatBound.contains((int) oldX, (int) oldY)) {
+                            Log.d(TAG, "Seat 被点中了 " + s.toString());
+                            temp = s;
+                            break;
+                        }
+                    }
+                }
+                if (temp != null) {
+                    if (!temp.isSold()) {
+                        temp.setSelect(!temp.isSelect());
+                        invalidate();
+                    }
+                }
                 return super.onSingleTapConfirmed(e);
             }
 
@@ -211,7 +225,7 @@ public class MatrixView extends View {
         int yInArea = s.getYInArea();
         float x = ((float) xInArea / areaWidth) * mAreaViewWidth;
         float y = ((float) yInArea / areaHeight) * mAreaViewHeight;
-        float per = mSeatViewWidth / 2f;
+        float per = SEAT_WIDTH / 2f;
         int left = (int) (x - per);
         int top = (int) (y - per);
         int right = (int) (x + per);
