@@ -1,5 +1,6 @@
 package com.test.shileiyu.jetpack.common.util;
 
+import android.graphics.Rect;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
@@ -28,6 +29,22 @@ public class Util {
 
     public static String threadName() {
         return " Thread =" + Thread.currentThread().getName();
+    }
+
+    public static void computeIntersectBound(Rect src1, Rect src2, Rect save) {
+        if (src1.intersect(src2)) {
+            int newLeft;
+            int newTop;
+            int newRight;
+            int newBottom;
+            newLeft = src1.left > src2.left ? src1.left : src2.left;
+            newTop = src2.top > src1.top ? src2.top : src1.top;
+            newRight = src1.right > src2.right ? src2.right : src1.right;
+            newBottom = src1.bottom > src2.bottom ? src2.bottom : src1.bottom;
+            save.set(newLeft, newTop, newRight, newBottom);
+        } else {
+            save.set(0, 0, 0, 0);
+        }
     }
 
 

@@ -6,4 +6,5 @@
     <color name="colorNormal">#ffffff</color>
     <color name="colorLock">#ff6b6b</color>
     <color name="colorSelect">#35ff89</color>
+    <color name="colorStroke">#5b81ff</color>
 </resources>

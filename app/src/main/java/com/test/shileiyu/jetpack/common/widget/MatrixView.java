@@ -32,6 +32,7 @@ public class MatrixView extends View {
     String TAG = "MatrixView";
     TextPaint mPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     Paint mThumbnailPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    Paint mIntersectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     Matrix mMatrix = new Matrix();
     private ScaleGestureDetector mScaleGestureDetector;
@@ -64,7 +65,10 @@ public class MatrixView extends View {
     private Bitmap mCheckBitmap;
 
     private final Rect bitmapBound = new Rect();
-    private final Rect seatBound = new Rect();
+
+    private final Rect tempBound = new Rect();
+    private final Rect tempBound2 = new Rect();
+    private final Rect tempBound3 = new Rect();
 
     private boolean isNeedDrawOverView = true;
     /**
@@ -89,6 +93,10 @@ public class MatrixView extends View {
         mPaint.setTextSize(14);
 
         mThumbnailPaint.setStyle(Paint.Style.FILL);
+
+        mIntersectPaint.setStyle(Paint.Style.STROKE);
+        mIntersectPaint.setStrokeWidth(4);
+        mIntersectPaint.setColor(getResources().getColor(R.color.colorStroke));
 
         mLockBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.seat_lock);
         mNormalBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.seat_normal);
@@ -144,8 +152,8 @@ public class MatrixView extends View {
                 ISeat temp = null;
                 if (!Util.isEmpty(mSeats)) {
                     for (ISeat s : mSeats) {
-                        computeSeatBoundInView(seatBound, s, mArea);
-                        if (seatBound.contains((int) oldX, (int) oldY)) {
+                        computeSeatBoundInView(tempBound, s, mArea);
+                        if (tempBound.contains((int) oldX, (int) oldY)) {
                             Log.d(TAG, "Seat 被点中了 " + s.toString());
                             temp = s;
                             break;
@@ -223,8 +231,9 @@ public class MatrixView extends View {
             mThumbnailRect.set(0, 0, mThumbnailWidth, mThumbnailHeight);
             canvas.clipRect(mThumbnailRect);
             canvas.drawColor(Color.parseColor("#55000000"));
+            //画缩略图中的座位
             for (ISeat s : mSeats) {
-                computeSeatBoundInThumbnail(seatBound, s, mArea);
+                computeSeatBoundInThumbnail(tempBound, s, mArea);
                 int color;
                 if (s.isSold()) {
                     color = colorLock;
@@ -234,10 +243,33 @@ public class MatrixView extends View {
                     color = colorNormal;
                 }
                 mThumbnailPaint.setColor(color);
-                canvas.drawRect(seatBound, mThumbnailPaint);
+                canvas.drawRect(tempBound, mThumbnailPaint);
             }
+            //画场地图与视图交集框
+            tempBound.set(0, 0, getWidth(), getHeight());
+            computeAreaViewBound(tempBound2);
+            Util.computeIntersectBound(tempBound, tempBound2, tempBound3);
+            transfer2ThumbnailBound(tempBound3, tempBound);
+            canvas.drawRect(tempBound, mIntersectPaint);
             canvas.restore();
         }
+    }
+
+    private void transfer2ThumbnailBound(Rect intersectBound, Rect save) {
+        float rate = (float) mThumbnailHeight / mAreaViewHeight;
+        save.top = (int) (rate * intersectBound.top);
+        save.left = (int) (rate * intersectBound.left);
+        save.right = (int) (rate * intersectBound.right);
+        save.bottom = (int) (rate * intersectBound.bottom);
+
+    }
+
+    private void computeAreaViewBound(Rect bound) {
+        float scaleX = getMScaleX();
+        bound.set(0, 0, mAreaViewWidth, mAreaViewHeight);
+        int mTranslateX = (int) getMTranslateY();
+        int mTranslateY = (int) getMTranslateY();
+        bound.offset(-mTranslateX, mTranslateY);
     }
 
     private void drawNumberDecorate(Canvas canvas) {
@@ -251,7 +283,7 @@ public class MatrixView extends View {
 
         for (ISeat s : mSeats) {
             //确定座位在视图上的初始化坐标
-            computeSeatBoundInView(seatBound, s, mArea);
+            computeSeatBoundInView(tempBound, s, mArea);
             Bitmap temp;
             if (s.isSelect()) {
                 temp = mCheckBitmap;
@@ -261,7 +293,7 @@ public class MatrixView extends View {
                 temp = mNormalBitmap;
             }
             bitmapBound.set(0, 0, temp.getWidth(), temp.getHeight());
-            canvas.drawBitmap(temp, bitmapBound, seatBound, mPaint);
+            canvas.drawBitmap(temp, bitmapBound, tempBound, mPaint);
         }
         canvas.restore();
     }
