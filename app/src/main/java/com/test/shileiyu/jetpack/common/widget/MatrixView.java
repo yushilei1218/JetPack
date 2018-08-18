@@ -277,7 +277,7 @@ public class MatrixView extends View {
         bound.set(0, 0, mAreaViewWidth, mAreaViewHeight);
         int mTranslateX = (int) getMTranslateX();
         int mTranslateY = (int) getMTranslateY();
-        Log.d(TAG, "TX=" + mTranslateX + " TY=" + mTranslateY);
+        Log.d(TAG, "TX=" + mTranslateX + " TY=" + mTranslateY+" scaleX="+scaleX);
         bound.offset(mTranslateX, mTranslateY);
         bound.top= (int) (bound.top*scaleX);
         bound.left= (int) (bound.left*scaleX);
