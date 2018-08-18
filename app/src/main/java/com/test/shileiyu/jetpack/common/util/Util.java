@@ -32,7 +32,8 @@ public class Util {
     }
 
     public static void computeIntersectBound(Rect src1, Rect src2, Rect save) {
-        if (src1.intersect(src2)) {
+        boolean intersects = Rect.intersects(src1, src2);
+        if (intersects) {
             int newLeft;
             int newTop;
             int newRight;

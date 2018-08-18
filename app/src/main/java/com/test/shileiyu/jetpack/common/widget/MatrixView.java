@@ -248,28 +248,41 @@ public class MatrixView extends View {
             //画场地图与视图交集框
             tempBound.set(0, 0, getWidth(), getHeight());
             computeAreaViewBound(tempBound2);
-            Util.computeIntersectBound(tempBound, tempBound2, tempBound3);
-            transfer2ThumbnailBound(tempBound3, tempBound);
-            canvas.drawRect(tempBound, mIntersectPaint);
+            if (Rect.intersects(tempBound, tempBound2)) {
+                //tempBound3是交集
+                Util.computeIntersectBound(tempBound, tempBound2, tempBound3);
+                Log.d(TAG, "view Bound " + tempBound.toString() + " area bound " + tempBound2.toString() + " 交集 bound " + tempBound3.toString());
+                //将交集转换为缩略图内的Bound
+                transfer2ThumbnailBound(tempBound2, tempBound3, tempBound);
+                canvas.drawRect(tempBound, mIntersectPaint);
+            }
             canvas.restore();
         }
     }
 
-    private void transfer2ThumbnailBound(Rect intersectBound, Rect save) {
+    private void transfer2ThumbnailBound(Rect areaBound, Rect intersectBound, Rect save) {
         float rate = (float) mThumbnailHeight / mAreaViewHeight;
-        save.top = (int) (rate * intersectBound.top);
-        save.left = (int) (rate * intersectBound.left);
-        save.right = (int) (rate * intersectBound.right);
-        save.bottom = (int) (rate * intersectBound.bottom);
-
+        int offsetX = areaBound.left;
+        int offsetY = areaBound.top;
+        areaBound.offset(-offsetX, -offsetY);
+        intersectBound.offset(-offsetX, -offsetY);
+        save.top= (int) (intersectBound.top*rate);
+        save.left= (int) (intersectBound.left*rate);
+        save.right= (int) (intersectBound.right*rate);
+        save.bottom= (int) (intersectBound.bottom*rate);
     }
 
     private void computeAreaViewBound(Rect bound) {
         float scaleX = getMScaleX();
         bound.set(0, 0, mAreaViewWidth, mAreaViewHeight);
-        int mTranslateX = (int) getMTranslateY();
+        int mTranslateX = (int) getMTranslateX();
         int mTranslateY = (int) getMTranslateY();
-        bound.offset(-mTranslateX, mTranslateY);
+        Log.d(TAG, "TX=" + mTranslateX + " TY=" + mTranslateY);
+        bound.offset(mTranslateX, mTranslateY);
+        bound.top= (int) (bound.top*scaleX);
+        bound.left= (int) (bound.left*scaleX);
+        bound.right= (int) (bound.right*scaleX);
+        bound.bottom= (int) (bound.bottom*scaleX);
     }
 
     private void drawNumberDecorate(Canvas canvas) {
