@@ -118,7 +118,7 @@ public class MatrixView extends View {
                     scaleFactor = 0.8f / mScaleX;
                 }
                 Log.d(TAG, "onScale " + scaleFactor + " mScaleX=" + mScaleX);
-                mMatrix.postScale(scaleFactor, scaleFactor);
+                mMatrix.postScale(scaleFactor, scaleFactor,detector.getFocusX(),detector.getFocusY());
 
                 invalidate();
                 return true;
