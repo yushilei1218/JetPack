@@ -31,6 +31,7 @@ import java.util.List;
 public class MatrixView extends View {
     String TAG = "MatrixView";
     TextPaint mPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+    Paint mThumbnailPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     Matrix mMatrix = new Matrix();
     private ScaleGestureDetector mScaleGestureDetector;
@@ -49,6 +50,8 @@ public class MatrixView extends View {
      * 座位视图初始化宽度
      */
     private final float SEAT_WIDTH = 0.6f / Area.pxMetreRate;
+
+    private final float THUMBNAIL_SEAT_WIDTH = 0.6F / Area.thumbnailPxMetreRate;
     /**
      * 场地在视图中初始化宽高
      */
@@ -64,12 +67,16 @@ public class MatrixView extends View {
     private final Rect seatBound = new Rect();
 
     private boolean isNeedDrawOverView = true;
-
     /**
      * 缩略图宽高
      */
-    private int mXhumbnailWidth;
-    private int mXhumbnailHeight;
+    private int mThumbnailWidth;
+    private int mThumbnailHeight;
+    private Rect mThumbnailRect = new Rect();
+
+    private int colorSelect;
+    private int colorNormal;
+    private int colorLock;
 
     public MatrixView(Context context) {
         super(context, null);
@@ -81,9 +88,15 @@ public class MatrixView extends View {
         mPaint.setTextAlign(Paint.Align.CENTER);
         mPaint.setTextSize(14);
 
+        mThumbnailPaint.setStyle(Paint.Style.FILL);
+
         mLockBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.seat_lock);
         mNormalBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.seat_normal);
         mCheckBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.seat_checked);
+
+        colorLock = getResources().getColor(R.color.colorLock);
+        colorNormal = getResources().getColor(R.color.colorNormal);
+        colorSelect = getResources().getColor(R.color.colorSelect);
 
         mScaleGestureDetector = new ScaleGestureDetector(context, new ScaleGestureDetector.OnScaleGestureListener() {
             @Override
@@ -170,6 +183,9 @@ public class MatrixView extends View {
         //计算出场地进入视图对应的占用视图的宽、高
         mAreaViewWidth = (int) (mArea.areaWidth / Area.pxMetreRate);
         mAreaViewHeight = (int) (mArea.areaHeight / Area.pxMetreRate);
+        //计算缩略图宽高
+        mThumbnailWidth = (int) (mArea.areaWidth / Area.thumbnailPxMetreRate);
+        mThumbnailHeight = (int) (mArea.areaHeight / Area.thumbnailPxMetreRate);
 
         mMatrix.reset();
         float cx = w / 2f;
@@ -199,7 +215,29 @@ public class MatrixView extends View {
         if (!isNeedDrawOverView) {
             return;
         }
-
+        if (mThumbnailHeight > 0 && mThumbnailWidth > 0) {
+            canvas.save();
+            int width = getWidth();
+            int left = width - mThumbnailWidth;
+            canvas.translate(left, 0);
+            mThumbnailRect.set(0, 0, mThumbnailWidth, mThumbnailHeight);
+            canvas.clipRect(mThumbnailRect);
+            canvas.drawColor(Color.parseColor("#55000000"));
+            for (ISeat s : mSeats) {
+                computeSeatBoundInThumbnail(seatBound, s, mArea);
+                int color;
+                if (s.isSold()) {
+                    color = colorLock;
+                } else if (s.isSelect()) {
+                    color = colorSelect;
+                } else {
+                    color = colorNormal;
+                }
+                mThumbnailPaint.setColor(color);
+                canvas.drawRect(seatBound, mThumbnailPaint);
+            }
+            canvas.restore();
+        }
     }
 
     private void drawNumberDecorate(Canvas canvas) {
@@ -237,6 +275,22 @@ public class MatrixView extends View {
         float x = ((float) xInArea / areaWidth) * mAreaViewWidth;
         float y = ((float) yInArea / areaHeight) * mAreaViewHeight;
         float per = SEAT_WIDTH / 2f;
+        int left = (int) (x - per);
+        int top = (int) (y - per);
+        int right = (int) (x + per);
+        int bottom = (int) (y + per);
+        bound.set(left, top, right, bottom);
+    }
+
+    private void computeSeatBoundInThumbnail(Rect bound, ISeat s, Area area) {
+        int areaWidth = area.areaWidth;
+        int areaHeight = area.areaHeight;
+
+        int xInArea = s.getXInArea();
+        int yInArea = s.getYInArea();
+        float x = ((float) xInArea / areaWidth) * mThumbnailWidth;
+        float y = ((float) yInArea / areaHeight) * mThumbnailHeight;
+        float per = THUMBNAIL_SEAT_WIDTH / 2f;
         int left = (int) (x - per);
         int top = (int) (y - per);
         int right = (int) (x + per);

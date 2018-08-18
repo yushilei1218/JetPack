@@ -13,7 +13,11 @@ public class Area {
      * 像素点 每px代表多少米
      */
     public static final float pxMetreRate = 0.01f;
-    public static final float thumbnailPxMetreRate = 0.002f;
+    /**
+     * 缩略图 像素点 每px代表多少米
+     */
+    public static final float thumbnailPxMetreRate = 0.04f;
+
     public String name;
 
 }
