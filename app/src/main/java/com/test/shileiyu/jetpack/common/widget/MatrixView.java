@@ -1,5 +1,6 @@
 package com.test.shileiyu.jetpack.common.widget;
 
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -8,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.text.TextPaint;
@@ -21,6 +23,7 @@ import android.view.View;
 import com.test.shileiyu.jetpack.R;
 import com.test.shileiyu.jetpack.common.util.Util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -82,6 +85,8 @@ public class MatrixView extends View {
     private int colorNormal;
     private int colorLock;
 
+    private boolean isOnScrolling = false;
+
     public MatrixView(Context context) {
         super(context, null);
     }
@@ -98,7 +103,9 @@ public class MatrixView extends View {
         mIntersectPaint.setStrokeWidth(4);
         mIntersectPaint.setColor(getResources().getColor(R.color.colorStroke));
 
-        mLockBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.seat_lock);
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inSampleSize = 2;
+        mLockBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.seat_lock, opts);
         mNormalBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.seat_normal);
         mCheckBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.seat_checked);
 
@@ -118,7 +125,7 @@ public class MatrixView extends View {
                     scaleFactor = 0.8f / mScaleX;
                 }
                 Log.d(TAG, "onScale " + scaleFactor + " mScaleX=" + mScaleX);
-                mMatrix.postScale(scaleFactor, scaleFactor,detector.getFocusX(),detector.getFocusY());
+                mMatrix.postScale(scaleFactor, scaleFactor, detector.getFocusX(), detector.getFocusY());
 
                 invalidate();
                 return true;
@@ -171,6 +178,8 @@ public class MatrixView extends View {
 
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                isOnScrolling = true;
+
                 mMatrix.postTranslate(-distanceX, -distanceY);
 
                 invalidate();
@@ -266,10 +275,10 @@ public class MatrixView extends View {
         int offsetY = areaBound.top;
         areaBound.offset(-offsetX, -offsetY);
         intersectBound.offset(-offsetX, -offsetY);
-        save.top= (int) (intersectBound.top*rate);
-        save.left= (int) (intersectBound.left*rate);
-        save.right= (int) (intersectBound.right*rate);
-        save.bottom= (int) (intersectBound.bottom*rate);
+        save.top = (int) (intersectBound.top * rate);
+        save.left = (int) (intersectBound.left * rate);
+        save.right = (int) (intersectBound.right * rate);
+        save.bottom = (int) (intersectBound.bottom * rate);
     }
 
     private void computeAreaViewBound(Rect bound) {
@@ -277,12 +286,12 @@ public class MatrixView extends View {
         bound.set(0, 0, mAreaViewWidth, mAreaViewHeight);
         int mTranslateX = (int) getMTranslateX();
         int mTranslateY = (int) getMTranslateY();
-        Log.d(TAG, "TX=" + mTranslateX + " TY=" + mTranslateY+" scaleX="+scaleX);
+        Log.d(TAG, "TX=" + mTranslateX + " TY=" + mTranslateY + " scaleX=" + scaleX);
         bound.offset(mTranslateX, mTranslateY);
-        bound.top= (int) (bound.top*scaleX);
-        bound.left= (int) (bound.left*scaleX);
-        bound.right= (int) (bound.right*scaleX);
-        bound.bottom= (int) (bound.bottom*scaleX);
+        bound.top = (int) (bound.top * scaleX);
+        bound.left = (int) (bound.left * scaleX);
+        bound.right = (int) (bound.right * scaleX);
+        bound.bottom = (int) (bound.bottom * scaleX);
     }
 
     private void drawNumberDecorate(Canvas canvas) {
@@ -352,7 +361,79 @@ public class MatrixView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         mDetector.onTouchEvent(event);
         mScaleGestureDetector.onTouchEvent(event);
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            if (isOnScrolling) {
+                isOnScrolling = false;
+                autoTranslate2FitViewBoundIfNeed();
+            }
+        }
         return true;
+    }
+
+    private void autoTranslate2FitViewBoundIfNeed() {
+        //视图显示区域
+        tempBound2.set(0, 0, getWidth(), getHeight());
+        tempBound.set(0, 0, mAreaViewWidth, mAreaViewHeight);
+        Util.computeIntersectBound(tempBound, tempBound2, tempBound3);
+        int old = (tempBound3.bottom - tempBound3.top) * (tempBound3.right - tempBound3.left);
+        //计算场地坐标
+        computeAreaViewBound(tempBound);
+        Util.computeIntersectBound(tempBound2, tempBound, tempBound3);
+        int newArea = (tempBound3.bottom - tempBound3.top) * (tempBound3.right - tempBound3.left);
+        if (newArea < old) {
+            //说明需要自动平移到合适位置
+            //如果场地Bound只有一个角在交集内，则这个角的对角点 和View Bound
+            Point a = new Point(tempBound.left, tempBound.top);
+            Point b = new Point(tempBound.right, tempBound.top);
+            Point c = new Point(tempBound.right, tempBound.bottom);
+            Point d = new Point(tempBound.left, tempBound.bottom);
+            List<Point> data = new ArrayList<>();
+            add(data, tempBound2, a);
+            add(data, tempBound2, b);
+            add(data, tempBound2, c);
+            add(data, tempBound2, d);
+            if (data.size() == 1) {
+                int offsetX;
+                int offsetY;
+                Point point = data.get(0);
+                if (point.equals(a)) {
+                    offsetX = tempBound2.right - c.x;
+                    offsetY = tempBound2.bottom - c.y;
+                } else if (point.equals(b)) {
+                    offsetX = tempBound2.left - d.x;
+                    offsetY = tempBound2.bottom - d.y;
+
+                } else if (point.equals(c)) {
+                    offsetX = tempBound2.left - a.x;
+                    offsetY = tempBound2.top - a.y;
+                } else {
+                    offsetX = tempBound2.right - b.x;
+                    offsetY = tempBound2.top - b.y;
+                }
+                mMatrix.postTranslate(offsetX, offsetY);
+                invalidate();
+            } else if (data.size() == 2) {
+
+            }
+        }
+    }
+
+    private void add(List<Point> data, Rect bound, Point p) {
+        if (bound.contains(p.x, p.y)) {
+            data.add(p);
+        }
+    }
+
+    private void anim() {
+
+    }
+
+    private class Wrapper {
+        int offsetx;
+        int offsety;
+        void translate(float alpha){
+
+        }
     }
 
     float[] m = new float[9];
