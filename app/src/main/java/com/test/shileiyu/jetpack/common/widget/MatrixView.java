@@ -22,6 +22,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 
 import com.test.shileiyu.jetpack.R;
 import com.test.shileiyu.jetpack.common.util.Util;
@@ -400,44 +401,64 @@ public class MatrixView extends View {
     private void autoTranslate2FitViewBoundIfNeed() {
         //视图显示的边界
         tempBound2.set(0, 0, getWidth(), getHeight());
-        //原始场地的边界
-        tempBound.set(0, 0, mAreaViewWidth, mAreaViewHeight);
-        //计算出最大交集的边界
-        Util.computeIntersectBound(tempBound, tempBound2, tempBound3);
-        //计算出最大交集的面积
-        int old = (tempBound3.bottom - tempBound3.top) * (tempBound3.right - tempBound3.left);
-        //计算场地当前的边界
+        //计算当前场地边界
         computeAreaViewBound(tempBound);
-        //计算当前实际的交集边界
-        Util.computeIntersectBound(tempBound2, tempBound, tempBound3);
-        //计算出当前实际交集的面积
-        int newArea = (tempBound3.bottom - tempBound3.top) * (tempBound3.right - tempBound3.left);
-        if (newArea < old) {
-            //说明需要自动平移到合适位置
-            //如果场地Bound只有一个角在交集内，则这个角的对角点 和View Bound
-            float tx;
-            float ty;
-            int offsetLeft = tempBound.left - tempBound2.left;
-            int offsetLeft2 = tempBound.right - tempBound2.right;
-            int offsetTop = tempBound.top - tempBound2.top;
-            int offsetTop2 = tempBound.bottom - tempBound2.bottom;
-            if (offsetLeft == 0 || offsetLeft2 == 0 || (offsetLeft < 0 && offsetLeft2 > 0)) {
-                tx = 0;
-            } else {
-                tx = offsetLeft > offsetLeft2 ? offsetLeft2 : offsetLeft;
-            }
-            if (offsetTop == 0 || offsetTop2 == 0 || (offsetTop < 0 && offsetTop2 > 0)) {
-                ty = 0;
-            } else {
-                ty = offsetTop > offsetTop2 ? offsetTop2 : offsetTop;
-            }
-            startTranslate(-tx, -ty);
+        //计算 偏移
+        float tx = 0;
+        float ty = 0;
+        int offsetLeft = tempBound.left - tempBound2.left;
+        int offsetLeft2 = tempBound.right - tempBound2.right;
+        int offsetTop = tempBound.top - tempBound2.top;
+        int offsetTop2 = tempBound.bottom - tempBound2.bottom;
+        if (offsetLeft > 0 && offsetLeft2 > 0) {
+            tx = offsetLeft > offsetLeft2 ? offsetLeft2 : offsetLeft;
+        } else if (offsetLeft < 0 && offsetLeft2 < 0) {
+            tx = offsetLeft > offsetLeft2 ? offsetLeft : offsetLeft2;
         }
+        if (offsetTop < 0 && offsetTop2 < 0) {
+            ty = offsetTop > offsetTop2 ? offsetTop : offsetTop2;
+        } else if (offsetTop > 0 && offsetTop2 > 0) {
+            ty = offsetTop > offsetTop2 ? offsetTop2 : offsetTop;
+        }
+        if (tx == 0 && ty == 0) {
+            return;
+        }
+        startTranslate(-tx, -ty);
     }
 
     private void startTranslate(float tx, float ty) {
-        mMatrix.postTranslate(tx, ty);
-        invalidate();
+        ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
+        va.setInterpolator(new DecelerateInterpolator());
+        va.addUpdateListener(new TranslateAnimation(getMTranslateX(), getMTranslateY(), tx, ty));
+        va.setDuration(200);
+        va.start();
+    }
+
+    private class TranslateAnimation implements ValueAnimator.AnimatorUpdateListener {
+        float mOriginTx;
+        float mOriginTy;
+        float tx;
+        float ty;
+
+        public TranslateAnimation(float mOriginTx, float mOriginTy, float tx, float ty) {
+            this.mOriginTx = mOriginTx;
+            this.mOriginTy = mOriginTy;
+            this.tx = tx;
+            this.ty = ty;
+        }
+
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            Float value = (Float) animation.getAnimatedValue();
+            float offsetX = value * tx;
+            float offsetY = value * ty;
+            float mTranslateX = getMTranslateX();
+            float mTranslateY = getMTranslateY();
+            float v = offsetX - (mTranslateX - mOriginTx);
+            float v1 = offsetY - (mTranslateY - mOriginTy);
+            mMatrix.postTranslate(v, v1);
+            invalidate();
+        }
     }
 
     private float[] m = new float[9];
