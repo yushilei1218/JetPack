@@ -1,6 +1,8 @@
 package com.test.shileiyu.jetpack.common.widget;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -19,6 +21,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 
 import com.test.shileiyu.jetpack.R;
 import com.test.shileiyu.jetpack.common.util.Util;
@@ -33,6 +36,10 @@ import java.util.List;
 
 public class MatrixView extends View {
     String TAG = "MatrixView";
+    private static final float MAX_SCALE = 2f;
+    private static final float ZOOM_SCALE = 1.7f;
+    private static final float MIN_SCALE = 0.8f;
+
     TextPaint mPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     Paint mThumbnailPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     Paint mIntersectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -118,11 +125,11 @@ public class MatrixView extends View {
             public boolean onScale(ScaleGestureDetector detector) {
                 float scaleFactor = detector.getScaleFactor();
                 float mScaleX = getMScaleX();
-                if (scaleFactor * mScaleX > 2) {
-                    scaleFactor = 2f / mScaleX;
+                if (scaleFactor * mScaleX > MAX_SCALE) {
+                    scaleFactor = MAX_SCALE / mScaleX;
                 }
-                if (scaleFactor * mScaleX < 0.8) {
-                    scaleFactor = 0.8f / mScaleX;
+                if (scaleFactor * mScaleX < MIN_SCALE) {
+                    scaleFactor = MIN_SCALE / mScaleX;
                 }
                 Log.d(TAG, "onScale " + scaleFactor + " mScaleX=" + mScaleX);
                 mMatrix.postScale(scaleFactor, scaleFactor, detector.getFocusX(), detector.getFocusY());
@@ -173,6 +180,7 @@ public class MatrixView extends View {
                         invalidate();
                     }
                 }
+                autoZoomIfNeed(e);
                 return super.onSingleTapConfirmed(e);
             }
 
@@ -186,6 +194,25 @@ public class MatrixView extends View {
                 return super.onScroll(e1, e2, distanceX, distanceY);
             }
         });
+    }
+
+    private void autoZoomIfNeed(MotionEvent e) {
+        float x = e.getX();
+        float y = e.getY();
+        float scaleX = getMScaleX();
+        if (scaleX < ZOOM_SCALE) {
+            //需要以这个点为中心zoom
+            startZoom(scaleX, ZOOM_SCALE, x, y);
+        }
+    }
+
+    private void startZoom(float curScale, float toScale, float px, float py) {
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(curScale, toScale);
+        ZoomAnimation animation = new ZoomAnimation(px, py);
+        valueAnimator.addUpdateListener(animation);
+        valueAnimator.setInterpolator((new DecelerateInterpolator()));
+        valueAnimator.setDuration(400);
+        valueAnimator.start();
     }
 
     @Override
@@ -431,7 +458,8 @@ public class MatrixView extends View {
     private class Wrapper {
         int offsetx;
         int offsety;
-        void translate(float alpha){
+
+        void translate(float alpha) {
 
         }
     }
@@ -457,6 +485,25 @@ public class MatrixView extends View {
         mArea = area;
         mSeats = seats;
         invalidate();
+    }
+
+    private class ZoomAnimation implements ValueAnimator.AnimatorUpdateListener {
+        float px;
+        float py;
+
+        ZoomAnimation(float px, float py) {
+            this.px = px;
+            this.py = py;
+        }
+
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            Float value = (Float) animation.getAnimatedValue();
+            float mScaleX = getMScaleX();
+            float scale = value / mScaleX;
+            mMatrix.postScale(scale, scale, px, py);
+            invalidate();
+        }
     }
 
 }
