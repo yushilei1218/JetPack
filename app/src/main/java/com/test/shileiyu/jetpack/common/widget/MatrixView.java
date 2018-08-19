@@ -320,6 +320,7 @@ public class MatrixView extends View {
         bound.left = (int) (bound.left * scaleX);
         bound.right = (int) (bound.right * scaleX);
         bound.bottom = (int) (bound.bottom * scaleX);
+        Log.d(TAG, "AreaViewBound " + bound.toShortString());
     }
 
     private void drawNumberDecorate(Canvas canvas) {
@@ -423,6 +424,7 @@ public class MatrixView extends View {
         if (tx == 0 && ty == 0) {
             return;
         }
+        Log.d(TAG, "autoTranslate tx=" + (-tx) + " ty=" + (-ty));
         startTranslate(-tx, -ty);
     }
 
