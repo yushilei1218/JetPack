@@ -37,6 +37,12 @@
         android:layout_height="wrap_content"
         android:text="Drag" />
 
+    <Button
+        android:id="@+id/main_7_tab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Drag" />
+
     <fragment
         class="com.test.shileiyu.jetpack.ui.album.AlbumFragment"
         android:layout_width="match_parent"
