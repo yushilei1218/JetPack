@@ -21,15 +21,21 @@
 
     <Button
         android:id="@+id/main_4_tab"
-        android:text="跳Seat"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="跳Seat" />
 
     <Button
         android:id="@+id/main_5_tab"
-        android:text="跳Matrix"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="跳Matrix" />
+
+    <Button
+        android:id="@+id/main_6_tab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Drag" />
 
     <fragment
         class="com.test.shileiyu.jetpack.ui.album.AlbumFragment"
