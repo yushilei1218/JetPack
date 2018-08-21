@@ -407,16 +407,17 @@ public class MatrixView extends View {
         int offsetTop = tempBound.top - tempBound2.top;
         int offsetTop2 = tempBound.bottom - tempBound2.bottom;
         if (offsetLeft > 0 && offsetLeft2 > 0) {
-            if (offsetLeft >= offsetLeft2) {
+            if (offsetLeft < offsetLeft2) {
                 tx = 0;
             } else {
                 tx = mAreaViewWidth * getMScaleX() - getWidth();
             }
         } else if (offsetLeft < 0 && offsetLeft2 < 0) {
             if (offsetLeft >= offsetLeft2) {
-                tx = 0;
+
+               tx=0;
             } else {
-                tx = mAreaViewWidth * getMScaleX() - getWidth();
+                tx =-(mAreaViewWidth * getMScaleX()-getWidth());
             }
         }
         if (offsetTop < 0 && offsetTop2 < 0) {
@@ -426,10 +427,10 @@ public class MatrixView extends View {
                 ty = mAreaViewHeight * getMScaleX() - getHeight();
             }
         } else if (offsetTop > 0 && offsetTop2 > 0) {
-            if (offsetTop <= offsetTop2) {
+            if (offsetTop <=offsetTop2) {
                 ty = 0;
             } else {
-                ty = mAreaViewHeight * getMScaleX() - getHeight();
+                ty = getHeight()-mAreaViewHeight * getMScaleX();
             }
         }
         if (tx == -1 && ty == -1) {
