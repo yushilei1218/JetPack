@@ -21,11 +21,13 @@
         </activity>
         <activity android:name=".ui.home.TabActivity" />
         <activity android:name=".ui.home.CategoryActivity" />
-        <activity android:name=".common.base.BaseActivity" />
         <activity android:name=".ui.AreaViewActivity" />
         <activity android:name=".ui.SeatActivity" />
         <activity android:name=".ui.MatrixActivity" />
         <activity android:name=".ui.TestActivity"></activity>
+        <activity android:name=".ui.MatrixActivity" />
+        <activity android:name=".ui.DragActivity" />
+        <activity android:name=".ui.MoveActivity"></activity>
     </application>
 
 </manifest>
