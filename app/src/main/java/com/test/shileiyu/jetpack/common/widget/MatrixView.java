@@ -1,7 +1,5 @@
 package com.test.shileiyu.jetpack.common.widget;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,7 +9,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.text.TextPaint;
@@ -22,12 +19,10 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 
 import com.test.shileiyu.jetpack.R;
 import com.test.shileiyu.jetpack.common.util.Util;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -405,30 +400,58 @@ public class MatrixView extends View {
         //计算当前场地边界
         computeAreaViewBound(tempBound);
         //计算 偏移
-        float tx = 0;
-        float ty = 0;
+        float tx = -1;
+        float ty = -1;
         int offsetLeft = tempBound.left - tempBound2.left;
         int offsetLeft2 = tempBound.right - tempBound2.right;
         int offsetTop = tempBound.top - tempBound2.top;
         int offsetTop2 = tempBound.bottom - tempBound2.bottom;
         if (offsetLeft > 0 && offsetLeft2 > 0) {
-            tx = offsetLeft > offsetLeft2 ? offsetLeft2 : offsetLeft;
+            if (offsetLeft >= offsetLeft2) {
+                tx = 0;
+            } else {
+                tx = mAreaViewWidth * getMScaleX() - getWidth();
+            }
         } else if (offsetLeft < 0 && offsetLeft2 < 0) {
-            tx = offsetLeft > offsetLeft2 ? offsetLeft : offsetLeft2;
+            if (offsetLeft >= offsetLeft2) {
+                tx = 0;
+            } else {
+                tx = mAreaViewWidth * getMScaleX() - getWidth();
+            }
         }
         if (offsetTop < 0 && offsetTop2 < 0) {
-            ty = offsetTop > offsetTop2 ? offsetTop : offsetTop2;
+            if (offsetTop >= offsetTop2) {
+                ty = 0;
+            } else {
+                ty = mAreaViewHeight * getMScaleX() - getHeight();
+            }
         } else if (offsetTop > 0 && offsetTop2 > 0) {
-            ty = offsetTop > offsetTop2 ? offsetTop2 : offsetTop;
+            if (offsetTop <= offsetTop2) {
+                ty = 0;
+            } else {
+                ty = mAreaViewHeight * getMScaleX() - getHeight();
+            }
         }
-        if (tx == 0 && ty == 0) {
+        if (tx == -1 && ty == -1) {
             return;
         }
         Log.d(TAG, "autoTranslate tx=" + (-tx) + " ty=" + (-ty));
-        startTranslate(-tx, -ty);
+        float mScaleX = getMScaleX();
+        float mTranslateX = getMTranslateX();
+        float mTranslateY = getMTranslateY();
+        if (tx == -1) {
+            tx = mTranslateX;
+        }
+        if (ty == -1) {
+            ty = mTranslateY;
+        }
+        mMatrix.reset();
+        mMatrix.postTranslate(tx, ty);
+        mMatrix.postScale(mScaleX, mScaleX);
+        invalidate();
     }
 
-    private void startTranslate(float tx, float ty) {
+    private void translate2(float tx, float ty) {
         ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
         va.setInterpolator(new DecelerateInterpolator());
         va.addUpdateListener(new TranslateAnimation(getMTranslateX(), getMTranslateY(), tx, ty));
