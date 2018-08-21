@@ -54,7 +54,13 @@ public class MatrixTestView extends View {
         canvas.restore();
 
         canvas.save();
-        canvas.translate(0,100);
+        canvas.translate(0, 100);
+        canvas.drawRect(tempBound, mPaint);
+        canvas.restore();
+
+        canvas.save();
+        canvas.translate(-200, -200);
+        canvas.scale(4, 4);
         canvas.drawRect(tempBound, mPaint);
         canvas.restore();
     }
