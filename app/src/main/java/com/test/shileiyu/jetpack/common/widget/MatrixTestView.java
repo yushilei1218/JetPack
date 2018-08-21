@@ -42,7 +42,7 @@ public class MatrixTestView extends View {
         for (int i = 0; i < column; i++) {
             int x = i * OFFSET;
             for (int j = 0; j < row; j++) {
-                int y = j + OFFSET;
+                int y = j * OFFSET;
                 String text = "x:" + x + ",y:" + y;
                 canvas.drawText(text, x, y, textPaint);
             }
@@ -53,5 +53,9 @@ public class MatrixTestView extends View {
         canvas.drawRect(tempBound, mPaint);
         canvas.restore();
 
+        canvas.save();
+        canvas.translate(0,100);
+        canvas.drawRect(tempBound, mPaint);
+        canvas.restore();
     }
 }
