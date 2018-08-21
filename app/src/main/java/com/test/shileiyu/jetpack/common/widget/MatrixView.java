@@ -306,15 +306,12 @@ public class MatrixView extends View {
 
     private void computeAreaViewBound(Rect bound) {
         float scaleX = getMScaleX();
-        bound.set(0, 0, mAreaViewWidth, mAreaViewHeight);
+        bound.set(0, 0, (int) (mAreaViewWidth*scaleX), (int) (mAreaViewHeight*scaleX));
         int mTranslateX = (int) getMTranslateX();
         int mTranslateY = (int) getMTranslateY();
         Log.d(TAG, "TX=" + mTranslateX + " TY=" + mTranslateY + " scaleX=" + scaleX);
         bound.offset(mTranslateX, mTranslateY);
-        bound.top = (int) (bound.top * scaleX);
-        bound.left = (int) (bound.left * scaleX);
-        bound.right = (int) (bound.right * scaleX);
-        bound.bottom = (int) (bound.bottom * scaleX);
+
         Log.d(TAG, "AreaViewBound " + bound.toShortString());
     }
 
