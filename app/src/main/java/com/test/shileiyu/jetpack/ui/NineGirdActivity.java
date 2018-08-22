@@ -16,6 +16,7 @@ import com.test.shileiyu.jetpack.R;
 import com.test.shileiyu.jetpack.common.base.AbsBaseAdapter;
 import com.test.shileiyu.jetpack.common.base.BaseActivity;
 import com.test.shileiyu.jetpack.common.bean.Bean;
+import com.test.shileiyu.jetpack.common.util.Util;
 import com.test.shileiyu.jetpack.common.widget.NineGridLayoutImpl;
 
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class NineGirdActivity extends BaseActivity {
 
     private int index = 0;
 
-    private class Adapter extends AbsBaseAdapter<Bean> {
+    private class Adapter extends AbsBaseAdapter<Bean> implements View.OnClickListener {
         @Override
         public VH<Bean> getVH() {
             return new VH<Bean>() {
@@ -100,6 +101,8 @@ public class NineGirdActivity extends BaseActivity {
 
                     for (int i = 0; i < size; i++) {
                         ImageView v1 = (ImageView) showViews.get(i);
+                        v1.setTag(R.integer.id_r, i);
+                        v1.setOnClickListener(Adapter.this);
 
                         Glide.with(NineGirdActivity.this)
                                 .asBitmap().load(item.urls.get(i)).apply(placeholder).into(v1);
@@ -110,6 +113,14 @@ public class NineGirdActivity extends BaseActivity {
                             .apply(placeholder2).into(img);
                 }
             };
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (v instanceof ImageView) {
+                Integer tag = (Integer) v.getTag(R.integer.id_r);
+                Util.showToast("" + tag);
+            }
         }
     }
 }
