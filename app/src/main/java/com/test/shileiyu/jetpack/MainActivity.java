@@ -9,6 +9,7 @@ import com.test.shileiyu.jetpack.ui.AreaViewActivity;
 import com.test.shileiyu.jetpack.ui.DragActivity;
 import com.test.shileiyu.jetpack.ui.MatrixActivity;
 import com.test.shileiyu.jetpack.ui.MoveActivity;
+import com.test.shileiyu.jetpack.ui.NineGirdActivity;
 import com.test.shileiyu.jetpack.ui.SeatActivity;
 import com.test.shileiyu.jetpack.ui.TestActivity;
 import com.test.shileiyu.jetpack.ui.home.TabActivity;
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.main_2_tab, R.id.main_3_tab, R.id.main_4_tab, R.id.main_5_tab, R.id.main_6_tab, R.id.main_7_tab, R.id.main_8_tab})
+    @OnClick({R.id.main_2_tab, R.id.main_3_tab, R.id.main_4_tab, R.id.main_5_tab, R.id.main_6_tab, R.id.main_7_tab, R.id.main_8_tab,R.id.main_9_tab})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.main_2_tab:
@@ -48,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_8_tab:
                 startActivity(new Intent(this, TestActivity.class));
+                break;
+            case R.id.main_9_tab:
+                startActivity(new Intent(this, NineGirdActivity.class));
                 break;
             default:
                 break;

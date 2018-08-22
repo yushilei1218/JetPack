@@ -42,11 +42,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Drag" />
+
     <Button
-        android:layout_width="wrap_content"
         android:id="@+id/main_8_tab"
-        android:text="Test"
-        android:layout_height="wrap_content" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Test" />
+
+    <Button
+        android:id="@+id/main_9_tab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nine" />
 
     <fragment
         class="com.test.shileiyu.jetpack.ui.album.AlbumFragment"
