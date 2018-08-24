@@ -3,6 +3,8 @@
     package="com.test.shileiyu.jetpack">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".BaseApp"
@@ -27,7 +29,9 @@
         <activity android:name=".ui.TestActivity" />
         <activity android:name=".ui.DragActivity" />
         <activity android:name=".ui.MoveActivity" />
-        <activity android:name=".ui.NineGirdActivity"></activity>
+        <activity android:name=".ui.NineGirdActivity" />
+        <activity android:name=".ui.PhotoActivity" />
+        <activity android:name=".ui.CropActivity"></activity>
     </application>
 
 </manifest>
