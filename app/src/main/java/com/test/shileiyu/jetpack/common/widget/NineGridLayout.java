@@ -39,7 +39,7 @@ public abstract class NineGridLayout extends ViewGroup {
         for (int i = 0; i < 9; i++) {
             View child = newChild(this);
             mViews.add(child);
-            child.setLayoutParams(new WindowManager.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+            child.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
             attachViewToParent(child, i, child.getLayoutParams());
         }
         detachAllViewsFromParent();
@@ -56,6 +56,9 @@ public abstract class NineGridLayout extends ViewGroup {
         mShowViews.clear();
         for (int i = 0; i < count; i++) {
             View view = mViews.get(i);
+            if (i==0){
+                view.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+            }
             mShowViews.add(view);
             attachViewToParent(view, i, view.getLayoutParams());
         }
