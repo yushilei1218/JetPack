@@ -306,7 +306,7 @@ public class MatrixView extends View {
 
     private void computeAreaViewBound(Rect bound) {
         float scaleX = getMScaleX();
-        bound.set(0, 0, (int) (mAreaViewWidth*scaleX), (int) (mAreaViewHeight*scaleX));
+        bound.set(0, 0, (int) (mAreaViewWidth * scaleX), (int) (mAreaViewHeight * scaleX));
         int mTranslateX = (int) getMTranslateX();
         int mTranslateY = (int) getMTranslateY();
         Log.d(TAG, "TX=" + mTranslateX + " TY=" + mTranslateY + " scaleX=" + scaleX);
@@ -397,55 +397,18 @@ public class MatrixView extends View {
         //计算当前场地边界
         computeAreaViewBound(tempBound);
         //计算 偏移
-        float tx = -1;
-        float ty = -1;
-        int offsetLeft = tempBound.left - tempBound2.left;
-        int offsetLeft2 = tempBound.right - tempBound2.right;
-        int offsetTop = tempBound.top - tempBound2.top;
-        int offsetTop2 = tempBound.bottom - tempBound2.bottom;
-        if (offsetLeft > 0 && offsetLeft2 > 0) {
-            if (offsetLeft < offsetLeft2) {
-                tx = 0;
-            } else {
-                tx = mAreaViewWidth * getMScaleX() - getWidth();
-            }
-        } else if (offsetLeft < 0 && offsetLeft2 < 0) {
-            if (offsetLeft >= offsetLeft2) {
-
-               tx=0;
-            } else {
-                tx =-(mAreaViewWidth * getMScaleX()-getWidth());
-            }
-        }
-        if (offsetTop < 0 && offsetTop2 < 0) {
-            if (offsetTop >= offsetTop2) {
-                ty = 0;
-            } else {
-                ty = mAreaViewHeight * getMScaleX() - getHeight();
-            }
-        } else if (offsetTop > 0 && offsetTop2 > 0) {
-            if (offsetTop <=offsetTop2) {
-                ty = 0;
-            } else {
-                ty = getHeight()-mAreaViewHeight * getMScaleX();
-            }
-        }
-        if (tx == -1 && ty == -1) {
-            return;
-        }
-        Log.d(TAG, "autoTranslate tx=" + (-tx) + " ty=" + (-ty));
-        float mScaleX = getMScaleX();
-        float mTranslateX = getMTranslateX();
-        float mTranslateY = getMTranslateY();
-        if (tx == -1) {
-            tx = mTranslateX;
-        }
-        if (ty == -1) {
-            ty = mTranslateY;
-        }
-        mMatrix.reset();
-        mMatrix.postTranslate(tx, ty);
-        mMatrix.postScale(mScaleX, mScaleX);
+        int deltaLeft = tempBound.left - tempBound2.left;
+        int deltaRight = tempBound.right - tempBound2.right;
+        int deltaTop = tempBound.top - tempBound2.top;
+        int deltaBottom = tempBound.bottom - tempBound2.bottom;
+        int[] indents = new int[4];
+        indents[0] = deltaLeft > 0 ? deltaLeft : 0;
+        indents[1] = deltaTop > 0 ? deltaTop : 0;
+        indents[2] = deltaRight < 0 ? deltaRight : 0;
+        indents[3] = deltaBottom < 0 ? deltaBottom : 0;
+        int deltaX = -(indents[0] + indents[2]);
+        int deltaY = -(indents[1] + indents[3]);
+        mMatrix.postTranslate(deltaX,deltaY);
         invalidate();
     }
 
