@@ -1,76 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/main_2_tab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="跳分类" />
-
-    <Button
-        android:id="@+id/main_3_tab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="跳Area" />
-
-    <Button
-        android:id="@+id/main_4_tab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="跳Seat" />
-
-    <Button
-        android:id="@+id/main_5_tab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="跳Matrix" />
-
-    <Button
-        android:id="@+id/main_6_tab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Drag" />
-
-    <Button
-        android:id="@+id/main_7_tab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Drag" />
-
-    <Button
-        android:id="@+id/main_8_tab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Test" />
-
-    <Button
-        android:id="@+id/main_9_tab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Nine" />
-
-    <Button
-        android:id="@+id/main_10_tab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Photo" />
-
-    <Button
-        android:id="@+id/main_11_tab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Crop" />
-
-    <fragment
-        class="com.test.shileiyu.jetpack.ui.album.AlbumFragment"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:tag="aa" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <Button
+            android:id="@+id/main_2_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="跳分类" />
+
+        <Button
+            android:id="@+id/main_3_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="跳Area" />
+
+        <Button
+            android:id="@+id/main_4_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="跳Seat" />
+
+        <Button
+            android:id="@+id/main_5_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="跳Matrix" />
+
+        <Button
+            android:id="@+id/main_6_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Drag" />
+
+        <Button
+            android:id="@+id/main_7_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Drag" />
+
+        <Button
+            android:id="@+id/main_8_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test" />
+
+        <Button
+            android:id="@+id/main_9_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nine" />
+
+        <Button
+            android:id="@+id/main_10_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Photo" />
+
+        <Button
+            android:id="@+id/main_11_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Crop" />
+
+        <Button
+            android:id="@+id/main_12_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MLinearLayout" />
+
+        <fragment
+            class="com.test.shileiyu.jetpack.ui.album.AlbumFragment"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:tag="aa" />
+
+    </LinearLayout>
+
+
+</ScrollView>

@@ -13,6 +13,7 @@ import com.test.shileiyu.jetpack.ui.MoveActivity;
 import com.test.shileiyu.jetpack.ui.NineGirdActivity;
 import com.test.shileiyu.jetpack.ui.PhotoActivity;
 import com.test.shileiyu.jetpack.ui.SeatActivity;
+import com.test.shileiyu.jetpack.ui.Test2Activity;
 import com.test.shileiyu.jetpack.ui.TestActivity;
 import com.test.shileiyu.jetpack.ui.home.TabActivity;
 
@@ -31,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
     @OnClick({R.id.main_2_tab, R.id.main_3_tab,
             R.id.main_4_tab, R.id.main_5_tab, R.id.main_6_tab,
             R.id.main_7_tab, R.id.main_8_tab, R.id.main_9_tab
-            , R.id.main_10_tab,R.id.main_11_tab})
+            , R.id.main_10_tab,R.id.main_11_tab
+    ,R.id.main_12_tab})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.main_2_tab:
@@ -63,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_11_tab:
                 startActivity(new Intent(this, CropActivity.class));
+            case R.id.main_12_tab:
+                startActivity(new Intent(this, Test2Activity.class));
                 break;
             default:
                 break;

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.Test2Activity">
+
+    <com.test.shileiyu.jetpack.common.widget.MLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/test_tv_1"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="#ffbcbc"
+            android:gravity="center"
+            android:text="A" />
+
+        <TextView
+            android:id="@+id/test_tv_2"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="#ffbcbc"
+            android:gravity="center"
+            android:text="B" />
+
+        <TextView
+            android:layout_width="80dp"
+            android:text="C"
+            android:layout_marginTop="10dp"
+            android:background="#585858"
+            android:gravity="center"
+            android:layout_height="80dp" />
+
+
+    </com.test.shileiyu.jetpack.common.widget.MLinearLayout>
+
+</FrameLayout>
