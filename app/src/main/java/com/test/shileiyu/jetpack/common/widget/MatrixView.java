@@ -41,7 +41,9 @@ public class MatrixView extends View {
     Paint mIntersectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     Matrix mMatrix = new Matrix();
+
     private ScaleGestureDetector mScaleGestureDetector;
+
     private GestureDetector mDetector;
 
     /**
@@ -81,11 +83,11 @@ public class MatrixView extends View {
     private int colorNormal;
     private int colorSold;
     private int colorLock;
+    private int colorOVSold;
 
     private boolean isOnScrolling = false;
 
     private VectorDrawableCompat mSeatDrawable;
-    private int colorOVSold;
 
     public MatrixView(Context context) {
         super(context, null);
@@ -245,6 +247,27 @@ public class MatrixView extends View {
         drawOverView(canvas);
     }
 
+    private void drawSeat(Canvas canvas) {
+        canvas.save();
+        canvas.translate(getMTranslateX(), getMTranslateY());
+        canvas.scale(getMScaleX(), getMScaleX());
+
+        for (ISeat s : mSeats) {
+            //确定座位在视图上的初始化坐标
+            computeSeatBoundInView(tempBound, s, mArea);
+            if (s.isSelect()) {
+                DrawableCompat.setTint(mSeatDrawable, colorLock);
+            } else if (s.isSold()) {
+                DrawableCompat.setTint(mSeatDrawable, colorSold);
+            } else {
+                DrawableCompat.setTint(mSeatDrawable, colorNormal);
+            }
+            mSeatDrawable.setBounds(tempBound);
+            mSeatDrawable.draw(canvas);
+        }
+        canvas.restore();
+    }
+
     private void drawOverView(Canvas canvas) {
         if (!isNeedDrawOverView) {
             return;
@@ -286,6 +309,10 @@ public class MatrixView extends View {
         }
     }
 
+    private void drawNumberDecorate(Canvas canvas) {
+
+    }
+
     private void transfer2ThumbnailBound(Rect areaBound, Rect intersectBound, Rect save) {
         float rate = (float) mThumbnailHeight / mAreaViewHeight;
         int offsetX = areaBound.left;
@@ -307,31 +334,6 @@ public class MatrixView extends View {
         bound.offset(mTranslateX, mTranslateY);
 
         Log.d(TAG, "AreaViewBound " + bound.toShortString());
-    }
-
-    private void drawNumberDecorate(Canvas canvas) {
-
-    }
-
-    private void drawSeat(Canvas canvas) {
-        canvas.save();
-        canvas.translate(getMTranslateX(), getMTranslateY());
-        canvas.scale(getMScaleX(), getMScaleX());
-
-        for (ISeat s : mSeats) {
-            //确定座位在视图上的初始化坐标
-            computeSeatBoundInView(tempBound, s, mArea);
-            if (s.isSelect()) {
-                DrawableCompat.setTint(mSeatDrawable, colorLock);
-            } else if (s.isSold()) {
-                DrawableCompat.setTint(mSeatDrawable, colorSold);
-            } else {
-                DrawableCompat.setTint(mSeatDrawable, colorNormal);
-            }
-            mSeatDrawable.setBounds(tempBound);
-            mSeatDrawable.draw(canvas);
-        }
-        canvas.restore();
     }
 
     private void computeSeatBoundInView(Rect bound, ISeat s, Area area) {
@@ -396,46 +398,46 @@ public class MatrixView extends View {
         int deltaBottom = tempBound.bottom - tempBound2.bottom;
         int[] indents = new int[4];
         indents[0] = deltaLeft > 0 ? deltaLeft : 0;
-        indents[1] = deltaTop > 0 ? deltaTop : 0;
+        indents[1] = deltaTop < 0 ? deltaTop : 0;
         indents[2] = deltaRight < 0 ? deltaRight : 0;
-        indents[3] = deltaBottom < 0 ? deltaBottom : 0;
+        indents[3] = deltaBottom > 0 ? deltaBottom : 0;
         int deltaX = -(indents[0] + indents[2]);
         int deltaY = -(indents[1] + indents[3]);
-        mMatrix.postTranslate(deltaX, deltaY);
-        invalidate();
+        if (deltaX != 0 || deltaY != 0) {
+            //自动平移
+            int tx = (int) getMTranslateX();
+            int ty = (int) getMTranslateY();
+            ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
+            va.setDuration(200);
+            va.addUpdateListener(new TranslateListener(tx, deltaX, ty, deltaY));
+            va.setInterpolator(new DecelerateInterpolator());
+            va.start();
+        }
     }
 
-    private void translate2(float tx, float ty) {
-        ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
-        va.setInterpolator(new DecelerateInterpolator());
-        va.addUpdateListener(new TranslateAnimation(getMTranslateX(), getMTranslateY(), tx, ty));
-        va.setDuration(200);
-        va.start();
-    }
+    private class TranslateListener implements ValueAnimator.AnimatorUpdateListener {
+        int mStartX;
+        int mDeltaX;
+        int mStartY;
+        int mDeltaY;
 
-    private class TranslateAnimation implements ValueAnimator.AnimatorUpdateListener {
-        float mOriginTx;
-        float mOriginTy;
-        float tx;
-        float ty;
-
-        public TranslateAnimation(float mOriginTx, float mOriginTy, float tx, float ty) {
-            this.mOriginTx = mOriginTx;
-            this.mOriginTy = mOriginTy;
-            this.tx = tx;
-            this.ty = ty;
+        TranslateListener(int startX, int deltaX, int startY, int deltaY) {
+            mStartX = startX;
+            mDeltaX = deltaX;
+            mStartY = startY;
+            mDeltaY = deltaY;
         }
 
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
             Float value = (Float) animation.getAnimatedValue();
-            float offsetX = value * tx;
-            float offsetY = value * ty;
+            float offsetX = value * mDeltaX;
+            float offsetY = value * mDeltaY;
             float mTranslateX = getMTranslateX();
             float mTranslateY = getMTranslateY();
-            float v = offsetX - (mTranslateX - mOriginTx);
-            float v1 = offsetY - (mTranslateY - mOriginTy);
-            mMatrix.postTranslate(v, v1);
+            float ox = offsetX - mTranslateX + mStartX;
+            float oy = offsetY - mTranslateY + mStartY;
+            mMatrix.postTranslate(ox, oy);
             invalidate();
         }
     }
