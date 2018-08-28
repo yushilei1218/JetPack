@@ -78,6 +78,18 @@
             android:layout_height="wrap_content"
             android:text="MLinearLayout" />
 
+        <Button
+            android:id="@+id/main_13_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Behavior" />
+
+        <Button
+            android:id="@+id/main_14_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SVG" />
+
         <fragment
             class="com.test.shileiyu.jetpack.ui.album.AlbumFragment"
             android:layout_width="match_parent"

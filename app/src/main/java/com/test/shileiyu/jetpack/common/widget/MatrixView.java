@@ -3,14 +3,14 @@ package com.test.shileiyu.jetpack.common.widget;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
+import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -66,12 +66,6 @@ public class MatrixView extends View {
 
     private int mAreaViewHeight;
 
-    private Bitmap mLockBitmap;
-    private Bitmap mNormalBitmap;
-    private Bitmap mCheckBitmap;
-
-    private final Rect bitmapBound = new Rect();
-
     private final Rect tempBound = new Rect();
     private final Rect tempBound2 = new Rect();
     private final Rect tempBound3 = new Rect();
@@ -84,11 +78,14 @@ public class MatrixView extends View {
     private int mThumbnailHeight;
     private Rect mThumbnailRect = new Rect();
 
-    private int colorSelect;
     private int colorNormal;
+    private int colorSold;
     private int colorLock;
 
     private boolean isOnScrolling = false;
+
+    private VectorDrawableCompat mSeatDrawable;
+    private int colorOVSold;
 
     public MatrixView(Context context) {
         super(context, null);
@@ -106,15 +103,10 @@ public class MatrixView extends View {
         mIntersectPaint.setStrokeWidth(4);
         mIntersectPaint.setColor(getResources().getColor(R.color.colorStroke));
 
-        BitmapFactory.Options opts = new BitmapFactory.Options();
-        opts.inSampleSize = 2;
-        mLockBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.seat_lock, opts);
-        mNormalBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.seat_normal);
-        mCheckBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.seat_checked);
-
         colorLock = getResources().getColor(R.color.colorLock);
+        colorSold = getResources().getColor(R.color.colorSold);
+        colorOVSold = getResources().getColor(R.color.colorOVSold);
         colorNormal = getResources().getColor(R.color.colorNormal);
-        colorSelect = getResources().getColor(R.color.colorSelect);
 
         mScaleGestureDetector = new ScaleGestureDetector(context, new ScaleGestureDetector.OnScaleGestureListener() {
             @Override
@@ -190,6 +182,8 @@ public class MatrixView extends View {
                 return super.onScroll(e1, e2, distanceX, distanceY);
             }
         });
+
+        mSeatDrawable = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_seat, context.getTheme());
     }
 
     private void autoZoomIfNeed(MotionEvent e) {
@@ -268,9 +262,9 @@ public class MatrixView extends View {
                 computeSeatBoundInThumbnail(tempBound, s, mArea);
                 int color;
                 if (s.isSold()) {
-                    color = colorLock;
+                    color = colorOVSold;
                 } else if (s.isSelect()) {
-                    color = colorSelect;
+                    color = colorLock;
                 } else {
                     color = colorNormal;
                 }
@@ -327,16 +321,15 @@ public class MatrixView extends View {
         for (ISeat s : mSeats) {
             //确定座位在视图上的初始化坐标
             computeSeatBoundInView(tempBound, s, mArea);
-            Bitmap temp;
             if (s.isSelect()) {
-                temp = mCheckBitmap;
+                DrawableCompat.setTint(mSeatDrawable, colorLock);
             } else if (s.isSold()) {
-                temp = mLockBitmap;
+                DrawableCompat.setTint(mSeatDrawable, colorSold);
             } else {
-                temp = mNormalBitmap;
+                DrawableCompat.setTint(mSeatDrawable, colorNormal);
             }
-            bitmapBound.set(0, 0, temp.getWidth(), temp.getHeight());
-            canvas.drawBitmap(temp, bitmapBound, tempBound, mPaint);
+            mSeatDrawable.setBounds(tempBound);
+            mSeatDrawable.draw(canvas);
         }
         canvas.restore();
     }
@@ -408,7 +401,7 @@ public class MatrixView extends View {
         indents[3] = deltaBottom < 0 ? deltaBottom : 0;
         int deltaX = -(indents[0] + indents[2]);
         int deltaY = -(indents[1] + indents[3]);
-        mMatrix.postTranslate(deltaX,deltaY);
+        mMatrix.postTranslate(deltaX, deltaY);
         invalidate();
     }
 

@@ -3,8 +3,9 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="colorNormal">#ffffff</color>
-    <color name="colorLock">#ff6b6b</color>
-    <color name="colorSelect">#35ff89</color>
+    <color name="colorSold">#a9a9a9</color>
+    <color name="colorOVSold">#ffffff</color>
+    <color name="colorLock">#35ff89</color>
+    <color name="colorNormal">#ff246d</color>
     <color name="colorStroke">#5b81ff</color>
 </resources>
