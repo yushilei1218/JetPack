@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.test.shileiyu.jetpack.ui.AreaViewActivity;
 import com.test.shileiyu.jetpack.ui.BehaviorActivity;
+import com.test.shileiyu.jetpack.ui.CalendarActivity;
 import com.test.shileiyu.jetpack.ui.CropActivity;
 import com.test.shileiyu.jetpack.ui.DragActivity;
 import com.test.shileiyu.jetpack.ui.MatrixActivity;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
             , R.id.main_10_tab, R.id.main_11_tab
             , R.id.main_13_tab
             , R.id.main_14_tab
+            , R.id.main_15_tab
             , R.id.main_12_tab})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -77,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_14_tab:
                 startActivity(new Intent(this, SvgActivity.class));
+                break;
+            case R.id.main_15_tab:
+                startActivity(new Intent(this, CalendarActivity.class));
                 break;
             default:
                 break;

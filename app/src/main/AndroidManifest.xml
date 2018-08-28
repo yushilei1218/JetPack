@@ -36,7 +36,8 @@
         <activity
             android:name=".ui.BehaviorActivity"
             android:theme="@style/Theme.Design.Light.NoActionBar" />
-        <activity android:name=".ui.SvgActivity"></activity>
+        <activity android:name=".ui.SvgActivity" />
+        <activity android:name=".ui.CalendarActivity"></activity>
     </application>
 
 </manifest>
