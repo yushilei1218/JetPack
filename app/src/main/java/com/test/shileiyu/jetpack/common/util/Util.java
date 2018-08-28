@@ -1,5 +1,6 @@
 package com.test.shileiyu.jetpack.common.util;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.widget.Toast;
 
@@ -29,6 +30,11 @@ public class Util {
 
     public static String threadName() {
         return " Thread =" + Thread.currentThread().getName();
+    }
+
+    public static int dp2px(Context context, float dpValue) {
+        float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
     }
 
     public static void computeIntersectBound(Rect src1, Rect src2, Rect save) {

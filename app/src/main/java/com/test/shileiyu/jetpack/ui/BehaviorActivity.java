@@ -6,6 +6,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 public class BehaviorActivity extends BaseActivity {
+    private static final String TAG = "Behavior";
     @BindView(R.id.recycler_be)
     RecyclerView mRecyclerView;
     @BindView(R.id.app_bar_be)
@@ -35,7 +37,7 @@ public class BehaviorActivity extends BaseActivity {
     @BindView(R.id.img_bg)
     ImageView mImg;
     @BindView(R.id.xuan_fu_input)
-    TextView mXuanFu;
+    View mXuanFu;
 
     @Override
     protected void initView(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class BehaviorActivity extends BaseActivity {
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                Log.d(TAG, "onOffsetChanged verticalOffset= " + verticalOffset);
                 int top = appBarLayout.getTop();
                 if (top <= 0 && Math.abs(top) <= mImg.getHeight()) {
                     float i = Math.abs(top) / (float) mImg.getHeight();
@@ -57,25 +60,46 @@ public class BehaviorActivity extends BaseActivity {
                     mHeader.setAlpha(1);
                 }
                 int min = (mHeader.getHeight() - mXuanFu.getHeight()) / 2;
-                int deltaOffset;
+                int distance = mXuanFu.getTop() - min;
+                if (distance==0) {
+                    return;
+                }
+
+                int tx;
+                int ty;
+                float sx = 1.0f;
                 int xuanFuTop = mXuanFu.getTop();
                 int y = xuanFuTop + verticalOffset;
                 if (min > y) {
-                    deltaOffset = min - xuanFuTop;
+                    ty = min - xuanFuTop;
                 } else {
-                    deltaOffset = verticalOffset;
+                    ty = verticalOffset;
                 }
-                mXuanFu.setTranslationY(deltaOffset);
+                float rate = (float) Math.abs(ty) / distance;
+                tx = (int) (rate * Util.dp2px(getApplicationContext(), 40));
+                sx = 1.0f - rate * 0.4f;
+                int maxDeltaRight = Util.dp2px(getApplicationContext(), 100);
+                mXuanFu.setTranslationY(ty);
+                mXuanFu.setTranslationX(tx);
+                ViewGroup.LayoutParams lp = mXuanFu.getLayoutParams();
+                lp.width=(int) (600+(1-rate)*maxDeltaRight);
+                mXuanFu.setLayoutParams(lp);
+//                int right= (int) (600+(1-rate)*maxDeltaRight);
+//                mXuanFu.setRight(right);
+
 
             }
         });
     }
 
-    @OnClick(R.id.xuan_fu_input)
+    @OnClick({R.id.xuan_fu_input, R.id.filter})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.xuan_fu_input:
                 Util.showToast("Input");
+                break;
+            case R.id.filter:
+                mAppBarLayout.setExpanded(false, true);
                 break;
             default:
                 break;
