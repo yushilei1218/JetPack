@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.VectorDrawable;
 import android.support.annotation.Nullable;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -23,6 +24,8 @@ import android.view.animation.DecelerateInterpolator;
 import com.test.shileiyu.jetpack.R;
 import com.test.shileiyu.jetpack.common.util.Util;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -88,6 +91,8 @@ public class MatrixView extends View {
     private boolean isOnScrolling = false;
 
     private VectorDrawableCompat mSeatDrawable;
+
+    private HashMap<Integer, VectorDrawableCompat> colorDrawableMap = new HashMap<>();
 
     public MatrixView(Context context) {
         super(context, null);
@@ -185,7 +190,15 @@ public class MatrixView extends View {
             }
         });
 
-        mSeatDrawable = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_seat, context.getTheme());
+        putDrawable(context, colorLock);
+        putDrawable(context, colorSold);
+        putDrawable(context, colorNormal);
+    }
+
+    private void putDrawable(Context context, int color) {
+        VectorDrawableCompat vdc = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_seat, context.getTheme());
+        vdc.setTint(color);
+        colorDrawableMap.put(color, vdc);
     }
 
     private void autoZoomIfNeed(MotionEvent e) {
@@ -255,15 +268,20 @@ public class MatrixView extends View {
         for (ISeat s : mSeats) {
             //确定座位在视图上的初始化坐标
             computeSeatBoundInView(tempBound, s, mArea);
+            VectorDrawableCompat vdc;
             if (s.isSelect()) {
-                DrawableCompat.setTint(mSeatDrawable, colorLock);
+                vdc = colorDrawableMap.get(colorLock);
             } else if (s.isSold()) {
-                DrawableCompat.setTint(mSeatDrawable, colorSold);
+                vdc = colorDrawableMap.get(colorSold);
             } else {
-                DrawableCompat.setTint(mSeatDrawable, colorNormal);
+                vdc = colorDrawableMap.get(colorNormal);
             }
-            mSeatDrawable.setBounds(tempBound);
-            mSeatDrawable.draw(canvas);
+            if (vdc!=null){
+                Log.d(TAG,vdc.toString());
+                vdc.setBounds(tempBound);
+                vdc.draw(canvas);
+            }
+
         }
         canvas.restore();
     }
