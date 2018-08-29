@@ -8,4 +8,5 @@
     <color name="colorLock">#35ff89</color>
     <color name="colorNormal">#ff246d</color>
     <color name="colorStroke">#5b81ff</color>
+    <color name="translucent">#00000000</color>
 </resources>

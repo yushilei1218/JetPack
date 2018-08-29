@@ -74,7 +74,7 @@ public class NineGirdActivity extends BaseActivity {
 
     private int index = 0;
 
-    private class Adapter extends AbsBaseAdapter<Bean> implements View.OnClickListener {
+    private class Adapter extends AbsBaseAdapter<Bean> {
         @Override
         public VH<Bean> getVH() {
             return new VH<Bean>() {
@@ -102,7 +102,7 @@ public class NineGirdActivity extends BaseActivity {
                     for (int i = 0; i < size; i++) {
                         ImageView v1 = (ImageView) showViews.get(i);
                         v1.setTag(R.integer.id_r, i);
-                        v1.setOnClickListener(Adapter.this);
+                        v1.setOnClickListener(new ClickDelegate(item, i));
 
                         Glide.with(NineGirdActivity.this)
                                 .asBitmap().load(item.urls.get(i)).apply(placeholder).into(v1);
@@ -115,11 +115,18 @@ public class NineGirdActivity extends BaseActivity {
             };
         }
 
-        @Override
-        public void onClick(View v) {
-            if (v instanceof ImageView) {
-                Integer tag = (Integer) v.getTag(R.integer.id_r);
-                Util.showToast("" + tag);
+        private class ClickDelegate implements View.OnClickListener {
+            Bean item;
+            int index;
+
+            ClickDelegate(Bean item, int index) {
+                this.item = item;
+                this.index = index;
+            }
+
+            @Override
+            public void onClick(View v) {
+                DragDismissActivity.invoke(NineGirdActivity.this, index, item.urls);
             }
         }
     }
