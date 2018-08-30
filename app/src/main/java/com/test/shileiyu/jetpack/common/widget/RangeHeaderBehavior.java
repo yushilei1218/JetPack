@@ -49,23 +49,17 @@ public class RangeHeaderBehavior extends ViewOffsetBehavior<RangeHeaderLayout> {
     @Override
     public void onNestedPreScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull RangeHeaderLayout child, @NonNull View target, int dx, int dy, @NonNull int[] consumed, int type) {
         int top = child.getTop();
-        Log.d(TAG, "onNestedPreScroll dy=" + dy + " child top=" + top);
+        Log.d(TAG, "onNestedPreScroll dy=" + dy + " child top=" + top + " type" + type);
 
         if (dy != 0) {
             if (dy < 0) {
                 // We're scrolling down
-                ViewCompat.offsetTopAndBottom(child, -dy);
+
             } else {
                 // We're scrolling up
-                ViewCompat.offsetTopAndBottom(child, +dy);
             }
+            ViewCompat.offsetTopAndBottom(child,-dy);
             consumed[1] = dy;
         }
-    }
-
-    @Override
-    public void onNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull RangeHeaderLayout child, @NonNull View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int type) {
-        Log.d(TAG, "onNestedScroll  dyConsumed=" + dyConsumed + " dyUnconsumed=" + dyUnconsumed);
-
     }
 }
