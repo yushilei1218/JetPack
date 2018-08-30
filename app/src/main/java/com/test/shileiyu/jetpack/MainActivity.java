@@ -12,6 +12,7 @@ import com.test.shileiyu.jetpack.ui.CropActivity;
 import com.test.shileiyu.jetpack.ui.DragActivity;
 import com.test.shileiyu.jetpack.ui.MatrixActivity;
 import com.test.shileiyu.jetpack.ui.MoveActivity;
+import com.test.shileiyu.jetpack.ui.MyBehaviorActivity;
 import com.test.shileiyu.jetpack.ui.NineGirdActivity;
 import com.test.shileiyu.jetpack.ui.PhotoActivity;
 import com.test.shileiyu.jetpack.ui.SeatActivity;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
             , R.id.main_13_tab
             , R.id.main_14_tab
             , R.id.main_15_tab
+            , R.id.main_16_tab
             , R.id.main_12_tab})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -82,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_15_tab:
                 startActivity(new Intent(this, CalendarActivity.class));
+                break;
+            case R.id.main_16_tab:
+                startActivity(new Intent(this, MyBehaviorActivity.class));
                 break;
             default:
                 break;

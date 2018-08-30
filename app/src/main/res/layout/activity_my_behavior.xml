@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF"
+    tools:context=".ui.MyBehaviorActivity">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.test.shileiyu.jetpack.common.widget.RangeHeaderLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="#ffa7a7"
+            android:orientation="vertical"
+            app:fixedHeight="95dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="#3557ff">
+
+            </LinearLayout>
+        </com.test.shileiyu.jetpack.common.widget.RangeHeaderLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/my_recycler"
+            android:layout_width="match_parent"
+            android:layout_marginTop="100dp"
+            android:layout_height="match_parent"
+            android:background="#fff8b0"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            app:layout_behavior="com.test.shileiyu.jetpack.common.widget.RangeHeaderScrollingViewBehavior" />
+
+    </android.support.design.widget.CoordinatorLayout>
+</FrameLayout>

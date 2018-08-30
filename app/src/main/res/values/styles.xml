@@ -46,5 +46,9 @@
         <item name="android:windowFullscreen">false</item>
     </style>
 
+    <declare-styleable name="RangeHeaderLayout">
+        <attr name="fixedHeight" format="dimension" />
+    </declare-styleable>
+
 
 </resources>
