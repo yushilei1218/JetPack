@@ -2,6 +2,7 @@ package com.test.shileiyu.jetpack.ui;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.test.shileiyu.jetpack.R;
 import com.test.shileiyu.jetpack.common.base.BaseActivity;
@@ -16,6 +17,10 @@ import butterknife.BindView;
 public class MyBehaviorActivity extends BaseActivity {
     @BindView(R.id.my_recycler)
     RecyclerView mRecyclerView;
+    @BindView(R.id.header_v1)
+    View mView;
+    @BindView(R.id.header_v0)
+    View mView0;
 
     @Override
     protected void initView(Bundle savedInstanceState) {
@@ -26,6 +31,12 @@ public class MyBehaviorActivity extends BaseActivity {
         }
         adapter.data = data;
         mRecyclerView.setAdapter(adapter);
+        mView0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mView.setVisibility(mView.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
     @Override

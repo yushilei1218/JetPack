@@ -35,6 +35,11 @@ public class RangeHeaderLayout extends LinearLayout implements CoordinatorLayout
         return mFixedHeight > 0;
     }
 
+    public int getMaxScrollRange() {
+        int max = getHeight() - mFixedHeight;
+        return Math.max(max, 0);
+    }
+
     @NonNull
     @Override
     public CoordinatorLayout.Behavior getBehavior() {

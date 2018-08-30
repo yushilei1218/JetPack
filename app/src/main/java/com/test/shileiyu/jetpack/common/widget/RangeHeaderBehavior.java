@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -51,15 +52,25 @@ public class RangeHeaderBehavior extends ViewOffsetBehavior<RangeHeaderLayout> {
         int top = child.getTop();
         Log.d(TAG, "onNestedPreScroll dy=" + dy + " child top=" + top + " type" + type);
 
-        if (dy != 0) {
-            if (dy < 0) {
-                // We're scrolling down
+        if (target.canScrollVertically(-1)) {
+            return;
+        }
 
+        if (dy != 0) {
+            int maxScrollRange = child.getMaxScrollRange();
+            int tempTop = top - dy;
+
+            if (dy < 0) {
+                // We're scrolling down;
+                //获取最大可以滚动的距离
+                consumed[1] = tempTop <= 0 ? dy : top;
             } else {
                 // We're scrolling up
+                //consumed[1] = tempTop >= -maxScrollRange ? dy : 0;
+                consumed[1] = tempTop < -maxScrollRange ? top + maxScrollRange : dy;
             }
-            ViewCompat.offsetTopAndBottom(child,-dy);
-            consumed[1] = dy;
+            final int offset = consumed[1];
+            ViewCompat.offsetTopAndBottom(child, -offset);
         }
     }
 }
