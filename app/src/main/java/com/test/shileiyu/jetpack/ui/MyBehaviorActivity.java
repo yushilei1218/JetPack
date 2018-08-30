@@ -37,6 +37,12 @@ public class MyBehaviorActivity extends BaseActivity {
                 mView.setVisibility(mView.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
             }
         });
+        mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mView.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
