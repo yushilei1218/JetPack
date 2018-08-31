@@ -50,5 +50,19 @@
         <attr name="fixedHeight" format="dimension" />
     </declare-styleable>
 
+    <style name="Search_Tv">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/color_red_2_gray_selector</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:paddingRight">5dp</item>
+    </style>
 
+    <style name="Search_Img">
+
+        <item name="android:layout_width">5dp</item>
+        <item name="android:layout_height">5dp</item>
+        <item name="android:background">@drawable/arrow_up_2_down</item>
+
+    </style>
 </resources>

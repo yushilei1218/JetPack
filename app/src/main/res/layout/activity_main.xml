@@ -102,6 +102,12 @@
             android:layout_height="wrap_content"
             android:text="My Behavior" />
 
+        <Button
+            android:id="@+id/main_17_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search" />
+
         <fragment
             class="com.test.shileiyu.jetpack.ui.album.AlbumFragment"
             android:layout_width="match_parent"

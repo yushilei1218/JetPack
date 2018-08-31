@@ -20,6 +20,7 @@ import com.test.shileiyu.jetpack.ui.SvgActivity;
 import com.test.shileiyu.jetpack.ui.Test2Activity;
 import com.test.shileiyu.jetpack.ui.TestActivity;
 import com.test.shileiyu.jetpack.ui.home.TabActivity;
+import com.test.shileiyu.jetpack.ui.search.SearchActivity;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
             , R.id.main_13_tab
             , R.id.main_14_tab
             , R.id.main_15_tab
+            , R.id.main_17_tab
             , R.id.main_16_tab
             , R.id.main_12_tab})
     public void onViewClicked(View view) {
@@ -87,6 +89,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_16_tab:
                 startActivity(new Intent(this, MyBehaviorActivity.class));
+                break;
+            case R.id.main_17_tab:
+                startActivity(new Intent(this, SearchActivity.class));
                 break;
             default:
                 break;
