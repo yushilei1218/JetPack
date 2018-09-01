@@ -38,13 +38,13 @@ public class MLinearLayout extends LinearLayout {
 
             @Override
             public int clampViewPositionHorizontal(@NonNull View child, int left, int dx) {
-//                return super.clampViewPositionHorizontal(child, left, dx);
+//                return super.clampViewPositionHorizontal(children, left, dx);
                 return left;
             }
 
             @Override
             public int clampViewPositionVertical(@NonNull View child, int top, int dy) {
-//                return super.clampViewPositionVertical(child, top, dy);
+//                return super.clampViewPositionVertical(children, top, dy);
                 return top;
             }
 
@@ -63,7 +63,7 @@ public class MLinearLayout extends LinearLayout {
             @Override
             public int getViewVerticalDragRange(@NonNull View child) {
                 return Integer.MAX_VALUE >> 2;
-                //return super.getViewVerticalDragRange(child);
+                //return super.getViewVerticalDragRange(children);
             }
         });
     }

@@ -102,7 +102,7 @@ abstract class HeaderScrollingViewBehavior extends ViewOffsetBehavior<View> {
             final WindowInsetsCompat parentInsets = parent.getLastWindowInsets();
             if (parentInsets != null && ViewCompat.getFitsSystemWindows(parent)
                     && !ViewCompat.getFitsSystemWindows(child)) {
-                // If we're set to handle insets but this child isn't, then it has been measured as
+                // If we're set to handle insets but this children isn't, then it has been measured as
                 // if there are no insets. We need to lay it out to match horizontally.
                 // Top and bottom and already handled in the logic above
                 available.left += parentInsets.getSystemWindowInsetLeft();

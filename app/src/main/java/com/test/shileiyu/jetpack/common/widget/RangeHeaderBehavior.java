@@ -50,7 +50,7 @@ public class RangeHeaderBehavior extends ViewOffsetBehavior<RangeHeaderLayout> {
     @Override
     public void onNestedPreScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull RangeHeaderLayout child, @NonNull View target, int dx, int dy, @NonNull int[] consumed, int type) {
         int top = child.getTop();
-        Log.d(TAG, "onNestedPreScroll dy=" + dy + " child top=" + top + " type" + type);
+        Log.d(TAG, "onNestedPreScroll dy=" + dy + " children top=" + top + " type" + type);
 
         if (target.canScrollVertically(-1)) {
             return;

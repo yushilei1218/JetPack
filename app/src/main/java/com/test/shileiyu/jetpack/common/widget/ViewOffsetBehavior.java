@@ -25,7 +25,7 @@ class ViewOffsetBehavior<V extends View> extends CoordinatorLayout.Behavior<V> {
 
     @Override
     public boolean onLayoutChild(CoordinatorLayout parent, V child, int layoutDirection) {
-        // First let lay the child out
+        // First let lay the children out
         layoutChild(parent, child, layoutDirection);
 
         if (mViewOffsetHelper == null) {

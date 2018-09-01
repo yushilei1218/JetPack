@@ -1,5 +1,11 @@
 package com.test.shileiyu.jetpack.ui.search;
 
+import com.test.shileiyu.jetpack.common.bean.filter.Composite;
+import com.test.shileiyu.jetpack.common.bean.filter.MultiSelComposite;
+import com.test.shileiyu.jetpack.common.bean.filter.OriginData;
+import com.test.shileiyu.jetpack.common.bean.filter.SingleSelComposite;
+import com.test.shileiyu.jetpack.common.util.Util;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +22,8 @@ public class SearchModel {
     private List<DateParams> mDateParams2 = new ArrayList<>();
     private final SortParams mDef;
 
+    private OriginData mRootData;
+
     public SearchModel() {
         mDef = new SortParams("推荐排序");
         mParams.add(mDef);
@@ -31,6 +39,24 @@ public class SearchModel {
         mDateParams2.add(new DateParams("一居"));
         mDateParams2.add(new DateParams("二居"));
         mDateParams2.add(new DateParams("三居"));
+
+        mRootData = OriginData.get();
+        mRootData.resetChildren();
+        resetChildren(mRootData.children);
+    }
+
+    private void resetChildren(List<Composite> children) {
+        if (!Util.isEmpty(children)) {
+            for (int i = 0; i < children.size(); i++) {
+                Composite c = children.get(i);
+                c.resetChildren();
+                resetChildren(c.children);
+            }
+        }
+    }
+
+    public OriginData getRootData() {
+        return mRootData;
     }
 
     public List<SortParams> getSorts() {
@@ -77,5 +103,43 @@ public class SearchModel {
 
     public void replaceData2(List<DateParams> data) {
         mDateParams2 = data;
+    }
+
+    public void onCompositeClick(Composite composite) {
+        boolean lastNote = composite.isLastNote();
+        Class<? extends Composite> aClass = composite.getClass();
+        if (lastNote) {
+            if (MultiSelComposite.class.isAssignableFrom(aClass)) {
+                ((MultiSelComposite) composite).multiSelect();
+            } else if (SingleSelComposite.class.isAssignableFrom(aClass)) {
+                ((SingleSelComposite) composite).singleSelect();
+            }
+            List<Composite> children = composite.parent.children;
+            if (children.get(0).isSelect) {
+                removeTag(composite);
+            } else {
+                addTag(composite);
+            }
+        } else {
+            ((SingleSelComposite) composite).singleSelect();
+        }
+    }
+
+    private void addTag(Composite composite) {
+        if (composite == null) return;
+        Composite parent = composite.parent;
+        if (parent != null) {
+            parent.isTag = true;
+            addTag(parent.parent);
+        }
+    }
+
+    private void removeTag(Composite c) {
+        if (c == null) return;
+        Composite parent = c.parent;
+        if (parent != null) {
+            parent.isTag = false;
+            removeTag(parent.parent);
+        }
     }
 }

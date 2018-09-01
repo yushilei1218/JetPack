@@ -26,7 +26,7 @@ public class Month {
     public String toString() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String format = sdf.format(firstDay.date);
-        return "Day1=" + format + " child=" + children.size();
+        return "Day1=" + format + " children=" + children.size();
     }
 
     public Month(Date firstDate) {
