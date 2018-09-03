@@ -143,6 +143,7 @@ public class SearchModel {
                     iterator.remove();
                 }
             }
+            composite.tagParent(true);
             tempSelect.add(composite);
         }
     }
