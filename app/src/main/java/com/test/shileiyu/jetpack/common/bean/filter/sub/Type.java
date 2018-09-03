@@ -8,11 +8,6 @@ public class Type extends SingleSelComposite {
     public Type() {
     }
 
-    @Override
-    public boolean isLastNote() {
-        return false;
-    }
-
     public Type(String name) {
         super(name);
     }

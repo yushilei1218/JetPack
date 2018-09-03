@@ -7,6 +7,7 @@ import com.test.shileiyu.jetpack.common.bean.filter.SingleSelComposite;
 import com.test.shileiyu.jetpack.common.util.Util;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -23,6 +24,8 @@ public class SearchModel {
     private final SortParams mDef;
 
     private OriginData mRootData;
+
+    private List<Composite> tempSelect = new ArrayList<>();
 
     public SearchModel() {
         mDef = new SortParams("推荐排序");
@@ -116,30 +119,31 @@ public class SearchModel {
             }
             List<Composite> children = composite.parent.children;
             if (children.get(0).isSelect) {
-                removeTag(composite);
+                composite.tagParent(false);
             } else {
-                addTag(composite);
+                composite.tagParent(true);
             }
         } else {
             ((SingleSelComposite) composite).singleSelect();
         }
-    }
-
-    private void addTag(Composite composite) {
-        if (composite == null) return;
-        Composite parent = composite.parent;
-        if (parent != null) {
-            parent.isTag = true;
-            addTag(parent.parent);
-        }
-    }
-
-    private void removeTag(Composite c) {
-        if (c == null) return;
-        Composite parent = c.parent;
-        if (parent != null) {
-            parent.isTag = false;
-            removeTag(parent.parent);
+        if (lastNote && !composite.isDefault() && composite.isSelect) {
+            if (!Util.isEmpty(tempSelect)) {
+                for (int i = 0; i < tempSelect.size(); i++) {
+                    Composite child = tempSelect.get(i);
+                    if (!child.parent.equals(composite.parent)) {
+                        child.parent.resetChildren();
+                        child.tagParent(false);
+                    }
+                }
+            }
+            Iterator<Composite> iterator = tempSelect.iterator();
+            while (iterator.hasNext()) {
+                Composite next = iterator.next();
+                if (!next.isSelect) {
+                    iterator.remove();
+                }
+            }
+            tempSelect.add(composite);
         }
     }
 }

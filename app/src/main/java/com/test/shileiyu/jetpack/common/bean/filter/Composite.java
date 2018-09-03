@@ -1,5 +1,7 @@
 package com.test.shileiyu.jetpack.common.bean.filter;
 
+import android.text.TextUtils;
+
 import com.test.shileiyu.jetpack.common.util.Util;
 
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ public abstract class Composite implements Cloneable {
     public List<Composite> children;
 
     public boolean isLastNote() {
-        return true;
+        return Util.isEmpty(children);
     }
 
     public Composite(String name) {
@@ -22,6 +24,21 @@ public abstract class Composite implements Cloneable {
     }
 
     public Composite() {
+    }
+
+    public boolean isDefault() {
+        return !TextUtils.isEmpty(name) && "不限".equals(name);
+    }
+
+    public void tagParent(boolean isTag) {
+        if (parent != null) {
+            parent.isTag = isTag;
+            Composite parent = this.parent.parent;
+            if (parent != null) {
+                parent.isTag = isTag;
+                parent.tagParent(isTag);
+            }
+        }
     }
 
     public void resetChildren() {

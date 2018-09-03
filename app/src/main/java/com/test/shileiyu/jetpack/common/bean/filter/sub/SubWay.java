@@ -7,11 +7,6 @@ public class SubWay extends SingleSelComposite {
         super(name);
     }
 
-    @Override
-    public boolean isLastNote() {
-        return false;
-    }
-
     public SubWay() {
     }
 }

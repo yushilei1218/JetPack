@@ -31,6 +31,7 @@ public abstract class AbsBaseAdapter<T> extends BaseAdapter {
         return position;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {

@@ -46,6 +46,18 @@ public class OriginData extends Composite {
         way1.addChild(new SubWayStation("南锣古巷"));
         way1.addChild(new SubWayStation("什刹海"));
         way1.addChild(new SubWayStation("鼓楼大街"));
+        way1.addChild(new SubWayStation("安德里北街"));
+        way1.addChild(new SubWayStation("安华桥"));
+        way1.addChild(new SubWayStation("北土城"));
+        way1.addChild(new SubWayStation("奥体中心"));
+        way1.addChild(new SubWayStation("奥林匹克"));
+        way1.addChild(new SubWayStation("森林公园南门"));
+        way1.addChild(new SubWayStation("林萃桥"));
+        way1.addChild(new SubWayStation("西小口"));
+        way1.addChild(new SubWayStation("育新"));
+        way1.addChild(new SubWayStation("霍营"));
+        way1.addChild(new SubWayStation("回龙观"));
+        way1.addChild(new SubWayStation("平西王府"));
         subWay.addChild(way1);
         SubWay way2 = new SubWay("2号线");
         way2.addChild(new SubWayStation("不限"));
