@@ -99,6 +99,7 @@ public class BehaviorActivity extends BaseActivity {
                 Util.showToast("Input");
                 break;
             case R.id.filter:
+                mRecyclerView.stopScroll();
                 mAppBarLayout.setExpanded(false, true);
                 break;
             default:
