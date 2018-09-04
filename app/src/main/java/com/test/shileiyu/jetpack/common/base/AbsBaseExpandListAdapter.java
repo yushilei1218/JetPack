@@ -28,6 +28,9 @@ public class AbsBaseExpandListAdapter extends BaseExpandableListAdapter{
     @Override
     public Object getChild(int groupPosition, int childPosition) {
         return null;
+
+
+
     }
 
     @Override
