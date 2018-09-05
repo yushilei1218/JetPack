@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +21,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.test.shileiyu.jetpack.R;
 import com.test.shileiyu.jetpack.common.base.BaseActivity;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
@@ -50,8 +54,18 @@ public class BitmapActivity extends BaseActivity {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(10);
         paint.setColor(Color.BLUE);
-        canvas.drawCircle(radius,radius,radius,paint);
+        canvas.drawCircle(radius, radius, radius, paint);
         mView1.setImageBitmap(result);
+        FileOutputStream stream = null;
+        try {
+            stream = new FileOutputStream(new File(Environment.getExternalStorageDirectory(), "target.jpg"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (stream != null) {
+
+            result.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        }
     }
 
     @Override
