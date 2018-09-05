@@ -13,27 +13,46 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.test.shileiyu.jetpack.R;
+import com.test.shileiyu.jetpack.common.adapter.BeanAdapter;
 import com.test.shileiyu.jetpack.common.base.BaseActivity;
+import com.test.shileiyu.jetpack.common.bean.Bean;
 import com.test.shileiyu.jetpack.common.widget.CircleStrokeCrop;
 
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class BitmapActivity extends BaseActivity {
     @BindView(R.id.bitmap_1)
     ImageView mView1;
     @BindView(R.id.bitmap_2)
     ImageView mView2;
+    @BindView(R.id.child1)
+    View mChild1;
+    @BindView(R.id.child2)
+    View mChild2;
+    @BindView(R.id.parent)
+    ViewGroup mParent;
+    @BindView(R.id.lv1)
+    ListView mlv1;
+    @BindView(R.id.lv2)
+    ListView mlv2;
 
     @Override
     protected void initView(Bundle savedInstanceState) {
@@ -47,6 +66,31 @@ public class BitmapActivity extends BaseActivity {
 
 
         Glide.with(this).load(R.mipmap.header2).apply(options).into(mView2);
+
+        BeanAdapter adapter = new BeanAdapter();
+        BeanAdapter adapter2 = new BeanAdapter();
+        List<Bean> data = new ArrayList<>(100);
+        for (int i = 0; i < 15; i++) {
+            data.add(new Bean("item " + i));
+        }
+        adapter.data = data;
+        adapter2.data = data;
+        mlv1.setAdapter(adapter);
+        mlv2.setAdapter(adapter2);
+    }
+
+    @OnClick({R.id.child1, R.id.child2})
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.child1:
+                mParent.scrollTo(0, mChild1.getHeight());
+                break;
+            case R.id.child2:
+                mParent.scrollTo(0, 0);
+                break;
+            default:
+                break;
+        }
     }
 
     private void compress(Bitmap result) {

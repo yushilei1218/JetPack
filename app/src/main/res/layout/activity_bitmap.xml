@@ -16,8 +16,41 @@
 
     <ImageView
         android:id="@+id/bitmap_2"
-        android:layout_marginTop="20dp"
         android:layout_width="80dp"
         android:layout_height="80dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/bg_shape" />
+
+    <com.test.shileiyu.jetpack.common.widget.VerticalDragLayout
+        android:id="@+id/parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/child1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#edffbc">
+
+            <ListView
+                android:id="@+id/lv1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/child2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#f7b8b8" >
+
+            <ListView
+                android:id="@+id/lv2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+    </com.test.shileiyu.jetpack.common.widget.VerticalDragLayout>
 </LinearLayout>
