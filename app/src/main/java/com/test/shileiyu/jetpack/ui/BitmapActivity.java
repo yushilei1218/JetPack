@@ -8,32 +8,63 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
+
 import android.os.Environment;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.test.shileiyu.jetpack.R;
 import com.test.shileiyu.jetpack.common.base.BaseActivity;
+import com.test.shileiyu.jetpack.common.widget.CircleStrokeCrop;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 
 public class BitmapActivity extends BaseActivity {
     @BindView(R.id.bitmap_1)
     ImageView mView1;
+    @BindView(R.id.bitmap_2)
+    ImageView mView2;
 
     @Override
     protected void initView(Bundle savedInstanceState) {
+        Bitmap result = getBitmap();
+        mView1.setImageBitmap(result);
+        compress(result);
+
+        RequestOptions requestOptions = new RequestOptions();
+
+        RequestOptions options = requestOptions.transform(new CircleStrokeCrop(Color.RED, 5)).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true);
+
+
+        Glide.with(this).load(R.mipmap.header2).apply(options).into(mView2);
+    }
+
+    private void compress(Bitmap result) {
+        FileOutputStream stream = null;
+        try {
+            stream = new FileOutputStream(new File(Environment.getExternalStorageDirectory(), "target.jpg"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (stream != null) {
+            int byteCount = result.getByteCount();
+            Log.d("ByteCount", "" + byteCount);
+            result.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        }
+    }
+
+    @NonNull
+    private Bitmap getBitmap() {
         Bitmap header = BitmapFactory.decodeResource(getResources(), R.mipmap.header);
         Bitmap result = Bitmap.createBitmap(header.getWidth(), header.getHeight(), Bitmap.Config.ARGB_4444);
         Canvas canvas = new Canvas(result);
@@ -55,17 +86,7 @@ public class BitmapActivity extends BaseActivity {
         paint.setStrokeWidth(10);
         paint.setColor(Color.BLUE);
         canvas.drawCircle(radius, radius, radius, paint);
-        mView1.setImageBitmap(result);
-        FileOutputStream stream = null;
-        try {
-            stream = new FileOutputStream(new File(Environment.getExternalStorageDirectory(), "target.jpg"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (stream != null) {
-
-            result.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        }
+        return result;
     }
 
     @Override
