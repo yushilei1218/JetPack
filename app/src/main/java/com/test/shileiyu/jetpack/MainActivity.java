@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.test.shileiyu.jetpack.ui.AreaViewActivity;
 import com.test.shileiyu.jetpack.ui.BehaviorActivity;
+import com.test.shileiyu.jetpack.ui.BitmapActivity;
 import com.test.shileiyu.jetpack.ui.CalendarActivity;
 import com.test.shileiyu.jetpack.ui.CropActivity;
 import com.test.shileiyu.jetpack.ui.DragActivity;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
             , R.id.main_14_tab
             , R.id.main_15_tab
             , R.id.main_17_tab
+            , R.id.main_18_tab
             , R.id.main_16_tab
             , R.id.main_12_tab})
     public void onViewClicked(View view) {
@@ -92,6 +94,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_17_tab:
                 startActivity(new Intent(this, SearchActivity.class));
+                break;
+            case R.id.main_18_tab:
+                startActivity(new Intent(this, BitmapActivity.class));
                 break;
             default:
                 break;
