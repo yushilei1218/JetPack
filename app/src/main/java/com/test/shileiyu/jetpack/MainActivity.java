@@ -11,6 +11,7 @@ import com.test.shileiyu.jetpack.ui.BitmapActivity;
 import com.test.shileiyu.jetpack.ui.CalendarActivity;
 import com.test.shileiyu.jetpack.ui.CropActivity;
 import com.test.shileiyu.jetpack.ui.DragActivity;
+import com.test.shileiyu.jetpack.ui.DragHead2ZoomActivity;
 import com.test.shileiyu.jetpack.ui.MatrixActivity;
 import com.test.shileiyu.jetpack.ui.MoveActivity;
 import com.test.shileiyu.jetpack.ui.MyBehaviorActivity;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
             , R.id.main_14_tab
             , R.id.main_15_tab
             , R.id.main_17_tab
-            , R.id.main_18_tab
+            , R.id.main_18_tab, R.id.main_19_tab
             , R.id.main_16_tab
             , R.id.main_12_tab})
     public void onViewClicked(View view) {
@@ -97,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_18_tab:
                 startActivity(new Intent(this, BitmapActivity.class));
+                break;
+            case R.id.main_19_tab:
+                startActivity(new Intent(this, DragHead2ZoomActivity.class));
                 break;
             default:
                 break;

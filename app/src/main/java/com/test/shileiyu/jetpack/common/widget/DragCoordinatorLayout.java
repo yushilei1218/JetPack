@@ -33,7 +33,7 @@ public class DragCoordinatorLayout extends CoordinatorLayout {
 
     public DragCoordinatorLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mTouchSlop = ViewConfiguration.get(context).getScaledPagingTouchSlop();
+        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
     public boolean dispatchTouchEventSuper(MotionEvent ev) {
@@ -76,6 +76,8 @@ public class DragCoordinatorLayout extends CoordinatorLayout {
                     mStartDragAxis.set(mLastTouchX, mLastTouchY);
                 }
 
+                mLastTouchY = cy;
+                mLastTouchX = cx;
                 if (mIsDragging) {
                     //
                     mDragListener.onDrag(cx - mStartDragAxis.x, cy - mStartDragAxis.y);

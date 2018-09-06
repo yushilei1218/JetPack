@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.DragHead2ZoomActivity">
+    <com.test.shileiyu.jetpack.common.widget.DragCoordinatorLayout
+        android:id="@+id/drag_coor2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:id="@+id/drag_lv"
+            android:layout_height="match_parent"/>
+
+    </com.test.shileiyu.jetpack.common.widget.DragCoordinatorLayout>
+
+</LinearLayout>

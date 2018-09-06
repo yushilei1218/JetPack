@@ -43,7 +43,8 @@
             android:theme="@style/AppTheme2" />
         <activity android:name=".ui.MyBehaviorActivity" />
         <activity android:name=".ui.search.SearchActivity" />
-        <activity android:name=".ui.BitmapActivity"></activity>
+        <activity android:name=".ui.BitmapActivity" />
+        <activity android:name=".ui.DragHead2ZoomActivity"></activity>
     </application>
 
 </manifest>
