@@ -1,5 +1,6 @@
 package com.test.shileiyu.jetpack.ui;
 
+import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.ViewCompat;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,6 +21,7 @@ import com.test.shileiyu.jetpack.common.base.AbsRBaseAdapter;
 import com.test.shileiyu.jetpack.common.base.BaseActivity;
 import com.test.shileiyu.jetpack.common.bean.Bean;
 import com.test.shileiyu.jetpack.common.util.Util;
+import com.test.shileiyu.jetpack.common.widget.DragCoordinatorLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +41,10 @@ public class BehaviorActivity extends BaseActivity {
     ImageView mImg;
     @BindView(R.id.xuan_fu_input)
     View mXuanFu;
+    @BindView(R.id.drag_coor)
+    DragCoordinatorLayout mDragLayout;
+    private int mImgHeight;
+    private int mXuanFuTop;
 
     @Override
     protected void initView(Bundle savedInstanceState) {
@@ -61,7 +68,7 @@ public class BehaviorActivity extends BaseActivity {
                 }
                 int min = (mHeader.getHeight() - mXuanFu.getHeight()) / 2;
                 int distance = mXuanFu.getTop() - min;
-                if (distance==0) {
+                if (distance == 0) {
                     return;
                 }
 
@@ -82,12 +89,77 @@ public class BehaviorActivity extends BaseActivity {
                 mXuanFu.setTranslationY(ty);
                 mXuanFu.setTranslationX(tx);
                 ViewGroup.LayoutParams lp = mXuanFu.getLayoutParams();
-                lp.width=(int) (600+(1-rate)*maxDeltaRight);
+                lp.width = (int) (600 + (1 - rate) * maxDeltaRight);
                 mXuanFu.setLayoutParams(lp);
 //                int right= (int) (600+(1-rate)*maxDeltaRight);
 //                mXuanFu.setRight(right);
 
 
+            }
+        });
+        mImg.post(new Runnable() {
+            @Override
+            public void run() {
+                mImgHeight = mImg.getHeight();
+            }
+        });
+
+        mXuanFu.post(new Runnable() {
+            @Override
+            public void run() {
+                mXuanFuTop = mXuanFu.getTop();
+            }
+        });
+
+        mDragLayout.setDragListener(new DragCoordinatorLayout.OnDragListener() {
+            @Override
+            public boolean isCanDragDown() {
+                return mAppBarLayout.getTop() >= 0;
+            }
+
+            @Override
+            public void onDrag(float distanceX, float distanceY) {
+                if (distanceY <= 0) {
+                    return;
+                }
+                Log.d("onDrag", "onDrag distanceY= " + distanceY);
+                ViewGroup.LayoutParams lp = mImg.getLayoutParams();
+                lp.height = (int) (mImgHeight + distanceY);
+                mImg.setPivotX(mImg.getWidth() / 2f);
+                float scale = 1 + distanceY / 1000f;
+                mImg.setScaleX(scale);
+                mImg.setLayoutParams(lp);
+
+            }
+
+            @Override
+            public void onRelease(float distanceX, final float distanceY) {
+                if (distanceY < 0) {
+                    mImg.setScaleX(1f);
+                    ViewGroup.LayoutParams lp = mImg.getLayoutParams();
+                    lp.height = mImgHeight;
+                    mImg.setLayoutParams(lp);
+                    mXuanFu.setTranslationY(distanceY);
+                    return;
+                }
+                ValueAnimator av = ValueAnimator.ofFloat(1f, 0f);
+                av.setInterpolator(new DecelerateInterpolator());
+                av.setDuration(200);
+                av.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        Float animatedValue = (Float) animation.getAnimatedValue();
+                        float scale = 1 + distanceY * animatedValue / 1000f;
+                        mImg.setPivotX(mImg.getWidth() / 2f);
+                        mImg.setScaleX(scale);
+                        ViewGroup.LayoutParams lp = mImg.getLayoutParams();
+                        lp.height = (int) (mImgHeight + animatedValue * distanceY);
+                        mImg.setLayoutParams(lp);
+                        mXuanFu.setTranslationY(distanceY * animatedValue);
+                    }
+                });
+                av.start();
+                Log.d("onDrag", "onRelease distanceY= " + distanceY);
             }
         });
     }
