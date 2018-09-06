@@ -27,7 +27,8 @@ public class VerticalDragLayout extends ViewGroup {
 
     public VerticalDragLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+        ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
+        mTouchSlop = viewConfiguration.getScaledPagingTouchSlop();
     }
 
     @Override
@@ -82,6 +83,9 @@ public class VerticalDragLayout extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (isBeingDragged) {
+            return true;
+        }
         float y = ev.getY();
         float x = ev.getX();
         switch (ev.getAction()) {

@@ -12,6 +12,7 @@ import android.graphics.RectF;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.test.shileiyu.jetpack.R;
 import com.test.shileiyu.jetpack.common.adapter.BeanAdapter;
+import com.test.shileiyu.jetpack.common.adapter.BeanRAdapter;
 import com.test.shileiyu.jetpack.common.base.BaseActivity;
 import com.test.shileiyu.jetpack.common.bean.Bean;
 import com.test.shileiyu.jetpack.common.widget.CircleStrokeCrop;
@@ -50,9 +52,9 @@ public class BitmapActivity extends BaseActivity {
     @BindView(R.id.parent)
     ViewGroup mParent;
     @BindView(R.id.lv1)
-    ListView mlv1;
+    RecyclerView mlv1;
     @BindView(R.id.lv2)
-    ListView mlv2;
+    RecyclerView mlv2;
 
     @Override
     protected void initView(Bundle savedInstanceState) {
@@ -67,8 +69,8 @@ public class BitmapActivity extends BaseActivity {
 
         Glide.with(this).load(R.mipmap.header2).apply(options).into(mView2);
 
-        BeanAdapter adapter = new BeanAdapter();
-        BeanAdapter adapter2 = new BeanAdapter();
+        BeanRAdapter adapter = new BeanRAdapter();
+        BeanRAdapter adapter2 = new BeanRAdapter();
         List<Bean> data = new ArrayList<>(100);
         for (int i = 0; i < 15; i++) {
             data.add(new Bean("item " + i));
