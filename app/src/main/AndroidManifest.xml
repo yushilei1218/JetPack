@@ -44,7 +44,8 @@
         <activity android:name=".ui.MyBehaviorActivity" />
         <activity android:name=".ui.search.SearchActivity" />
         <activity android:name=".ui.BitmapActivity" />
-        <activity android:name=".ui.DragHead2ZoomActivity"></activity>
+        <activity android:name=".ui.DragHead2ZoomActivity" />
+        <activity android:name=".common.base.BaseH5Activity"></activity>
     </application>
 
 </manifest>
