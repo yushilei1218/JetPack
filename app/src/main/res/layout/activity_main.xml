@@ -120,6 +120,12 @@
             android:layout_height="wrap_content"
             android:text="Drag2ZoomHeader" />
 
+        <Button
+            android:id="@+id/main_20_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Service" />
+
         <fragment
             class="com.test.shileiyu.jetpack.ui.album.AlbumFragment"
             android:layout_width="match_parent"

@@ -45,7 +45,14 @@
         <activity android:name=".ui.search.SearchActivity" />
         <activity android:name=".ui.BitmapActivity" />
         <activity android:name=".ui.DragHead2ZoomActivity" />
-        <activity android:name=".common.base.BaseH5Activity"></activity>
+        <activity android:name=".common.base.BaseH5Activity" />
+
+        <service
+            android:name=".common.service.LocalService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".ui.ServiceActivity"></activity>
     </application>
 
 </manifest>

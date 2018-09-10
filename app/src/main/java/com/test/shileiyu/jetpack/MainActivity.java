@@ -18,6 +18,7 @@ import com.test.shileiyu.jetpack.ui.MyBehaviorActivity;
 import com.test.shileiyu.jetpack.ui.NineGirdActivity;
 import com.test.shileiyu.jetpack.ui.PhotoActivity;
 import com.test.shileiyu.jetpack.ui.SeatActivity;
+import com.test.shileiyu.jetpack.ui.ServiceActivity;
 import com.test.shileiyu.jetpack.ui.SvgActivity;
 import com.test.shileiyu.jetpack.ui.Test2Activity;
 import com.test.shileiyu.jetpack.ui.TestActivity;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
             , R.id.main_14_tab
             , R.id.main_15_tab
             , R.id.main_17_tab
+            , R.id.main_20_tab
             , R.id.main_18_tab, R.id.main_19_tab
             , R.id.main_16_tab
             , R.id.main_12_tab})
@@ -101,6 +103,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_19_tab:
                 startActivity(new Intent(this, DragHead2ZoomActivity.class));
+                break;
+            case R.id.main_20_tab:
+                startActivity(new Intent(this, ServiceActivity.class));
                 break;
             default:
                 break;
