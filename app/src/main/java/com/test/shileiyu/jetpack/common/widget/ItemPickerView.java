@@ -7,7 +7,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
@@ -20,7 +19,6 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewParent;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.OverScroller;
 import android.widget.Scroller;
 
 import com.test.shileiyu.jetpack.common.util.Util;
@@ -39,15 +37,22 @@ public class ItemPickerView extends View {
 
     private GestureDetector mDetector;
 
-    private int itemHeight = 100;
+    private int itemHeight = 150;
 
     private int showCount = 5;
 
     private TextPaint mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+    private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private RectF mCenter = new RectF();
     VelocityTracker mTracker;
     Scroller mScroller;
+
+    OnItemSelectListener mListener;
+
+    public void setListener(OnItemSelectListener listener) {
+        mListener = listener;
+    }
 
     public ItemPickerView(Context context) {
         this(context, null);
@@ -68,14 +73,16 @@ public class ItemPickerView extends View {
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-
                 return true;
             }
         });
         mTracker = VelocityTracker.obtain();
         mTextPaint.setColor(Color.RED);
-        mTextPaint.setTextSize(24f);
+        mTextPaint.setTextSize(36f);
+        mTextPaint.setTextAlign(Paint.Align.CENTER);
         mScroller = new Scroller(context);
+        mPaint.setStyle(Paint.Style.FILL);
+        mPaint.setColor(Color.LTGRAY);
     }
 
     private void resetUI() {
@@ -88,10 +95,10 @@ public class ItemPickerView extends View {
         if (Math.abs(distanceY) >= itemHeight) {
 
             class Update implements ValueAnimator.AnimatorUpdateListener {
-                final float total;
-                float past = 0;
+                private final float total;
+                private float past = 0;
 
-                public Update(float total) {
+                Update(float total) {
                     this.total = total;
                 }
 
@@ -104,7 +111,6 @@ public class ItemPickerView extends View {
                     past = now;
                 }
             }
-
             //动画
             ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
             va.setDuration(200);
@@ -153,6 +159,27 @@ public class ItemPickerView extends View {
         float cy = h / 2f;
         float per = itemHeight / 2f;
         mCenter.set(0, cy - per, w, cy + per);
+        setUpInitLocation();
+        offset2SelectLocation();
+    }
+
+    private void offset2SelectLocation() {
+        if (!Util.isEmpty(mItems)) {
+            Child first = null;
+            for (Child c : mItems) {
+                if (c.isSelect) {
+                    first = c;
+                    break;
+                }
+            }
+            if (first != null) {
+                offsetChildren(getCenterY() - first.mLocation.y);
+            }
+        }
+    }
+
+    private float getCenterY() {
+        return getHeight() / 2f;
     }
 
     @Override
@@ -172,6 +199,8 @@ public class ItemPickerView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        canvas.drawRect(mCenter, mPaint);
+
         if (Util.isEmpty(mItems)) {
             return;
         }
@@ -202,8 +231,10 @@ public class ItemPickerView extends View {
                     mItems.clear();
                     invalidate();
                 } else {
+                    mItems.clear();
                     mItems.addAll(data);
-                    setUpLocation();
+                    setUpInitLocation();
+                    offset2SelectLocation();
                     invalidate();
                 }
             }
@@ -224,6 +255,9 @@ public class ItemPickerView extends View {
                 clearSelect();
                 select.setSelect(true);
                 Util.showToast(select.getName());
+                if (mListener != null) {
+                    mListener.onItem(select);
+                }
             }
         }
     }
@@ -234,7 +268,7 @@ public class ItemPickerView extends View {
         }
     }
 
-    private void setUpLocation() {
+    private void setUpInitLocation() {
         if (!Util.isEmpty(mItems)) {
             int width = getWidth();
             int height = getHeight();
@@ -251,9 +285,9 @@ public class ItemPickerView extends View {
 
     }
 
-    public abstract static class Child<T> {
+    public abstract static class Child {
         PointF mLocation = new PointF();
-        T extra;
+        public Object extra;
         public boolean isSelect;
 
         public boolean isSelect() {
