@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextPaint;
@@ -36,6 +37,7 @@ import java.util.List;
  */
 
 public class ItemPickerView extends View {
+    private static final String TAG = "ItemPickerView";
     private static final float VELOCITY_Y_RATIO = 1 / 8f;
 
     private List<BaseItem> mItems = new ArrayList<>();
@@ -69,6 +71,8 @@ public class ItemPickerView extends View {
     private int mNoneSelectAreaColor;
 
     private int mTextOffset;
+
+    private ValueAnimator mUiSettlerAni;
 
     public void setListener(OnItemSelectListener listener) {
         mListener = listener;
@@ -131,11 +135,11 @@ public class ItemPickerView extends View {
         float distanceY = getCenterY() - baseItem.mLocation.y;
         if (Math.abs(distanceY) >= itemHeight) {
             //动画复位
-            ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
-            va.setDuration(150);
-            va.setInterpolator(new DecelerateInterpolator());
-            va.addUpdateListener(new UiSettler(distanceY));
-            va.addListener(new AnimatorListenerAdapter() {
+            mUiSettlerAni = ValueAnimator.ofFloat(0f, 1f);
+            mUiSettlerAni.setDuration(150);
+            mUiSettlerAni.setInterpolator(new DecelerateInterpolator());
+            mUiSettlerAni.addUpdateListener(new UiSettler(distanceY));
+            mUiSettlerAni.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     checkSelectedAndCallBack();
@@ -147,7 +151,7 @@ public class ItemPickerView extends View {
                     isSettling = true;
                 }
             });
-            va.start();
+            mUiSettlerAni.start();
         } else {
             offsetChildren(distanceY);
             checkSelectedAndCallBack();
@@ -284,15 +288,28 @@ public class ItemPickerView extends View {
      * @param data 为空时清空展示，否则展示
      */
     public void setDisplayItems(final List<BaseItem> data) {
-        if (Util.isEmpty(data)) {
-            mItems.clear();
-            invalidate();
+        Runnable task = new Runnable() {
+
+            @Override
+            public void run() {
+                endAnimationIfNeed();
+
+                if (Util.isEmpty(data)) {
+                    mItems.clear();
+                    invalidate();
+                } else {
+                    mItems.clear();
+                    mItems.addAll(data);
+                    setUpInitLocation();
+                    offset2SelectLocation();
+                    invalidate();
+                }
+            }
+        };
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            task.run();
         } else {
-            mItems.clear();
-            mItems.addAll(data);
-            setUpInitLocation();
-            offset2SelectLocation();
-            invalidate();
+            post(task);
         }
     }
 
@@ -345,6 +362,17 @@ public class ItemPickerView extends View {
         for (int i = 0; i < mItems.size(); i++) {
             mItems.get(i).mLocation.set(cx, cy + i * itemHeight);
         }
+    }
+
+    private void endAnimationIfNeed() {
+        if (mFlingRunnable != null) {
+            mFlingRunnable.endFling();
+        }
+        isSettling = false;
+        if (mUiSettlerAni != null && mUiSettlerAni.isRunning()) {
+            mUiSettlerAni.cancel();
+        }
+
     }
 
     /**
