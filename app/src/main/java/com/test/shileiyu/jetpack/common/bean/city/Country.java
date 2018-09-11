@@ -17,14 +17,25 @@ import java.util.List;
 
 public class Country extends BaseComposite<Province> {
 
-    public List<Province> mProvinces;
-    public List<City> mCities;
-    public List<District> mDistricts;
+    public List<Province> mProvinces = null;
+    public List<City> mCities = null;
+    public List<District> mDistricts = null;
 
     public WeakReference<UIBinder> mUiWeak;
 
     public void setUIBinder(UIBinder binder) {
         mUiWeak = new WeakReference<>(binder);
+    }
+
+    public void init() {
+        requestChildren(new SimpleCallBack<Boolean>() {
+            @Override
+            public void onCall(Boolean data) {
+                show();
+                Province child = getSelectChild();
+                onSelect(child);
+            }
+        });
     }
 
     public void onSelect(final Province p) {
@@ -47,17 +58,6 @@ public class Country extends BaseComposite<Province> {
             City child = p.getSelectChild();
             onSelect(child);
         }
-    }
-
-    public void init() {
-        requestChildren(new SimpleCallBack<Boolean>() {
-            @Override
-            public void onCall(Boolean data) {
-                show();
-                Province child = getSelectChild();
-                onSelect(child);
-            }
-        });
     }
 
     @SuppressWarnings("unchecked")
@@ -114,17 +114,20 @@ public class Country extends BaseComposite<Province> {
         });
     }
 
-    public void toast() {
+    public String toast() {
+        String msg = "empty";
         Province province = getSelectChild();
         if (province != null) {
             City city = province.getSelectChild();
             if (city != null) {
                 District district = city.getSelectChild();
                 if (district != null) {
-                    Util.showToast(province.name + " " + city.name + " " + district.name);
+                    msg = province.name + " ," + city.name + " ," + district.name;
+                    Util.showToast(msg);
                 }
             }
         }
+        return msg;
     }
 
     public interface UIBinder {

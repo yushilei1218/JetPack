@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
@@ -17,8 +18,10 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewParent;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.OverScroller;
 import android.widget.Scroller;
 
 import com.test.shileiyu.jetpack.common.util.Util;
@@ -33,7 +36,7 @@ import java.util.List;
 
 public class ItemPickerView extends View {
 
-    private List<Child> mItems = new ArrayList<>();
+    private List<BaseItem> mItems = new ArrayList<>();
 
     private GestureDetector mDetector;
 
@@ -49,6 +52,14 @@ public class ItemPickerView extends View {
     Scroller mScroller;
 
     OnItemSelectListener mListener;
+
+    private int mMinimumVelocity;
+
+    private int mMaximumVelocity;
+
+    private FlingRunnable mFlingRunnable;
+
+    private boolean isSettling = false;
 
     public void setListener(OnItemSelectListener listener) {
         mListener = listener;
@@ -83,15 +94,18 @@ public class ItemPickerView extends View {
         mScroller = new Scroller(context);
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(Color.LTGRAY);
+        ViewConfiguration configuration = ViewConfiguration.get(context);
+        mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
+        mMaximumVelocity = configuration.getScaledMaximumFlingVelocity() / 8;
     }
 
     private void resetUI() {
-        Child child = getCenterNearestChild();
-        if (child == null) {
+        BaseItem baseItem = getCenterNearestChild();
+        if (baseItem == null) {
             return;
         }
         float cy = getHeight() / 2f;
-        float distanceY = cy - child.mLocation.y;
+        float distanceY = cy - baseItem.mLocation.y;
         if (Math.abs(distanceY) >= itemHeight) {
 
             class Update implements ValueAnimator.AnimatorUpdateListener {
@@ -113,13 +127,19 @@ public class ItemPickerView extends View {
             }
             //动画
             ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
-            va.setDuration(200);
+            va.setDuration(150);
             va.setInterpolator(new DecelerateInterpolator());
             va.addUpdateListener(new Update(distanceY));
             va.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     checkSelected();
+                    isSettling = false;
+                }
+
+                @Override
+                public void onAnimationStart(Animator animation, boolean isReverse) {
+                    isSettling = true;
                 }
             });
             va.start();
@@ -129,18 +149,18 @@ public class ItemPickerView extends View {
         }
     }
 
-    private Child getCenterNearestChild() {
+    private BaseItem getCenterNearestChild() {
         if (Util.isEmpty(mItems)) {
             return null;
         }
         float cy = getHeight() / 2f;
-        Child target = null;
+        BaseItem target = null;
         float dis = Float.MAX_VALUE;
-        for (Child child : mItems) {
-            float nowDis = Math.abs(cy - child.mLocation.y);
+        for (BaseItem baseItem : mItems) {
+            float nowDis = Math.abs(cy - baseItem.mLocation.y);
             if (nowDis <= dis) {
                 dis = nowDis;
-                target = child;
+                target = baseItem;
             }
         }
         return target;
@@ -165,8 +185,8 @@ public class ItemPickerView extends View {
 
     private void offset2SelectLocation() {
         if (!Util.isEmpty(mItems)) {
-            Child first = null;
-            for (Child c : mItems) {
+            BaseItem first = null;
+            for (BaseItem c : mItems) {
                 if (c.isSelect) {
                     first = c;
                     break;
@@ -184,14 +204,33 @@ public class ItemPickerView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (isSettling) {
+            return false;
+        }
+        int action = event.getAction();
+        if (action == MotionEvent.ACTION_DOWN) {
+            if (mFlingRunnable != null) {
+                mFlingRunnable.endFling();
+            }
+        }
+
         mTracker.addMovement(event);
         mDetector.onTouchEvent(event);
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            mTracker.computeCurrentVelocity(1000);
-            float yVelocity = mTracker.getYVelocity();
-            Log.d("ItemPickerView", "yVelocity=" + yVelocity);
-            resetUI();
 
+        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+
+            mTracker.computeCurrentVelocity(1000, mMaximumVelocity);
+            float yVelocity = mTracker.getYVelocity();
+
+            if (Math.abs(yVelocity) > mMinimumVelocity) {
+                if (mFlingRunnable == null) {
+                    mFlingRunnable = new FlingRunnable();
+                }
+                mFlingRunnable.start((int) yVelocity);
+            } else {
+                resetUI();
+            }
+            Log.d("ItemPickerView", "yVelocity=" + yVelocity + " mMinimumVelocity=" + mMinimumVelocity + " mMaximumVelocity=" + mMaximumVelocity);
         }
         return true;
     }
@@ -204,7 +243,7 @@ public class ItemPickerView extends View {
         if (Util.isEmpty(mItems)) {
             return;
         }
-        for (Child c : mItems) {
+        for (BaseItem c : mItems) {
             canvas.drawText(c.getName(), c.mLocation.x, c.mLocation.y, mTextPaint);
         }
     }
@@ -219,11 +258,7 @@ public class ItemPickerView extends View {
         }
     }
 
-    public interface OnItemSelectListener {
-        void onItem(Child item);
-    }
-
-    public void setDisplayItems(final List<Child> data) {
+    public void setDisplayItems(final List<BaseItem> data) {
         post(new Runnable() {
             @Override
             public void run() {
@@ -243,12 +278,12 @@ public class ItemPickerView extends View {
 
     private void checkSelected() {
         if (!Util.isEmpty(mItems)) {
-            Child select = null;
-            for (Child child : mItems) {
-                PointF pointF = child.mLocation;
+            BaseItem select = null;
+            for (BaseItem baseItem : mItems) {
+                PointF pointF = baseItem.mLocation;
                 boolean contains = mCenter.contains(pointF.x, pointF.y);
-                if (contains && !child.isSelect) {
-                    select = child;
+                if (contains && !baseItem.isSelect) {
+                    select = baseItem;
                 }
             }
             if (select != null) {
@@ -256,36 +291,49 @@ public class ItemPickerView extends View {
                 select.setSelect(true);
                 Util.showToast(select.getName());
                 if (mListener != null) {
-                    mListener.onItem(select);
+                    mListener.onItemSelect(select);
                 }
             }
         }
     }
 
     private void clearSelect() {
-        for (Child child : mItems) {
-            child.setSelect(false);
+        if (Util.isEmpty(mItems)) {
+            return;
+        }
+        for (BaseItem baseItem : mItems) {
+            baseItem.setSelect(false);
         }
     }
 
     private void setUpInitLocation() {
-        if (!Util.isEmpty(mItems)) {
-            int width = getWidth();
-            int height = getHeight();
-            float cx = width / 2f;
-            float cy = height / 2f;
+        if (Util.isEmpty(mItems)) {
+            return;
+        }
+        int width = getWidth();
+        int height = getHeight();
 
-            for (int i = 0; i < mItems.size(); i++) {
-                mItems.get(i).mLocation.set(cx, cy + i * itemHeight);
-            }
+        if (width <= 0 || height <= 0) {
+            return;
+        }
+        float cx = width / 2f;
+        float cy = height / 2f;
+
+        for (int i = 0; i < mItems.size(); i++) {
+            mItems.get(i).mLocation.set(cx, cy + i * itemHeight);
         }
     }
 
-    public void setSelect() {
-
+    public interface OnItemSelectListener {
+        /**
+         * 内部item被选中了
+         *
+         * @param item 被选中的item
+         */
+        void onItemSelect(@NonNull BaseItem item);
     }
 
-    public abstract static class Child {
+    public abstract static class BaseItem {
         PointF mLocation = new PointF();
         public Object extra;
         public boolean isSelect;
@@ -298,7 +346,47 @@ public class ItemPickerView extends View {
             isSelect = select;
         }
 
+        /**
+         * 获取当前item 绘制时的名称
+         *
+         * @return name
+         */
         public abstract String getName();
+    }
 
+    public class FlingRunnable implements Runnable {
+
+        private final OverScroller mScroller;
+        private int mLastFlingY;
+
+        FlingRunnable() {
+            mScroller = new OverScroller(getContext());
+        }
+
+        @Override
+        public void run() {
+            boolean more = mScroller.computeScrollOffset();
+            if (more) {
+                int currY = mScroller.getCurrY();
+                int deltaY = mLastFlingY - currY;
+                offsetChildren(-deltaY);
+                mLastFlingY = currY;
+                post(this);
+            } else {
+                resetUI();
+            }
+        }
+
+        public void endFling() {
+            removeCallbacks(this);
+            mScroller.abortAnimation();
+        }
+
+        public void start(int yVelocity) {
+            int initialY = yVelocity < 0 ? Integer.MAX_VALUE : 0;
+            mLastFlingY = initialY;
+            mScroller.fling(0, initialY, 0, yVelocity, 0, Integer.MAX_VALUE, 0, Integer.MAX_VALUE);
+            post(this);
+        }
     }
 }

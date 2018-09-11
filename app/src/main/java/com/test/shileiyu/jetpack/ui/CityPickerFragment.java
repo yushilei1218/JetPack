@@ -19,6 +19,7 @@ import com.test.shileiyu.jetpack.common.bean.city.City;
 import com.test.shileiyu.jetpack.common.bean.city.Country;
 import com.test.shileiyu.jetpack.common.bean.city.District;
 import com.test.shileiyu.jetpack.common.bean.city.Province;
+import com.test.shileiyu.jetpack.common.bean.city.SimpleCallBack;
 import com.test.shileiyu.jetpack.common.util.Util;
 import com.test.shileiyu.jetpack.common.widget.ItemPickerView;
 
@@ -45,12 +46,15 @@ public class CityPickerFragment extends DialogFragment implements Country.UIBind
 
     private Unbinder unbinder;
 
+    private SimpleCallBack<Boolean> mBack;
+
     public CityPickerFragment() {
     }
 
-    public static CityPickerFragment instance(Country country) {
+    public static CityPickerFragment instance(Country country, SimpleCallBack<Boolean> back) {
         CityPickerFragment fg = new CityPickerFragment();
         fg.mCountry = country;
+        fg.mBack = back;
         return fg;
     }
 
@@ -69,7 +73,7 @@ public class CityPickerFragment extends DialogFragment implements Country.UIBind
 
         mProvincePick.setListener(new ItemPickerView.OnItemSelectListener() {
             @Override
-            public void onItem(ItemPickerView.Child item) {
+            public void onItemSelect(@NonNull ItemPickerView.BaseItem item) {
                 Province extra = (Province) item.extra;
                 mCountry.onSelect(extra);
             }
@@ -77,7 +81,7 @@ public class CityPickerFragment extends DialogFragment implements Country.UIBind
 
         mCityPick.setListener(new ItemPickerView.OnItemSelectListener() {
             @Override
-            public void onItem(ItemPickerView.Child item) {
+            public void onItemSelect(@NonNull ItemPickerView.BaseItem item) {
                 City extra = (City) item.extra;
                 mCountry.onSelect(extra);
             }
@@ -85,7 +89,7 @@ public class CityPickerFragment extends DialogFragment implements Country.UIBind
 
         mDistrictPick.setListener(new ItemPickerView.OnItemSelectListener() {
             @Override
-            public void onItem(ItemPickerView.Child item) {
+            public void onItemSelect(@NonNull ItemPickerView.BaseItem item) {
                 District extra = (District) item.extra;
                 mCountry.onSelect(extra);
             }
@@ -96,6 +100,10 @@ public class CityPickerFragment extends DialogFragment implements Country.UIBind
 
     @OnClick(R.id.confirm_pick)
     public void onClick() {
+        dismiss();
+        if (mBack != null) {
+            mBack.onCall(true);
+        }
         mCountry.toast();
     }
 
@@ -110,11 +118,11 @@ public class CityPickerFragment extends DialogFragment implements Country.UIBind
         if (Util.isEmpty(composites)) {
             picker.setDisplayItems(null);
         } else {
-            List<ItemPickerView.Child> children = new ArrayList<>();
+            List<ItemPickerView.BaseItem> baseItems = new ArrayList<>();
             for (int i = 0; i < composites.size(); i++) {
-                children.add(new ChildWrap(composites.get(i)));
+                baseItems.add(new BaseItemWrap(composites.get(i)));
             }
-            picker.setDisplayItems(children);
+            picker.setDisplayItems(baseItems);
         }
     }
 
@@ -137,8 +145,8 @@ public class CityPickerFragment extends DialogFragment implements Country.UIBind
         super.onStart();
     }
 
-    public static class ChildWrap extends ItemPickerView.Child {
-        public ChildWrap(BaseComposite c) {
+    public static class BaseItemWrap extends ItemPickerView.BaseItem {
+        public BaseItemWrap(BaseComposite c) {
             this.isSelect = c.isSelect;
             extra = c;
 
