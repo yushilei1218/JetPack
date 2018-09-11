@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -22,8 +23,8 @@ import android.view.ViewConfiguration;
 import android.view.ViewParent;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.OverScroller;
-import android.widget.Scroller;
 
+import com.test.shileiyu.jetpack.R;
 import com.test.shileiyu.jetpack.common.util.Util;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import java.util.List;
  */
 
 public class ItemPickerView extends View {
+    private static final float VELOCITY_Y_RATIO = 1 / 8f;
 
     private List<BaseItem> mItems = new ArrayList<>();
 
@@ -42,16 +44,17 @@ public class ItemPickerView extends View {
 
     private int itemHeight = 150;
 
-    private int showCount = 5;
+    private int showCount = 3;
 
     private TextPaint mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+
     private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private RectF mCenter = new RectF();
-    VelocityTracker mTracker;
-    Scroller mScroller;
 
-    OnItemSelectListener mListener;
+    private VelocityTracker mTracker;
+
+    private OnItemSelectListener mListener;
 
     private int mMinimumVelocity;
 
@@ -60,6 +63,12 @@ public class ItemPickerView extends View {
     private FlingRunnable mFlingRunnable;
 
     private boolean isSettling = false;
+
+    private int mSelectAreaColor;
+
+    private int mNoneSelectAreaColor;
+
+    private int mTextOffset;
 
     public void setListener(OnItemSelectListener listener) {
         mListener = listener;
@@ -81,22 +90,37 @@ public class ItemPickerView extends View {
                 offsetChildren(-distanceY);
                 return true;
             }
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                return true;
-            }
         });
         mTracker = VelocityTracker.obtain();
-        mTextPaint.setColor(Color.RED);
-        mTextPaint.setTextSize(36f);
-        mTextPaint.setTextAlign(Paint.Align.CENTER);
-        mScroller = new Scroller(context);
-        mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setColor(Color.LTGRAY);
+
+
         ViewConfiguration configuration = ViewConfiguration.get(context);
         mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
-        mMaximumVelocity = configuration.getScaledMaximumFlingVelocity() / 8;
+        mMaximumVelocity = (int) (configuration.getScaledMaximumFlingVelocity() * VELOCITY_Y_RATIO);
+
+        mPaint.setStyle(Paint.Style.FILL);
+        mPaint.setColor(Color.LTGRAY);
+
+        int textSize = 24;
+        if (attrs != null) {
+            TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ItemPickerView);
+            mSelectAreaColor = ta.getColor(R.styleable.ItemPickerView_item_select_area_color, Color.RED);
+            mNoneSelectAreaColor = ta.getColor(R.styleable.ItemPickerView_item_none_select_area_color, Color.RED);
+            itemHeight = ta.getDimensionPixelSize(R.styleable.ItemPickerView_item_height, 150);
+            textSize = ta.getDimensionPixelSize(R.styleable.ItemPickerView_item_text_size, 24);
+            showCount = ta.getInt(R.styleable.ItemPickerView_show_count, 3);
+            if (showCount < 3) {
+                showCount = 3;
+            }
+            ta.recycle();
+        }
+
+        mTextPaint.setTextSize(textSize);
+        mTextPaint.setTextAlign(Paint.Align.CENTER);
+        Paint.FontMetricsInt metricsInt = mTextPaint.getFontMetricsInt();
+
+        mTextOffset = (int) ((Math.abs(metricsInt.ascent) - Math.abs(metricsInt.descent)) / 2f);
+
     }
 
     private void resetUI() {
@@ -104,36 +128,17 @@ public class ItemPickerView extends View {
         if (baseItem == null) {
             return;
         }
-        float cy = getHeight() / 2f;
-        float distanceY = cy - baseItem.mLocation.y;
+        float distanceY = getCenterY() - baseItem.mLocation.y;
         if (Math.abs(distanceY) >= itemHeight) {
-
-            class Update implements ValueAnimator.AnimatorUpdateListener {
-                private final float total;
-                private float past = 0;
-
-                Update(float total) {
-                    this.total = total;
-                }
-
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    Float animatedValue = (Float) animation.getAnimatedValue();
-                    float now = animatedValue * total;
-                    float delta = now - past;
-                    offsetChildren(delta);
-                    past = now;
-                }
-            }
-            //动画
+            //动画复位
             ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
             va.setDuration(150);
             va.setInterpolator(new DecelerateInterpolator());
-            va.addUpdateListener(new Update(distanceY));
+            va.addUpdateListener(new UiSettler(distanceY));
             va.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    checkSelected();
+                    checkSelectedAndCallBack();
                     isSettling = false;
                 }
 
@@ -145,15 +150,21 @@ public class ItemPickerView extends View {
             va.start();
         } else {
             offsetChildren(distanceY);
-            checkSelected();
+            checkSelectedAndCallBack();
         }
     }
 
+    /**
+     * 获取当前数据源中离中心点最近的item
+     *
+     * @return null or item
+     */
+    @Nullable
     private BaseItem getCenterNearestChild() {
         if (Util.isEmpty(mItems)) {
             return null;
         }
-        float cy = getHeight() / 2f;
+        float cy = getCenterY();
         BaseItem target = null;
         float dis = Float.MAX_VALUE;
         for (BaseItem baseItem : mItems) {
@@ -176,14 +187,17 @@ public class ItemPickerView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        float cy = h / 2f;
-        float per = itemHeight / 2f;
-        mCenter.set(0, cy - per, w, cy + per);
+        float cy = getCenterY();
+        float deltaY = itemHeight / 2f;
+        mCenter.set(0, cy - deltaY, w, cy + deltaY);
         setUpInitLocation();
         offset2SelectLocation();
     }
 
     private void offset2SelectLocation() {
+        if (getWidth() == 0 || getHeight() == 0) {
+            return;
+        }
         if (!Util.isEmpty(mItems)) {
             BaseItem first = null;
             for (BaseItem c : mItems) {
@@ -221,7 +235,7 @@ public class ItemPickerView extends View {
 
             mTracker.computeCurrentVelocity(1000, mMaximumVelocity);
             float yVelocity = mTracker.getYVelocity();
-
+            //触发fling
             if (Math.abs(yVelocity) > mMinimumVelocity) {
                 if (mFlingRunnable == null) {
                     mFlingRunnable = new FlingRunnable();
@@ -235,7 +249,6 @@ public class ItemPickerView extends View {
         return true;
     }
 
-
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawRect(mCenter, mPaint);
@@ -244,10 +257,17 @@ public class ItemPickerView extends View {
             return;
         }
         for (BaseItem c : mItems) {
-            canvas.drawText(c.getName(), c.mLocation.x, c.mLocation.y, mTextPaint);
+            float itemX = c.mLocation.x;
+            float itemY = c.mLocation.y;
+            boolean contains = mCenter.contains(itemX, itemY);
+            if (contains) {
+                mTextPaint.setColor(mSelectAreaColor);
+            } else {
+                mTextPaint.setColor(mNoneSelectAreaColor);
+            }
+            canvas.drawText(c.getName(), itemX, itemY + mTextOffset, mTextPaint);
         }
     }
-
 
     private void offsetChildren(float distanceY) {
         if (distanceY != 0 && !Util.isEmpty(mItems)) {
@@ -258,25 +278,28 @@ public class ItemPickerView extends View {
         }
     }
 
+    /**
+     * 设置当前Picker 需要展示的数据项
+     *
+     * @param data 为空时清空展示，否则展示
+     */
     public void setDisplayItems(final List<BaseItem> data) {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                if (Util.isEmpty(data)) {
-                    mItems.clear();
-                    invalidate();
-                } else {
-                    mItems.clear();
-                    mItems.addAll(data);
-                    setUpInitLocation();
-                    offset2SelectLocation();
-                    invalidate();
-                }
-            }
-        });
+        if (Util.isEmpty(data)) {
+            mItems.clear();
+            invalidate();
+        } else {
+            mItems.clear();
+            mItems.addAll(data);
+            setUpInitLocation();
+            offset2SelectLocation();
+            invalidate();
+        }
     }
 
-    private void checkSelected() {
+    /**
+     * 触发检查当前数据项集合，确定被选中的item，触发回调
+     */
+    private void checkSelectedAndCallBack() {
         if (!Util.isEmpty(mItems)) {
             BaseItem select = null;
             for (BaseItem baseItem : mItems) {
@@ -324,6 +347,9 @@ public class ItemPickerView extends View {
         }
     }
 
+    /**
+     * item被选中监听器
+     */
     public interface OnItemSelectListener {
         /**
          * 内部item被选中了
@@ -333,6 +359,9 @@ public class ItemPickerView extends View {
         void onItemSelect(@NonNull BaseItem item);
     }
 
+    /**
+     * Picker数据项基类
+     */
     public abstract static class BaseItem {
         PointF mLocation = new PointF();
         public Object extra;
@@ -354,7 +383,31 @@ public class ItemPickerView extends View {
         public abstract String getName();
     }
 
-    public class FlingRunnable implements Runnable {
+    /**
+     * UI复位-被选中的item动画回滚到恰当位置
+     */
+    private class UiSettler implements ValueAnimator.AnimatorUpdateListener {
+        private final float total;
+        private float past = 0;
+
+        UiSettler(float total) {
+            this.total = total;
+        }
+
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            Float animatedValue = (Float) animation.getAnimatedValue();
+            float now = animatedValue * total;
+            float delta = now - past;
+            offsetChildren(delta);
+            past = now;
+        }
+    }
+
+    /**
+     * Fling处理类
+     */
+    private class FlingRunnable implements Runnable {
 
         private final OverScroller mScroller;
         private int mLastFlingY;
@@ -377,12 +430,12 @@ public class ItemPickerView extends View {
             }
         }
 
-        public void endFling() {
+        void endFling() {
             removeCallbacks(this);
             mScroller.abortAnimation();
         }
 
-        public void start(int yVelocity) {
+        void start(int yVelocity) {
             int initialY = yVelocity < 0 ? Integer.MAX_VALUE : 0;
             mLastFlingY = initialY;
             mScroller.fling(0, initialY, 0, yVelocity, 0, Integer.MAX_VALUE, 0, Integer.MAX_VALUE);

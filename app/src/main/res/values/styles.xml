@@ -65,4 +65,21 @@
         <item name="android:background">@drawable/arrow_up_2_down</item>
 
     </style>
+
+    <declare-styleable name="ItemPickerView">
+        <attr name="show_count" format="integer" />
+        <attr name="item_height" format="dimension" />
+        <attr name="item_text_size" format="dimension" />
+        <attr name="item_select_area_color" format="color" />
+        <attr name="item_none_select_area_color" format="color" />
+    </declare-styleable>
+
+
+    <style name="Item_Pick_Style">
+        <item name="show_count">5</item>
+        <item name="item_height">45dp</item>
+        <item name="item_text_size">18sp</item>
+        <item name="item_select_area_color">#ff3939</item>
+        <item name="item_none_select_area_color">#5b5b5b</item>
+    </style>
 </resources>

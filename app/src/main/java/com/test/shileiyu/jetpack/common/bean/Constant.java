@@ -6,5 +6,5 @@ package com.test.shileiyu.jetpack.common.bean;
  */
 
 public interface Constant {
-    int TIME = 1500;
+    int TIME = 1000;
 }
