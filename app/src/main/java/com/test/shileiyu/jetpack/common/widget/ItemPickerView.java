@@ -133,7 +133,7 @@ public class ItemPickerView extends View {
             return;
         }
         float distanceY = getCenterY() - baseItem.mLocation.y;
-        if (Math.abs(distanceY) >= itemHeight) {
+        if (Math.abs(distanceY) >= itemHeight / 2f) {
             //动画复位
             mUiSettlerAni = ValueAnimator.ofFloat(0f, 1f);
             mUiSettlerAni.setDuration(150);
