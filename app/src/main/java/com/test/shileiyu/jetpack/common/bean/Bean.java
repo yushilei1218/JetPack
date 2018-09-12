@@ -25,6 +25,14 @@ public class Bean implements Cloneable {
         return beans;
     }
 
+    public static List<Bean> getList(String namePrex) {
+        ArrayList<Bean> beans = new ArrayList<>(50);
+        for (int i = 0; i < 50; i++) {
+            beans.add(new Bean(namePrex + " " + i));
+        }
+        return beans;
+    }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
