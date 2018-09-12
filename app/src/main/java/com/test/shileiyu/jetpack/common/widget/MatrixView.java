@@ -90,9 +90,9 @@ public class MatrixView extends View {
 
     private boolean isOnScrolling = false;
 
-    private VectorDrawableCompat mSeatDrawable;
-
-    private HashMap<Integer, VectorDrawableCompat> colorDrawableMap = new HashMap<>();
+    private VectorDrawableCompat mSoldSeat;
+    private VectorDrawableCompat mLockSeat;
+    private VectorDrawableCompat mNormalSeat;
 
     public MatrixView(Context context) {
         super(context, null);
@@ -190,15 +190,10 @@ public class MatrixView extends View {
             }
         });
 
-        putDrawable(context, colorLock);
-        putDrawable(context, colorSold);
-        putDrawable(context, colorNormal);
-    }
+        mSoldSeat = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_seat_sold_new, context.getTheme());
+        mLockSeat = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_seat_select_new, context.getTheme());
+        mNormalSeat = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_seat_normal_new, context.getTheme());
 
-    private void putDrawable(Context context, int color) {
-        VectorDrawableCompat vdc = VectorDrawableCompat.create(context.getResources(), R.drawable.ic_seat, context.getTheme());
-        vdc.setTint(color);
-        colorDrawableMap.put(color, vdc);
     }
 
     private void autoZoomIfNeed(MotionEvent e) {
@@ -270,14 +265,14 @@ public class MatrixView extends View {
             computeSeatBoundInView(tempBound, s, mArea);
             VectorDrawableCompat vdc;
             if (s.isSelect()) {
-                vdc = colorDrawableMap.get(colorLock);
+                vdc = mLockSeat;
             } else if (s.isSold()) {
-                vdc = colorDrawableMap.get(colorSold);
+                vdc = mSoldSeat;
             } else {
-                vdc = colorDrawableMap.get(colorNormal);
+                vdc = mNormalSeat;
             }
-            if (vdc!=null){
-                Log.d(TAG,vdc.toString());
+            if (vdc != null) {
+                Log.d(TAG, vdc.toString());
                 vdc.setBounds(tempBound);
                 vdc.draw(canvas);
             }
