@@ -9,6 +9,7 @@ import com.test.shileiyu.jetpack.ui.AppBarLayoutActivity;
 import com.test.shileiyu.jetpack.ui.AreaViewActivity;
 import com.test.shileiyu.jetpack.ui.BehaviorActivity;
 import com.test.shileiyu.jetpack.ui.BitmapActivity;
+import com.test.shileiyu.jetpack.ui.BottomSheetBehaviorActivity;
 import com.test.shileiyu.jetpack.ui.CalendarActivity;
 import com.test.shileiyu.jetpack.ui.CropActivity;
 import com.test.shileiyu.jetpack.ui.DragActivity;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             , R.id.main_10_tab, R.id.main_11_tab
             , R.id.main_13_tab
             , R.id.main_14_tab
-            , R.id.main_15_tab
+            , R.id.main_15_tab, R.id.main_23_tab
             , R.id.main_17_tab, R.id.main_22_tab
             , R.id.main_20_tab, R.id.main_21_tab
             , R.id.main_18_tab, R.id.main_19_tab
@@ -114,6 +115,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_22_tab:
                 startActivity(new Intent(this, AppBarLayoutActivity.class));
+                break;
+            case R.id.main_23_tab:
+                startActivity(new Intent(this, BottomSheetBehaviorActivity.class));
                 break;
             default:
                 break;

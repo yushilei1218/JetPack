@@ -54,7 +54,8 @@
 
         <activity android:name=".ui.ServiceActivity" />
         <activity android:name=".ui.NumberPickerActivity" />
-        <activity android:name=".ui.AppBarLayoutActivity"></activity>
+        <activity android:name=".ui.AppBarLayoutActivity" />
+        <activity android:name=".ui.BottomSheetBehaviorActivity"></activity>
     </application>
 
 </manifest>
