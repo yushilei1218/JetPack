@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -20,8 +21,10 @@ import com.test.shileiyu.jetpack.common.util.Util;
 import com.test.shileiyu.jetpack.common.widget.NineGridLayoutImpl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import butterknife.BindView;
 
@@ -65,6 +68,7 @@ public class NineGirdActivity extends BaseActivity {
         }
         adapter.data = data;
         mListView.setAdapter(adapter);
+        mListView.setOnScrollListener(adapter);
     }
 
     @Override
@@ -74,7 +78,10 @@ public class NineGirdActivity extends BaseActivity {
 
     private int index = 0;
 
-    private class Adapter extends AbsBaseAdapter<Bean> {
+    private class Adapter extends AbsBaseAdapter<Bean> implements AbsListView.OnScrollListener {
+        HashMap<ImageView, String> taskMap = new HashMap<>();
+        private int mListViewState;
+
         @Override
         public VH<Bean> getVH() {
             return new VH<Bean>() {
@@ -95,24 +102,57 @@ public class NineGirdActivity extends BaseActivity {
                     String text = "size =" + size;
                     tv.setText(text);
 
-                    RequestOptions placeholder = RequestOptions.placeholderOf(R.mipmap.ic_deafult).centerCrop();
-
-                    List<View> showViews = nine.getShowViews();
-
-                    for (int i = 0; i < size; i++) {
-                        ImageView v1 = (ImageView) showViews.get(i);
-                        v1.setTag(R.integer.id_r, i);
-                        v1.setOnClickListener(new ClickDelegate(item, i));
-
-                        Glide.with(NineGirdActivity.this)
-                                .asBitmap().load(item.urls.get(i)).apply(placeholder).into(v1);
-                    }
                     RequestOptions placeholder2 = RequestOptions.placeholderOf(R.mipmap.ic_deafult).centerCrop();
                     ImageView img = itemView.findViewById(R.id.img);
                     Glide.with(NineGirdActivity.this).asBitmap().load(item.name)
                             .apply(placeholder2).into(img);
+
+                    List<View> showViews = nine.getShowViews();
+
+                    RequestOptions placeholder = RequestOptions.placeholderOf(R.mipmap.ic_deafult).centerCrop();
+                    if (size == 1) {
+                        ImageView view = (ImageView) showViews.get(0);
+                        ViewGroup.LayoutParams lp = view.getLayoutParams();
+                        lp.width = 300;
+                        view.setLayoutParams(lp);
+                    }
+
+                    for (int i = 0; i < size; i++) {
+                        ImageView child = (ImageView) showViews.get(i);
+                        String url = item.urls.get(i);
+                        child.setTag(R.integer.id_r, i);
+                        child.setOnClickListener(new ClickDelegate(item, i));
+
+                        if (mListViewState == SCROLL_STATE_IDLE) {
+
+                            Glide.with(NineGirdActivity.this)
+                                    .asBitmap().load(url).apply(placeholder).into(child);
+                        } else {
+                            child.setImageResource(R.mipmap.ic_deafult);
+                            taskMap.put(child, url);
+                        }
+                    }
                 }
             };
+        }
+
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+            mListViewState = scrollState;
+            if (scrollState == SCROLL_STATE_IDLE) {
+                Set<ImageView> imageViews = taskMap.keySet();
+                for (ImageView img : imageViews) {
+                    String url = taskMap.get(img);
+                    RequestOptions ro = RequestOptions.centerCropTransform();
+                    Glide.with(NineGirdActivity.this).asBitmap().apply(ro).load(url).into(img);
+                }
+                taskMap.clear();
+            }
+        }
+
+        @Override
+        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
         }
 
         private class ClickDelegate implements View.OnClickListener {
