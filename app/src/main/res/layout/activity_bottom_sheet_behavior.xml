@@ -1,60 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SlidingPaneLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/slide_pane"
     tools:context=".ui.BottomSheetBehaviorActivity">
 
     <LinearLayout
-        android:id="@+id/bottom_sheet_layout"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:orientation="vertical"
-        app:layout_behavior="@string/bottom_sheet_behavior">
+        android:layout_width="150dp"
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/bottom_opr"
+        <ListView
+            android:id="@+id/lv_slide"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="#ffc1c1"
-            android:gravity="center"
-            android:text="A 50dp per" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="#ff9090"
-            android:gravity="center"
-            android:text="B" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="#ac8c8c"
-            android:gravity="center"
-            android:text="C" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="#525ba6"
-            android:gravity="center"
-            android:text="D" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="#9cb687"
-            android:gravity="center"
-            android:text="E" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="#bab36f"
-            android:gravity="center"
-            android:text="F" />
+            android:layout_height="match_parent" />
     </LinearLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/swipe_dismiss"
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#f8fa62"
+                android:gravity="center"
+                android:text="SwipeDismissBehavior" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bottom_sheet_layout"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:orientation="vertical"
+            app:layout_behavior="@string/bottom_sheet_behavior">
+
+            <TextView
+                android:id="@+id/bottom_opr"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#ffc1c1"
+                android:gravity="center"
+                android:text="A 50dp per" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#ff9090"
+                android:gravity="center"
+                android:text="B" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#ac8c8c"
+                android:gravity="center"
+                android:text="C" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#525ba6"
+                android:gravity="center"
+                android:text="D" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#9cb687"
+                android:gravity="center"
+                android:text="E" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#bab36f"
+                android:gravity="center"
+                android:text="F" />
+        </LinearLayout>
+
+    </android.support.design.widget.CoordinatorLayout>
+
+</android.support.v4.widget.SlidingPaneLayout>
