@@ -27,13 +27,14 @@ public class BottomSheetBehaviorActivity extends BaseActivity {
             STATE_HIDDEN
     };
     private int index = 0;
+    private BottomSheetBehavior<View> mBehavior;
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        BottomSheetBehavior behavior = getBottomSheetBehavior();
-        behavior.setHideable(true);
-        behavior.setPeekHeight(Util.dp2px(this, 50));
-        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+        mBehavior = BottomSheetBehavior.from(bottom);
+        mBehavior.setHideable(true);
+        mBehavior.setPeekHeight(Util.dp2px(this, 50));
+        mBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
 
@@ -46,16 +47,10 @@ public class BottomSheetBehaviorActivity extends BaseActivity {
         });
     }
 
-    private BottomSheetBehavior getBottomSheetBehavior() {
-        CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) bottom.getLayoutParams();
-        return (BottomSheetBehavior) lp.getBehavior();
-    }
-
     @OnClick(R.id.bottom_opr)
     public void onClick(View view) {
         int state = stateArr[index % stateArr.length];
-        BottomSheetBehavior behavior = getBottomSheetBehavior();
-        behavior.setState(state);
+        mBehavior.setState(state);
         index++;
     }
 
