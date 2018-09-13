@@ -13,6 +13,12 @@
         android:layout_height="wrap_content"
         android:text="这是一个BTN 点击Left+50" />
 
+    <com.test.shileiyu.jetpack.common.widget.MiButton
+        android:id="@+id/left_9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="点击LayoutParams leftMargin+50" />
+
     <Button
         android:id="@+id/left_8"
         android:layout_width="wrap_content"

@@ -6,6 +6,7 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -31,6 +32,8 @@ public class TestActivity extends BaseActivity {
     View mTx7;
     @BindView(R.id.left_8)
     View mTx8;
+    @BindView(R.id.left_9)
+    View mTx9;
 
     @Override
     protected void initView(Bundle savedInstanceState) {
@@ -49,6 +52,7 @@ public class TestActivity extends BaseActivity {
 
     @OnClick({
             R.id.zidingyi_da_dian,
+            R.id.left_9,
             R.id.left_6,
             R.id.left_7,
             R.id.zidingyi_dizhijiexi,
@@ -79,6 +83,23 @@ public class TestActivity extends BaseActivity {
                 break;
             case R.id.left_8:
                 mTx8.offsetLeftAndRight(50);
+                break;
+            case R.id.left_9:
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mTx9.getLayoutParams();
+                lp.leftMargin += 50;
+                mTx9.requestLayout();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        int left = mTx9.getLeft();
+                        int right = mTx9.getRight();
+                        int top = mTx9.getTop();
+                        int bottom = mTx9.getBottom();
+                        String msg = "left=" + left + " right=" + right + " top=" + top + " bottom=" + bottom;
+                        Util.showToast(msg);
+                        Log.d("MiButton", msg);
+                    }
+                }, 200);
                 break;
             default:
                 break;
