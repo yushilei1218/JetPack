@@ -95,8 +95,6 @@ public class ItemPickerView extends View {
                 return true;
             }
         });
-        mTracker = VelocityTracker.obtain();
-
 
         ViewConfiguration configuration = ViewConfiguration.get(context);
         mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
@@ -125,6 +123,15 @@ public class ItemPickerView extends View {
 
         mTextOffset = (int) ((Math.abs(metricsInt.ascent) - Math.abs(metricsInt.descent)) / 2f);
 
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        if (mTracker != null) {
+            mTracker.clear();
+            mTracker.recycle();
+        }
+        super.onDetachedFromWindow();
     }
 
     private void resetUI() {
@@ -231,7 +238,9 @@ public class ItemPickerView extends View {
                 mFlingRunnable.endFling();
             }
         }
-
+        if (mTracker == null) {
+            mTracker = VelocityTracker.obtain();
+        }
         mTracker.addMovement(event);
         mDetector.onTouchEvent(event);
 
