@@ -14,6 +14,37 @@
         android:text="这是一个BTN 点击Left+50" />
 
     <Button
+        android:id="@+id/left_8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="点击OffsetLeftAndRight+50" />
+
+    <Button
+        android:id="@+id/left_6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="这是一个BTN 点击TranslationX+50" />
+
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="80dp"
+        android:background="#f49e9e"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/left_7"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:background="#FFF"
+            android:text="这是一个BTN 点击TranslationX+50" />
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="#fffc57" />
+    </LinearLayout>
+
+    <Button
         android:id="@+id/request"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

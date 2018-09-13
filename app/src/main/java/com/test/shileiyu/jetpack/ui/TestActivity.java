@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 
 import com.test.shileiyu.jetpack.R;
@@ -24,6 +25,12 @@ public class TestActivity extends BaseActivity {
     View mBTN;
     @BindView(R.id.request)
     View mRequest;
+    @BindView(R.id.left_6)
+    View mTx;
+    @BindView(R.id.left_7)
+    View mTx7;
+    @BindView(R.id.left_8)
+    View mTx8;
 
     @Override
     protected void initView(Bundle savedInstanceState) {
@@ -35,12 +42,17 @@ public class TestActivity extends BaseActivity {
 //        l.getX();
 //        View view;
 //        view.getLocationInWindow();
+//        TranslateAnimation a;
+//        mTx.startAnimation(a);
 
     }
 
     @OnClick({
             R.id.zidingyi_da_dian,
+            R.id.left_6,
+            R.id.left_7,
             R.id.zidingyi_dizhijiexi,
+            R.id.left_8,
             R.id.left_5,
             R.id.request
     })
@@ -53,11 +65,20 @@ public class TestActivity extends BaseActivity {
                 int i = mBTN.getLeft() + 50;
                 mBTN.setLeft(i);
                 break;
+            case R.id.left_6:
+                mTx.setTranslationX(mTx.getTranslationX() + 50);
+                break;
+            case R.id.left_7:
+                mTx7.setTranslationX(mTx7.getTranslationX() + 50);
+                break;
             case R.id.zidingyi_da_dian:
                 startBaiDuMapWithCustomPoint();
                 break;
             case R.id.zidingyi_dizhijiexi:
                 startBaiDuMap2ParseAddress();
+                break;
+            case R.id.left_8:
+                mTx8.offsetLeftAndRight(50);
                 break;
             default:
                 break;
