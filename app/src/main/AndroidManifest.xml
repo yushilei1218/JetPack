@@ -32,7 +32,9 @@
         <activity android:name=".ui.NineGirdActivity" />
         <activity android:name=".ui.PhotoActivity" />
         <activity android:name=".ui.CropActivity" />
-        <activity android:name=".ui.Test2Activity" />
+        <activity
+            android:name=".ui.ActivityLifeCycleActivity"
+            android:configChanges="keyboardHidden" />
         <activity
             android:name=".ui.BehaviorActivity"
             android:theme="@style/Theme.Design.Light.NoActionBar" />
@@ -55,7 +57,7 @@
         <activity android:name=".ui.ServiceActivity" />
         <activity android:name=".ui.NumberPickerActivity" />
         <activity android:name=".ui.AppBarLayoutActivity" />
-        <activity android:name=".ui.BottomSheetBehaviorActivity"></activity>
+        <activity android:name=".ui.BottomSheetBehaviorActivity" />
     </application>
 
 </manifest>

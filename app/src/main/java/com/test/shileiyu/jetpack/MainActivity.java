@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.test.shileiyu.jetpack.ui.ActivityLifeCycleActivity;
 import com.test.shileiyu.jetpack.ui.AppBarLayoutActivity;
 import com.test.shileiyu.jetpack.ui.AreaViewActivity;
 import com.test.shileiyu.jetpack.ui.BehaviorActivity;
@@ -23,7 +24,6 @@ import com.test.shileiyu.jetpack.ui.PhotoActivity;
 import com.test.shileiyu.jetpack.ui.SeatActivity;
 import com.test.shileiyu.jetpack.ui.ServiceActivity;
 import com.test.shileiyu.jetpack.ui.SvgActivity;
-import com.test.shileiyu.jetpack.ui.Test2Activity;
 import com.test.shileiyu.jetpack.ui.TestActivity;
 import com.test.shileiyu.jetpack.ui.home.TabActivity;
 import com.test.shileiyu.jetpack.ui.search.SearchActivity;
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.main_11_tab:
                 startActivity(new Intent(this, CropActivity.class));
             case R.id.main_12_tab:
-                startActivity(new Intent(this, Test2Activity.class));
+                startActivity(new Intent(this, ActivityLifeCycleActivity.class));
                 break;
             case R.id.main_13_tab:
                 startActivity(new Intent(this, BehaviorActivity.class));

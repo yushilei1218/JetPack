@@ -15,13 +15,13 @@
         app:srcCompat="@drawable/ic_seat_lock" />
 
     <android.support.v7.widget.AppCompatImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         app:srcCompat="@drawable/ic_seat_normal" />
 
     <android.support.v7.widget.AppCompatImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         app:srcCompat="@drawable/ic_seat_sold" />
 
 </LinearLayout>
