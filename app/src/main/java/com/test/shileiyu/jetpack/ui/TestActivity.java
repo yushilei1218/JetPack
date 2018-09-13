@@ -8,27 +8,51 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.widget.LinearLayout;
 
 import com.test.shileiyu.jetpack.R;
 import com.test.shileiyu.jetpack.common.base.BaseActivity;
 import com.test.shileiyu.jetpack.common.util.Util;
 
+import butterknife.BindView;
 import butterknife.OnClick;
 
 public class TestActivity extends BaseActivity {
 
+    @BindView(R.id.left_5)
+    View mBTN;
+    @BindView(R.id.request)
+    View mRequest;
 
     @Override
     protected void initView(Bundle savedInstanceState) {
+//        LinearLayout l;
+//        l.getWidth();
+//        l.setLeft();
+//        l.setTranslationX();
+//        l.setX();
+//        l.getX();
+//        View view;
+//        view.getLocationInWindow();
 
     }
 
     @OnClick({
             R.id.zidingyi_da_dian,
-            R.id.zidingyi_dizhijiexi
+            R.id.zidingyi_dizhijiexi,
+            R.id.left_5,
+            R.id.request
     })
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.request:
+                mRequest.requestLayout();
+                break;
+            case R.id.left_5:
+                int i = mBTN.getLeft() + 50;
+                mBTN.setLeft(i);
+                break;
             case R.id.zidingyi_da_dian:
                 startBaiDuMapWithCustomPoint();
                 break;
