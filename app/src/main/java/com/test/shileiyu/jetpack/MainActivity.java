@@ -21,6 +21,7 @@ import com.test.shileiyu.jetpack.ui.MyBehaviorActivity;
 import com.test.shileiyu.jetpack.ui.NineGirdActivity;
 import com.test.shileiyu.jetpack.ui.NumberPickerActivity;
 import com.test.shileiyu.jetpack.ui.PhotoActivity;
+import com.test.shileiyu.jetpack.ui.ScrollConflictActivity;
 import com.test.shileiyu.jetpack.ui.SeatActivity;
 import com.test.shileiyu.jetpack.ui.ServiceActivity;
 import com.test.shileiyu.jetpack.ui.SvgActivity;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
             , R.id.main_10_tab, R.id.main_11_tab
             , R.id.main_13_tab
             , R.id.main_14_tab
+            , R.id.main_24_tab
             , R.id.main_15_tab, R.id.main_23_tab
             , R.id.main_17_tab, R.id.main_22_tab
             , R.id.main_20_tab, R.id.main_21_tab
@@ -118,6 +120,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_23_tab:
                 startActivity(new Intent(this, BottomSheetBehaviorActivity.class));
+                break;
+            case R.id.main_24_tab:
+                startActivity(new Intent(this, ScrollConflictActivity.class));
                 break;
             default:
                 break;
