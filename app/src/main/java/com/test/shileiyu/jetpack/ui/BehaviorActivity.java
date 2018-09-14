@@ -51,7 +51,7 @@ public class BehaviorActivity extends BaseActivity {
     private int mXuanFuTop;
 
     @BindView(R.id.error_layout)
-    NestedScrollView errorLayout;
+    ViewGroup errorLayout;
     @BindView(R.id.float_btn)
     FloatingActionButton fbtn;
     @BindView(R.id.error_content)
