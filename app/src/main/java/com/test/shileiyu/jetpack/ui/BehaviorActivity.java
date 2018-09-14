@@ -60,6 +60,8 @@ public class BehaviorActivity extends BaseActivity {
     @BindView(R.id.root)
     ViewGroup mRoot;
     private int mRootHeight;
+    @BindView(R.id.app_bar_content)
+    ViewGroup mAppBarContent;
 
     @Override
     protected void initView(Bundle savedInstanceState) {
@@ -186,15 +188,29 @@ public class BehaviorActivity extends BaseActivity {
         });
     }
 
+    boolean isAdd = true;
+
     @OnClick({
             R.id.xuan_fu_input,
             R.id.filter,
+            R.id.float_btn2,
             R.id.float_btn
     })
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.xuan_fu_input:
                 Util.showToast("Input");
+                break;
+            case R.id.float_btn2:
+                ViewGroup.LayoutParams lp = mAppBarContent.getLayoutParams();
+                int height = Util.dp2px(this, 500);
+                if (isAdd) {
+                    lp.height += height;
+                } else {
+                    lp.height -= height;
+                }
+                isAdd = !isAdd;
+                mAppBarContent.setLayoutParams(lp);
                 break;
             case R.id.float_btn:
                 if (Util.isEmpty(mAdapter.data)) {
@@ -203,7 +219,7 @@ public class BehaviorActivity extends BaseActivity {
                     mAdapter.notifyDataSetChanged();
                     errorLayout.setVisibility(View.GONE);
                 } else {
-                    mAdapter.data=null;
+                    mAdapter.data = null;
                     mAdapter.notifyDataSetChanged();
                     mRecyclerView.setVisibility(View.GONE);
                     errorLayout.setVisibility(View.VISIBLE);

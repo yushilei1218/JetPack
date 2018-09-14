@@ -2,8 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/root"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffaaaa"
     tools:context=".ui.BehaviorActivity">
@@ -19,6 +19,7 @@
             android:id="@+id/app_bar_be"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:background="#00000000">
 
             <ImageView
@@ -30,6 +31,7 @@
                 app:layout_scrollFlags="scroll" />
 
             <RelativeLayout
+                android:id="@+id/app_bar_content"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginBottom="-45dp"
@@ -37,13 +39,17 @@
                 app:layout_scrollFlags="scroll">
 
                 <TextView
+                    android:layout_centerInParent="true"
+                    android:text="这是一行文案"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </RelativeLayout>
 
             <RelativeLayout
+
                 android:layout_width="match_parent"
                 android:layout_height="95dp"
+                android:background="#54ff88"
                 app:layout_scrollFlags="enterAlways">
 
                 <LinearLayout
@@ -67,6 +73,7 @@
 
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/error_layout"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -86,11 +93,20 @@
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/float_btn"
-            android:layout_gravity="bottom|right"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="20dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="20dp" />
+
+        <Button
+            android:id="@+id/float_btn2"
+            android:text="拉长AppBarContent或者缩短"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="80dp"
+            android:layout_marginRight="20dp" />
 
     </com.test.shileiyu.jetpack.common.widget.DragCoordinatorLayout>
 
