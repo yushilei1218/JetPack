@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/root"
     android:layout_height="match_parent"
     android:background="#ffaaaa"
     tools:context=".ui.BehaviorActivity">
@@ -64,6 +65,33 @@
             app:layoutManager="android.support.v7.widget.LinearLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/error_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <RelativeLayout
+                android:id="@+id/error_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@mipmap/ic_empty" />
+            </RelativeLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/float_btn"
+            android:layout_gravity="bottom|right"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
     </com.test.shileiyu.jetpack.common.widget.DragCoordinatorLayout>
 
     <RelativeLayout
@@ -82,8 +110,8 @@
         android:layout_marginRight="20dp"
         android:layout_marginTop="135dp"
         android:background="#ffb9b9"
-        android:translationZ="1dp"
-        android:padding="5dp">
+        android:padding="5dp"
+        android:translationZ="1dp">
 
         <TextView
             android:layout_width="match_parent"

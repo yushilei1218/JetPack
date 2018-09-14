@@ -1,13 +1,17 @@
 package com.test.shileiyu.jetpack.ui;
 
 import android.animation.ValueAnimator;
+import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,15 +50,32 @@ public class BehaviorActivity extends BaseActivity {
     private int mImgHeight;
     private int mXuanFuTop;
 
+    @BindView(R.id.error_layout)
+    NestedScrollView errorLayout;
+    @BindView(R.id.float_btn)
+    FloatingActionButton fbtn;
+    @BindView(R.id.error_content)
+    View errorContent;
+    private Adapter mAdapter;
+    @BindView(R.id.root)
+    ViewGroup mRoot;
+    private int mRootHeight;
+
     @Override
     protected void initView(Bundle savedInstanceState) {
-        Adapter adapter = new Adapter();
-        List<Bean> data = new ArrayList<>(100);
-        for (int i = 0; i < 100; i++) {
-            data.add(new Bean("item+" + i));
-        }
-        adapter.data = data;
-        mRecyclerView.setAdapter(adapter);
+
+        //3、获取屏幕的默认分辨率
+        Display display = getWindowManager().getDefaultDisplay();
+
+        Point outSize = new Point();
+        display.getSize(outSize);
+        int height = outSize.y;
+        errorContent.getLayoutParams().height = height;
+
+
+        mAdapter = new Adapter();
+        mAdapter.data = Bean.getList();
+        mRecyclerView.setAdapter(mAdapter);
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -108,6 +129,7 @@ public class BehaviorActivity extends BaseActivity {
             @Override
             public void run() {
                 mXuanFuTop = mXuanFu.getTop();
+
             }
         });
 
@@ -164,11 +186,28 @@ public class BehaviorActivity extends BaseActivity {
         });
     }
 
-    @OnClick({R.id.xuan_fu_input, R.id.filter})
+    @OnClick({
+            R.id.xuan_fu_input,
+            R.id.filter,
+            R.id.float_btn
+    })
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.xuan_fu_input:
                 Util.showToast("Input");
+                break;
+            case R.id.float_btn:
+                if (Util.isEmpty(mAdapter.data)) {
+                    mAdapter.data = Bean.getList();
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                    mAdapter.notifyDataSetChanged();
+                    errorLayout.setVisibility(View.GONE);
+                } else {
+                    mAdapter.data=null;
+                    mAdapter.notifyDataSetChanged();
+                    mRecyclerView.setVisibility(View.GONE);
+                    errorLayout.setVisibility(View.VISIBLE);
+                }
                 break;
             case R.id.filter:
                 mRecyclerView.stopScroll();
