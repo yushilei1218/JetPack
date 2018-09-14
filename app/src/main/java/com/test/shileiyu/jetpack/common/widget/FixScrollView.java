@@ -33,6 +33,9 @@ public class FixScrollView extends ScrollView {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         float y = ev.getY();
         int scrollY = getScrollY();
+        if (ev.getAction()==MotionEvent.ACTION_DOWN){
+            mLY = y;
+        }
         if (ev.getAction() == MotionEvent.ACTION_MOVE) {
             float deltaY = y - mLY;
             if (Math.abs(deltaY) > mTouchSlop) {
@@ -49,7 +52,7 @@ public class FixScrollView extends ScrollView {
                 }
             }
         }
-        mLY = y;
+
         return super.onInterceptTouchEvent(ev);
     }
 }
