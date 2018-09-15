@@ -58,7 +58,8 @@
         <activity android:name=".ui.NumberPickerActivity" />
         <activity android:name=".ui.AppBarLayoutActivity" />
         <activity android:name=".ui.BottomSheetBehaviorActivity" />
-        <activity android:name=".ui.ScrollConflictActivity"></activity>
+        <activity android:name=".ui.ScrollConflictActivity" />
+        <activity android:name=".ui.ScrollPageActivity"></activity>
     </application>
 
 </manifest>
