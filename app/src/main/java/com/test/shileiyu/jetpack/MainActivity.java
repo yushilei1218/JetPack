@@ -18,6 +18,7 @@ import com.test.shileiyu.jetpack.ui.DragHead2ZoomActivity;
 import com.test.shileiyu.jetpack.ui.MatrixActivity;
 import com.test.shileiyu.jetpack.ui.MoveActivity;
 import com.test.shileiyu.jetpack.ui.MyBehaviorActivity;
+import com.test.shileiyu.jetpack.ui.NestScrooViewRecyActivity;
 import com.test.shileiyu.jetpack.ui.NineGirdActivity;
 import com.test.shileiyu.jetpack.ui.NumberPickerActivity;
 import com.test.shileiyu.jetpack.ui.PhotoActivity;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
             , R.id.main_14_tab
             , R.id.main_24_tab
             , R.id.main_25_tab
+            , R.id.main_26_tab
             , R.id.main_15_tab, R.id.main_23_tab
             , R.id.main_17_tab, R.id.main_22_tab
             , R.id.main_20_tab, R.id.main_21_tab
@@ -128,6 +130,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_25_tab:
                 startActivity(new Intent(this, ScrollPageActivity.class));
+                break;
+            case R.id.main_26_tab:
+                startActivity(new Intent(this, NestScrooViewRecyActivity.class));
                 break;
             default:
                 break;

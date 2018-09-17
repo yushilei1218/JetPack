@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.NestScrooViewRecyActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="#ff6c6c">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:background="#63afff"
+            android:gravity="center"
+            android:text="这是一个AppBar 内的Scroll TextView"
+            app:layout_scrollFlags="scroll" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:text="这是一个AppBar 内的fix TextView" />
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="#fff25f"
+                android:gravity="center"
+                android:text="这是NestedScrollView 中的一个TextView" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="#5fffa7"
+                android:gravity="center"
+                android:text="这是NestedScrollView 中的二个TextView" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_nest"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+            <TextView
+                android:id="@+id/footer_tv"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="#ffd454"
+                android:visibility="gone"
+                android:gravity="center" />
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>

@@ -59,7 +59,8 @@
         <activity android:name=".ui.AppBarLayoutActivity" />
         <activity android:name=".ui.BottomSheetBehaviorActivity" />
         <activity android:name=".ui.ScrollConflictActivity" />
-        <activity android:name=".ui.ScrollPageActivity"></activity>
+        <activity android:name=".ui.ScrollPageActivity" />
+        <activity android:name=".ui.NestScrooViewRecyActivity"></activity>
     </application>
 
 </manifest>

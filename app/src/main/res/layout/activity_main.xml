@@ -156,6 +156,12 @@
             android:layout_height="wrap_content"
             android:text="ScrollPage" />
 
+        <Button
+            android:id="@+id/main_26_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NestScroll +RecyclerView" />
+
         <fragment
             class="com.test.shileiyu.jetpack.ui.album.AlbumFragment"
             android:layout_width="match_parent"
