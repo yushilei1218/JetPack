@@ -28,6 +28,7 @@ import com.test.shileiyu.jetpack.ui.SeatActivity;
 import com.test.shileiyu.jetpack.ui.ServiceActivity;
 import com.test.shileiyu.jetpack.ui.SvgActivity;
 import com.test.shileiyu.jetpack.ui.TestActivity;
+import com.test.shileiyu.jetpack.ui.ViewPageRecyclerActivity;
 import com.test.shileiyu.jetpack.ui.home.TabActivity;
 import com.test.shileiyu.jetpack.ui.search.SearchActivity;
 
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
             , R.id.main_24_tab
             , R.id.main_25_tab
             , R.id.main_26_tab
+            , R.id.main_27_tab
             , R.id.main_15_tab, R.id.main_23_tab
             , R.id.main_17_tab, R.id.main_22_tab
             , R.id.main_20_tab, R.id.main_21_tab
@@ -133,6 +135,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_26_tab:
                 startActivity(new Intent(this, NestScrooViewRecyActivity.class));
+                break;
+            case R.id.main_27_tab:
+                startActivity(new Intent(this, ViewPageRecyclerActivity.class));
                 break;
             default:
                 break;

@@ -60,7 +60,8 @@
         <activity android:name=".ui.BottomSheetBehaviorActivity" />
         <activity android:name=".ui.ScrollConflictActivity" />
         <activity android:name=".ui.ScrollPageActivity" />
-        <activity android:name=".ui.NestScrooViewRecyActivity"></activity>
+        <activity android:name=".ui.NestScrooViewRecyActivity" />
+        <activity android:name=".ui.ViewPageRecyclerActivity"></activity>
     </application>
 
 </manifest>
