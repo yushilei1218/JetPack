@@ -1,6 +1,7 @@
 package com.test.shileiyu.jetpack.ui;
 
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
@@ -18,10 +19,15 @@ public class ItemTouchHelperActivity extends BaseActivity {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+
         BeanRAdapter adapter = new BeanRAdapter();
-        adapter.data = Bean.getList("custom touch helper", 20);
+        adapter.data = Bean.getList("custom touch helper", 60);
         mRecyclerView.setAdapter(adapter);
-        ItemTouchCallBack callBack = new ItemTouchCallBack(ItemTouchHelper.DOWN | ItemTouchHelper.UP, 0, adapter);
+        int dragDirs = ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
+
+        int swipeDirs = ItemTouchHelper.LEFT;
+        ItemTouchCallBack callBack = new ItemTouchCallBack(dragDirs, swipeDirs, adapter);
         ItemTouchHelper helper = new ItemTouchHelper(callBack);
         helper.attachToRecyclerView(mRecyclerView);
     }
