@@ -62,7 +62,8 @@
         <activity android:name=".ui.ScrollPageActivity" />
         <activity android:name=".ui.NestScrooViewRecyActivity" />
         <activity android:name=".ui.ViewPageRecyclerActivity" />
-        <activity android:name=".ui.RecyclerViewActivity"></activity>
+        <activity android:name=".ui.RecyclerViewActivity" />
+        <activity android:name=".ui.ItemTouchHelperActivity"></activity>
     </application>
 
 </manifest>

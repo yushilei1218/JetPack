@@ -166,11 +166,19 @@
             android:id="@+id/main_27_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Recycler 内部ViewPager" />  <Button
+            android:text="Recycler 内部ViewPager" />
+
+        <Button
             android:id="@+id/main_28_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="RecyclerView Media" />
+
+        <Button
+            android:id="@+id/main_29_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Item touch Helper" />
 
         <fragment
             class="com.test.shileiyu.jetpack.ui.album.AlbumFragment"
