@@ -63,9 +63,9 @@
         <activity android:name=".ui.NestScrooViewRecyActivity" />
         <activity android:name=".ui.ViewPageRecyclerActivity" />
         <activity android:name=".ui.RecyclerViewActivity" />
-        <activity android:name=".ui.ItemTouchHelperActivity"></activity>
-
-        <activity android:name=".ui.FlexBoxLayoutActivity"></activity>
+        <activity android:name=".ui.ItemTouchHelperActivity" />
+        <activity android:name=".ui.FlexBoxLayoutActivity" />
+        <activity android:name=".ui.PageSnapRecyclerViewActivity"></activity>
     </application>
 
 </manifest>

@@ -186,6 +186,12 @@
             android:layout_height="wrap_content"
             android:text="Item touch Helper" />
 
+        <Button
+            android:id="@+id/main_31_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Page Snap Recycler" />
+
         <fragment
             class="com.test.shileiyu.jetpack.ui.album.AlbumFragment"
             android:layout_width="match_parent"

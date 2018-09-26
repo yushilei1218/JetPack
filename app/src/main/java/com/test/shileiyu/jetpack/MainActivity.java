@@ -23,6 +23,7 @@ import com.test.shileiyu.jetpack.ui.MyBehaviorActivity;
 import com.test.shileiyu.jetpack.ui.NestScrooViewRecyActivity;
 import com.test.shileiyu.jetpack.ui.NineGirdActivity;
 import com.test.shileiyu.jetpack.ui.NumberPickerActivity;
+import com.test.shileiyu.jetpack.ui.PageSnapRecyclerViewActivity;
 import com.test.shileiyu.jetpack.ui.PhotoActivity;
 import com.test.shileiyu.jetpack.ui.RecyclerViewActivity;
 import com.test.shileiyu.jetpack.ui.ScrollConflictActivity;
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
             , R.id.main_28_tab
             , R.id.main_29_tab
             , R.id.main_30_tab
+            , R.id.main_31_tab
             , R.id.main_15_tab, R.id.main_23_tab
             , R.id.main_17_tab, R.id.main_22_tab
             , R.id.main_20_tab, R.id.main_21_tab
@@ -153,6 +155,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_30_tab:
                 startActivity(new Intent(this, ItemTouchHelperActivity.class));
+                break;
+            case R.id.main_31_tab:
+                startActivity(new Intent(this, PageSnapRecyclerViewActivity.class));
                 break;
             default:
                 break;
