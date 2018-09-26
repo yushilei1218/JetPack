@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.FlexBoxLayoutActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/flex"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="#ffb3b3"
+            app:alignContent="stretch"
+            app:alignItems="stretch"
+            app:flexWrap="wrap"
+            app:justifyContent="space_around"
+            app:maxLine="2">
+
+            <TextView
+                android:id="@+id/textview1"
+                android:layout_width="120dp"
+                android:layout_height="80dp"
+                android:background="#ff4949"
+                android:text="textView1"
+                app:layout_flexBasisPercent="50%" />
+
+            <TextView
+                android:id="@+id/textview2"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="#f4ff8e"
+                android:text="textview2"
+                app:layout_alignSelf="center" />
+
+            <TextView
+                android:id="@+id/textview3"
+                android:layout_width="160dp"
+                android:layout_height="80dp"
+                android:background="#589bff"
+                android:text="textview3"
+                app:layout_alignSelf="flex_end" />
+
+            <TextView
+                android:id="@+id/textview4"
+                android:layout_width="160dp"
+                android:layout_height="80dp"
+                android:background="#838b97"
+                android:text="textview4"
+                app:layout_alignSelf="flex_end" />
+
+
+        </com.google.android.flexbox.FlexboxLayout>
+    </LinearLayout>
+
+
+</ScrollView>

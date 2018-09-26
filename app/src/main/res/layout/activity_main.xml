@@ -168,6 +168,12 @@
             android:layout_height="wrap_content"
             android:text="Recycler 内部ViewPager" />
 
+        <Button
+            android:id="@+id/main_28_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Flex Box Layout" />
+
         <fragment
             class="com.test.shileiyu.jetpack.ui.album.AlbumFragment"
             android:layout_width="match_parent"

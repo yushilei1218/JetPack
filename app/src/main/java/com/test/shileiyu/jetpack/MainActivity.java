@@ -15,6 +15,7 @@ import com.test.shileiyu.jetpack.ui.CalendarActivity;
 import com.test.shileiyu.jetpack.ui.CropActivity;
 import com.test.shileiyu.jetpack.ui.DragActivity;
 import com.test.shileiyu.jetpack.ui.DragHead2ZoomActivity;
+import com.test.shileiyu.jetpack.ui.FlexBoxLayoutActivity;
 import com.test.shileiyu.jetpack.ui.MatrixActivity;
 import com.test.shileiyu.jetpack.ui.MoveActivity;
 import com.test.shileiyu.jetpack.ui.MyBehaviorActivity;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
             , R.id.main_25_tab
             , R.id.main_26_tab
             , R.id.main_27_tab
+            , R.id.main_28_tab
             , R.id.main_15_tab, R.id.main_23_tab
             , R.id.main_17_tab, R.id.main_22_tab
             , R.id.main_20_tab, R.id.main_21_tab
@@ -138,6 +140,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_27_tab:
                 startActivity(new Intent(this, ViewPageRecyclerActivity.class));
+                break;
+            case R.id.main_28_tab:
+                startActivity(new Intent(this, FlexBoxLayoutActivity.class));
                 break;
             default:
                 break;
