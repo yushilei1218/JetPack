@@ -15,6 +15,7 @@ import com.test.shileiyu.jetpack.ui.CalendarActivity;
 import com.test.shileiyu.jetpack.ui.CropActivity;
 import com.test.shileiyu.jetpack.ui.DragActivity;
 import com.test.shileiyu.jetpack.ui.DragHead2ZoomActivity;
+import com.test.shileiyu.jetpack.ui.ItemTouchHelperActivity;
 import com.test.shileiyu.jetpack.ui.FlexBoxLayoutActivity;
 import com.test.shileiyu.jetpack.ui.MatrixActivity;
 import com.test.shileiyu.jetpack.ui.MoveActivity;
@@ -23,6 +24,7 @@ import com.test.shileiyu.jetpack.ui.NestScrooViewRecyActivity;
 import com.test.shileiyu.jetpack.ui.NineGirdActivity;
 import com.test.shileiyu.jetpack.ui.NumberPickerActivity;
 import com.test.shileiyu.jetpack.ui.PhotoActivity;
+import com.test.shileiyu.jetpack.ui.RecyclerViewActivity;
 import com.test.shileiyu.jetpack.ui.ScrollConflictActivity;
 import com.test.shileiyu.jetpack.ui.ScrollPageActivity;
 import com.test.shileiyu.jetpack.ui.SeatActivity;
@@ -56,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
             , R.id.main_26_tab
             , R.id.main_27_tab
             , R.id.main_28_tab
+            , R.id.main_29_tab
+            , R.id.main_30_tab
             , R.id.main_15_tab, R.id.main_23_tab
             , R.id.main_17_tab, R.id.main_22_tab
             , R.id.main_20_tab, R.id.main_21_tab
@@ -143,6 +147,12 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_28_tab:
                 startActivity(new Intent(this, FlexBoxLayoutActivity.class));
+                break;
+            case R.id.main_29_tab:
+                startActivity(new Intent(this, RecyclerViewActivity.class));
+                break;
+            case R.id.main_30_tab:
+                startActivity(new Intent(this, ItemTouchHelperActivity.class));
                 break;
             default:
                 break;
