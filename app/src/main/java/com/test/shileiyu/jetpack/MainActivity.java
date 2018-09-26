@@ -17,6 +17,7 @@ import com.test.shileiyu.jetpack.ui.DragActivity;
 import com.test.shileiyu.jetpack.ui.DragHead2ZoomActivity;
 import com.test.shileiyu.jetpack.ui.ItemTouchHelperActivity;
 import com.test.shileiyu.jetpack.ui.FlexBoxLayoutActivity;
+import com.test.shileiyu.jetpack.ui.LinearSnapActivity;
 import com.test.shileiyu.jetpack.ui.MatrixActivity;
 import com.test.shileiyu.jetpack.ui.MoveActivity;
 import com.test.shileiyu.jetpack.ui.MyBehaviorActivity;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
             , R.id.main_29_tab
             , R.id.main_30_tab
             , R.id.main_31_tab
+            , R.id.main_32_tab
             , R.id.main_15_tab, R.id.main_23_tab
             , R.id.main_17_tab, R.id.main_22_tab
             , R.id.main_20_tab, R.id.main_21_tab
@@ -158,6 +160,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_31_tab:
                 startActivity(new Intent(this, PageSnapRecyclerViewActivity.class));
+                break;
+            case R.id.main_32_tab:
+                startActivity(new Intent(this, LinearSnapActivity.class));
                 break;
             default:
                 break;
