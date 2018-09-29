@@ -18,5 +18,7 @@ public class BaseApp extends Application {
         //这是dev添加的一行代码
 
         //这是Master添加的一行代码
+
+        //this is master add two line
     }
 }
