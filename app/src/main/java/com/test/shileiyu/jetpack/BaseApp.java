@@ -15,6 +15,8 @@ public class BaseApp extends Application {
         super.onCreate();
         sApplication=this;
 
+        //这是dev添加的一行代码
+
         //这是Master添加的一行代码
     }
 }
