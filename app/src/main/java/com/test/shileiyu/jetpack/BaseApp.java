@@ -14,5 +14,7 @@ public class BaseApp extends Application {
     public void onCreate() {
         super.onCreate();
         sApplication=this;
+
+        //这是Master添加的一行代码
     }
 }
