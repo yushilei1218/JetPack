@@ -22,8 +22,6 @@ import butterknife.BindView;
 public class ScrollViewViewPagerActivity extends BaseActivity {
     @BindView(R.id.my_view_pager)
     ViewPager mViewPager;
-    @BindView(R.id.intercept_scroll_view)
-    InterceptScrollView mScrollView;
 
     @Override
     protected void initView(Bundle savedInstanceState) {
