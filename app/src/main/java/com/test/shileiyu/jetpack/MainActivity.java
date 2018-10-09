@@ -29,6 +29,7 @@ import com.test.shileiyu.jetpack.ui.PhotoActivity;
 import com.test.shileiyu.jetpack.ui.RecyclerViewActivity;
 import com.test.shileiyu.jetpack.ui.ScrollConflictActivity;
 import com.test.shileiyu.jetpack.ui.ScrollPageActivity;
+import com.test.shileiyu.jetpack.ui.ScrollViewViewPagerActivity;
 import com.test.shileiyu.jetpack.ui.SeatActivity;
 import com.test.shileiyu.jetpack.ui.ServiceActivity;
 import com.test.shileiyu.jetpack.ui.SvgActivity;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
             , R.id.main_30_tab
             , R.id.main_31_tab
             , R.id.main_32_tab
+            , R.id.main_33_tab
             , R.id.main_15_tab, R.id.main_23_tab
             , R.id.main_17_tab, R.id.main_22_tab
             , R.id.main_20_tab, R.id.main_21_tab
@@ -163,6 +165,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_32_tab:
                 startActivity(new Intent(this, LinearSnapActivity.class));
+                break;
+            case R.id.main_33_tab:
+                startActivity(new Intent(this, ScrollViewViewPagerActivity.class));
                 break;
             default:
                 break;

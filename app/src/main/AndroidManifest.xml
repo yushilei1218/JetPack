@@ -66,7 +66,8 @@
         <activity android:name=".ui.ItemTouchHelperActivity" />
         <activity android:name=".ui.FlexBoxLayoutActivity" />
         <activity android:name=".ui.PageSnapRecyclerViewActivity" />
-        <activity android:name=".ui.LinearSnapActivity"></activity>
+        <activity android:name=".ui.LinearSnapActivity" />
+        <activity android:name=".ui.ScrollViewViewPagerActivity"></activity>
     </application>
 
 </manifest>
