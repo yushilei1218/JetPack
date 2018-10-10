@@ -1,5 +1,6 @@
 package com.test.shileiyu.jetpack.common.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import java.util.List;
  * @date 2018/8/20
  */
 
-public class Bean implements Cloneable {
+public class Bean implements Cloneable ,Serializable {
     public String name;
 
     public List<String> urls = new ArrayList<>();

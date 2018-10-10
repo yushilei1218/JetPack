@@ -15,7 +15,10 @@ import android.widget.LinearLayout;
 
 import com.test.shileiyu.jetpack.R;
 import com.test.shileiyu.jetpack.common.base.BaseActivity;
+import com.test.shileiyu.jetpack.common.bean.Bean;
 import com.test.shileiyu.jetpack.common.util.Util;
+
+import java.io.Serializable;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -37,16 +40,18 @@ public class TestActivity extends BaseActivity {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-//        LinearLayout l;
-//        l.getWidth();
-//        l.setLeft();
-//        l.setTranslationX();
-//        l.setX();
-//        l.getX();
-//        View view;
-//        view.getLocationInWindow();
-//        TranslateAnimation a;
-//        mTx.startAnimation(a);
+        obtainExtraFromIntent();
+    }
+
+    private void obtainExtraFromIntent() {
+        Intent intent = getIntent();
+        String extra = intent.getStringExtra("extrame");
+        Bean obj = (Bean) intent.getSerializableExtra("obj");
+        Uri data = intent.getData();
+        String value = null;
+        if (data != null) {
+            value = data.getQueryParameter("key");
+        }
 
     }
 

@@ -1,10 +1,15 @@
 package com.test.shileiyu.jetpack;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Toast;
 
+import com.test.shileiyu.jetpack.common.bean.Bean;
 import com.test.shileiyu.jetpack.ui.ActivityLifeCycleActivity;
 import com.test.shileiyu.jetpack.ui.AppBarLayoutActivity;
 import com.test.shileiyu.jetpack.ui.AreaViewActivity;
@@ -66,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
             , R.id.main_31_tab
             , R.id.main_32_tab
             , R.id.main_33_tab
+            , R.id.main_34_tab
             , R.id.main_15_tab, R.id.main_23_tab
             , R.id.main_17_tab, R.id.main_22_tab
             , R.id.main_20_tab, R.id.main_21_tab
@@ -168,6 +174,19 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_33_tab:
                 startActivity(new Intent(this, ScrollViewViewPagerActivity.class));
+                break;
+            case R.id.main_34_tab:
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("damai://ticklet?key=这是一个key"));
+                intent.putExtra("extrame", "Test extra");
+                intent.putExtra("obj", new Bean("测试对象"));
+                ResolveInfo info = getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+                if (info != null) {
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "未找到", Toast.LENGTH_SHORT).show();
+                }
                 break;
             default:
                 break;

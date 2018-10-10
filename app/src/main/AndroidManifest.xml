@@ -26,7 +26,15 @@
         <activity android:name=".ui.AreaViewActivity" />
         <activity android:name=".ui.SeatActivity" />
         <activity android:name=".ui.MatrixActivity" />
-        <activity android:name=".ui.TestActivity" />
+        <activity android:name=".ui.TestActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="ticklet"
+                    android:scheme="damai" />
+            </intent-filter>
+        </activity>
         <activity android:name=".ui.DragActivity" />
         <activity android:name=".ui.MoveActivity" />
         <activity android:name=".ui.NineGirdActivity" />
@@ -67,7 +75,7 @@
         <activity android:name=".ui.FlexBoxLayoutActivity" />
         <activity android:name=".ui.PageSnapRecyclerViewActivity" />
         <activity android:name=".ui.LinearSnapActivity" />
-        <activity android:name=".ui.ScrollViewViewPagerActivity"></activity>
+        <activity android:name=".ui.ScrollViewViewPagerActivity" />
     </application>
 
 </manifest>
