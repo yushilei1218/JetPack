@@ -5,6 +5,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:name=".BaseApp"
@@ -29,7 +33,9 @@
         <activity android:name=".ui.TestActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data
                     android:host="ticklet"
                     android:scheme="damai" />
@@ -76,6 +82,8 @@
         <activity android:name=".ui.PageSnapRecyclerViewActivity" />
         <activity android:name=".ui.LinearSnapActivity" />
         <activity android:name=".ui.ScrollViewViewPagerActivity" />
+        <activity android:name=".ui.PermissionActivity" />
+        <activity android:name=".ui.PermissionGetActivity"></activity>
     </application>
 
 </manifest>

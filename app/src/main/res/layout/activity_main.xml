@@ -210,6 +210,12 @@
             android:layout_height="wrap_content"
             android:text="隐式意图唤起TEST" />
 
+        <Button
+            android:id="@+id/main_35_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Permission" />
+
         <fragment
             class="com.test.shileiyu.jetpack.ui.album.AlbumFragment"
             android:layout_width="match_parent"
