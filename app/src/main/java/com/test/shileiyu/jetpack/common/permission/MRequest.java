@@ -80,18 +80,8 @@ public class MRequest implements IPermissionRequest, RequestExecutor {
         if (hasPermission) {
             callBackSuccess();
         } else {
-            List<String> mNeedRationalePermission = new ArrayList<>();
-            for (String p : mRequestPermissions) {
-                boolean showRationale = mSource.showRationale(p);
-                if (showRationale) {
-                    mNeedRationalePermission.add(p);
-                }
-            }
-            if (mNeedRationalePermission.size() > 0) {
-                if (mRationale != null) {
-                    mRationale.showRationale(mNeedRationalePermission, this);
-                }
-            } else {
+            boolean isCallRationale = doRationale();
+            if (!isCallRationale) {
                 execute();
             }
         }
@@ -107,21 +97,27 @@ public class MRequest implements IPermissionRequest, RequestExecutor {
         PermissionGetActivity.requestPermission(context, permission, mCallBack);
     }
 
+    private boolean doRationale() {
+        List<String> mNeedRationalePermission = new ArrayList<>();
+        for (String p : mRequestPermissions) {
+            boolean showRationale = mSource.showRationale(p);
+            if (showRationale) {
+                mNeedRationalePermission.add(p);
+            }
+        }
+        if (mNeedRationalePermission.size() > 0) {
+            if (mRationale != null) {
+                mRationale.showRationale(mNeedRationalePermission, this);
+            }
+        }
+        return mNeedRationalePermission.size() > 0;
+    }
+
     private void dispatchCallBack() {
         Context context = mSource.getContext();
         if (context != null) {
-            List<String> mNeedRationalePermission = new ArrayList<>();
-            for (String p : mRequestPermissions) {
-                boolean showRationale = mSource.showRationale(p);
-                if (showRationale) {
-                    mNeedRationalePermission.add(p);
-                }
-            }
-            if (mNeedRationalePermission.size() > 0) {
-                if (mRationale != null) {
-                    mRationale.showRationale(mNeedRationalePermission, this);
-                }
-            } else {
+            boolean isCallRationale = doRationale();
+            if (!isCallRationale) {
                 List<String> deniedPermission = getDeniedPermission(context, mChecker, mRequestPermissions);
                 if (deniedPermission == null || deniedPermission.size() == 0) {
                     callBackSuccess();

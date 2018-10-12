@@ -7,6 +7,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.ViewGroup;
 
 import com.test.shileiyu.jetpack.common.permission.PermissionCallBack;
@@ -42,13 +43,23 @@ public class PermissionGetActivity extends Activity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void finish() {
         sPermissionCallBack = null;
-        super.onDestroy();
+        super.finish();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     public static void requestPermission(
             Context context, String[] permissions, PermissionCallBack callBack) {
+        if (context == null)
+            return;
         sPermissionCallBack = callBack;
         Intent intent = new Intent(context, PermissionGetActivity.class);
         intent.putExtra(EXTRA, permissions);
