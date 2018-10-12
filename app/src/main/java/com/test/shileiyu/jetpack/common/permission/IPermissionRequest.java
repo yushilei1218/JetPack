@@ -24,7 +24,7 @@ public interface IPermissionRequest {
      * @param grantAction 成功回调处理对象
      * @return 权限Request
      */
-    IPermissionRequest onGranted(Action<List<String>> grantAction);
+    IPermissionRequest onGranted(PermissionAction<List<String>> grantAction);
 
     /**
      * 需求告知用户 请求权限的原因
@@ -40,7 +40,7 @@ public interface IPermissionRequest {
      * @param deniedAction 拒绝回调处理对象
      * @return 权限Request
      */
-    IPermissionRequest onDenied(Action<List<String>> deniedAction);
+    IPermissionRequest onDenied(PermissionAction<List<String>> deniedAction);
 
 
     void start();

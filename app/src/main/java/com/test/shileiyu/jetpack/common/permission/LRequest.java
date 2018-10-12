@@ -10,7 +10,7 @@ import java.util.List;
  * @date 2018/10/12 下午8:22
  */
 public class LRequest implements IPermissionRequest {
-    private Action<List<String>> mAction;
+    private PermissionAction<List<String>> mAction;
     private String[] mPermissions;
 
     @Override
@@ -20,7 +20,7 @@ public class LRequest implements IPermissionRequest {
     }
 
     @Override
-    public IPermissionRequest onGranted(Action<List<String>> grantAction) {
+    public IPermissionRequest onGranted(PermissionAction<List<String>> grantAction) {
         mAction = grantAction;
         return this;
     }
@@ -31,7 +31,7 @@ public class LRequest implements IPermissionRequest {
     }
 
     @Override
-    public IPermissionRequest onDenied(Action<List<String>> deniedAction) {
+    public IPermissionRequest onDenied(PermissionAction<List<String>> deniedAction) {
         return this;
     }
 

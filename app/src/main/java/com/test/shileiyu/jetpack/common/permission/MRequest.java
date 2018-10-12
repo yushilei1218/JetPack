@@ -20,8 +20,8 @@ public class MRequest implements IPermissionRequest, RequestExecutor {
     private Source mSource;
 
     private List<String> mRequestPermissions;
-    private Action<List<String>> mGrantAction;
-    private Action<List<String>> mDeniedAction;
+    private PermissionAction<List<String>> mGrantAction;
+    private PermissionAction<List<String>> mDeniedAction;
     private IRationale<List<String>> mRationale;
 
     private PermissionCallBack mCallBack = new PermissionCallBack() {
@@ -30,15 +30,7 @@ public class MRequest implements IPermissionRequest, RequestExecutor {
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Context context = mSource.getContext();
-                    if (context != null) {
-                        List<String> deniedPermission = getDeniedPermission(context, mChecker, mRequestPermissions);
-                        if (deniedPermission == null || deniedPermission.size() == 0) {
-                            callBackSuccess();
-                        } else {
-                            callBackFailed(deniedPermission);
-                        }
-                    }
+                    dispatchCallBack();
                 }
             }, 100);
 
@@ -61,7 +53,7 @@ public class MRequest implements IPermissionRequest, RequestExecutor {
     }
 
     @Override
-    public IPermissionRequest onGranted(Action<List<String>> grantAction) {
+    public IPermissionRequest onGranted(PermissionAction<List<String>> grantAction) {
         mGrantAction = grantAction;
         return this;
     }
@@ -73,7 +65,7 @@ public class MRequest implements IPermissionRequest, RequestExecutor {
     }
 
     @Override
-    public IPermissionRequest onDenied(Action<List<String>> deniedAction) {
+    public IPermissionRequest onDenied(PermissionAction<List<String>> deniedAction) {
         mDeniedAction = deniedAction;
         return this;
     }
@@ -102,10 +94,10 @@ public class MRequest implements IPermissionRequest, RequestExecutor {
             } else {
                 execute();
             }
-
         }
     }
 
+    @Override
     public void execute() {
         String[] permission = new String[mRequestPermissions.size()];
         mRequestPermissions.toArray(permission);
@@ -113,6 +105,31 @@ public class MRequest implements IPermissionRequest, RequestExecutor {
         if (context == null)
             return;
         PermissionGetActivity.requestPermission(context, permission, mCallBack);
+    }
+
+    private void dispatchCallBack() {
+        Context context = mSource.getContext();
+        if (context != null) {
+            List<String> mNeedRationalePermission = new ArrayList<>();
+            for (String p : mRequestPermissions) {
+                boolean showRationale = mSource.showRationale(p);
+                if (showRationale) {
+                    mNeedRationalePermission.add(p);
+                }
+            }
+            if (mNeedRationalePermission.size() > 0) {
+                if (mRationale != null) {
+                    mRationale.showRationale(mNeedRationalePermission, this);
+                }
+            } else {
+                List<String> deniedPermission = getDeniedPermission(context, mChecker, mRequestPermissions);
+                if (deniedPermission == null || deniedPermission.size() == 0) {
+                    callBackSuccess();
+                } else {
+                    callBackFailed(deniedPermission);
+                }
+            }
+        }
     }
 
     @Override
