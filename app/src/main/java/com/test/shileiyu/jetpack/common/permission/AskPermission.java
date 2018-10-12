@@ -8,11 +8,11 @@ import android.support.v4.app.Fragment;
  * @date 2018/10/12 下午7:24
  */
 public class AskPermission {
-    public static Source width(Activity activity) {
+    public static Source with(Activity activity) {
         return new Source.ActivitySource(activity);
     }
 
-    public static Source width(Fragment fragment) {
+    public static Source with(Fragment fragment) {
         return new Source.FragmentSource(fragment);
     }
 }

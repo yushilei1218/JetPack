@@ -9,14 +9,13 @@ import com.test.shileiyu.jetpack.ui.PermissionGetActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * @author lanche.ysl
  * @date 2018/10/12 下午7:34
  */
-public class MRequest implements IPermissionRequest {
+public class MRequest implements IPermissionRequest, RequestExecutor {
     private PermissionChecker mChecker = new StandChecker();
     private Source mSource;
 
@@ -35,9 +34,9 @@ public class MRequest implements IPermissionRequest {
                     if (context != null) {
                         List<String> deniedPermission = getDeniedPermission(context, mChecker, mRequestPermissions);
                         if (deniedPermission == null || deniedPermission.size() == 0) {
-                            callSuccess();
+                            callBackSuccess();
                         } else {
-                            callDenied(deniedPermission);
+                            callBackFailed(deniedPermission);
                         }
                     }
                 }
@@ -87,7 +86,7 @@ public class MRequest implements IPermissionRequest {
         }
         boolean hasPermission = mChecker.hasPermission(context, mRequestPermissions);
         if (hasPermission) {
-            callSuccess();
+            callBackSuccess();
         } else {
             List<String> mNeedRationalePermission = new ArrayList<>();
             for (String p : mRequestPermissions) {
@@ -98,7 +97,7 @@ public class MRequest implements IPermissionRequest {
             }
             if (mNeedRationalePermission.size() > 0) {
                 if (mRationale != null) {
-                    mRationale.showRationale(mNeedRationalePermission);
+                    mRationale.showRationale(mNeedRationalePermission, this);
                 }
             } else {
                 execute();
@@ -107,7 +106,7 @@ public class MRequest implements IPermissionRequest {
         }
     }
 
-    private void execute() {
+    public void execute() {
         String[] permission = new String[mRequestPermissions.size()];
         mRequestPermissions.toArray(permission);
         Context context = mSource.getContext();
@@ -116,13 +115,18 @@ public class MRequest implements IPermissionRequest {
         PermissionGetActivity.requestPermission(context, permission, mCallBack);
     }
 
-    private void callSuccess() {
+    @Override
+    public void cancel() {
+
+    }
+
+    private void callBackSuccess() {
         if (mGrantAction != null) {
             mGrantAction.onCall(mRequestPermissions);
         }
     }
 
-    private void callDenied(List<String> denied) {
+    private void callBackFailed(List<String> denied) {
         if (mDeniedAction != null) {
             mDeniedAction.onCall(denied);
         }

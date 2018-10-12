@@ -1,15 +1,17 @@
 package com.test.shileiyu.jetpack.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.ViewGroup;
 
 import com.test.shileiyu.jetpack.common.permission.PermissionCallBack;
 
-public class PermissionGetActivity extends AppCompatActivity {
+public class PermissionGetActivity extends Activity {
 
     public static final String EXTRA = "EXTRA";
     public static final int PERMISSION_REQUEST_CODE = 0x1234;

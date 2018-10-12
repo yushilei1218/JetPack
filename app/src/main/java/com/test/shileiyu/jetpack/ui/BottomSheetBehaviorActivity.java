@@ -85,8 +85,8 @@ public class BottomSheetBehaviorActivity extends BaseActivity {
         slideLayout.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(@NonNull View panel, float slideOffset) {
-//                int width = slideLv.getWidth();
-//                slideLv.setTranslationX(slideOffset * width - width);
+//                int with = slideLv.getWidth();
+//                slideLv.setTranslationX(slideOffset * with - with);
             }
 
             @Override
