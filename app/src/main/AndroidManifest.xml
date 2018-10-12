@@ -83,8 +83,10 @@
         <activity android:name=".ui.LinearSnapActivity" />
         <activity android:name=".ui.ScrollViewViewPagerActivity" />
         <activity android:name=".ui.PermissionActivity" />
-        <activity android:name=".ui.PermissionGetActivity"
-            />
+        <activity
+            android:name=".ui.PermissionGetActivity"
+
+            android:theme="@style/Translucent_Fullscreen" />
     </application>
 
 </manifest>
