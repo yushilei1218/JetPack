@@ -86,7 +86,7 @@
         <activity
             android:name=".ui.PermissionGetActivity"
 
-            android:theme="@style/Translucent_Fullscreen" />
+            android:theme="@style/Permission.Theme" />
     </application>
 
 </manifest>

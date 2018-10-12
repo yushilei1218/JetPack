@@ -11,7 +11,13 @@
         android:id="@+id/btn_aaa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="getPermission" />
+        android:text="MyGetPermission" />
+
+    <Button
+        android:id="@+id/btn_bbb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AndPermission" />
 
     <TextView
         android:id="@+id/tv_aaa"
