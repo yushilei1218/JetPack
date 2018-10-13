@@ -21,6 +21,7 @@ import com.test.shileiyu.jetpack.common.permission.RequestExecutor;
 import com.test.shileiyu.jetpack.common.permission.RequestSource;
 import com.test.shileiyu.jetpack.common.permission.action.ExplainPermissionRationale;
 import com.test.shileiyu.jetpack.common.permission.action.GuideUser2SettingAction;
+import com.test.shileiyu.jetpack.common.permission.dialog.PermissionDialog;
 import com.test.shileiyu.jetpack.common.util.Util;
 import com.test.shileiyu.jetpack.ui.fg.Permission2Fragment;
 import com.yanzhenjie.permission.Action;
@@ -35,30 +36,74 @@ public class PermissionActivity extends AppCompatActivity {
     private TextView mTv;
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1000) {
+            Util.showToast("居然有onActivityResult");
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_permission);
         mTv = (TextView) findViewById(R.id.tv_aaa);
-
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            AskPermission.with(this).createRequest()
-                    .permission(Manifest.permission.CALL_PHONE,
-                            Manifest.permission_group.CONTACTS)
-                    .showRationale(new ExplainPermissionRationale())
-                    .onDenied(new GuideUser2SettingAction(this))
-                    .onGranted(new PermissionAction<List<String>>() {
+            AndPermission.with(this).runtime().permission(Manifest.permission.CALL_PHONE,
+                    Manifest.permission.SEND_SMS).rationale(new Rationale<List<String>>() {
+                @Override
+                public void showRationale(Context context, List<String> data, final com.yanzhenjie.permission.RequestExecutor executor) {
+                    PermissionDialog.getExplainPermissionDialog(PermissionActivity.this, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onCall(List<String> data) {
-                            StringBuilder sb = new StringBuilder();
-                            sb.append("申请成功啦：");
-                            for (String p : data) {
-                                sb.append(p).append("\n");
-                            }
-                            Util.showToast(sb.toString());
+                        public void onClick(DialogInterface dialog, int which) {
+                            executor.execute();
                         }
-                    }).start();
+                    }, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            executor.cancel();
+                        }
+                    }).show();
+                }
+            }).onDenied(new Action<List<String>>() {
+                @Override
+                public void onAction(List<String> data) {
+
+                    Util.showToast("AndPermission 被拒绝");
+                    PermissionDialog.getOpenSettingDialog(PermissionActivity.this, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            intent.setData(Uri.fromParts("package", PermissionActivity.this.getPackageName(), null));
+                            PermissionActivity.this.startActivityForResult(intent, 1000);
+                        }
+                    }).show();
+                }
+            }).onGranted(new Action<List<String>>() {
+                @Override
+                public void onAction(List<String> data) {
+                    Util.showToast("AndPermission 申请成功");
+                }
+            }).start();
         }
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            AskPermission.with(this).createRequest()
+//                    .permission(Manifest.permission.CALL_PHONE,
+//                            Manifest.permission_group.CONTACTS)
+//                    .showRationale(new ExplainPermissionRationale())
+//                    .onDenied(new GuideUser2SettingAction(this))
+//                    .onGranted(new PermissionAction<List<String>>() {
+//                        @Override
+//                        public void onCall(List<String> data) {
+//                            StringBuilder sb = new StringBuilder();
+//                            sb.append("申请成功啦：");
+//                            for (String p : data) {
+//                                sb.append(p).append("\n");
+//                            }
+//                            Util.showToast(sb.toString());
+//                        }
+//                    }).start();
+//        }
 
         findViewById(R.id.btn_aaa).setOnClickListener(new View.OnClickListener() {
             @Override
