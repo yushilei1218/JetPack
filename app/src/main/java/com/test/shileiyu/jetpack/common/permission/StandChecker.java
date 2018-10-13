@@ -5,6 +5,7 @@ import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
 import java.util.Arrays;
@@ -31,19 +32,19 @@ public class StandChecker implements PermissionChecker {
 
         AppOpsManager opsManager = null;
         for (String permission : permissions) {
-            int result = context.checkPermission(permission, android.os.Process.myPid(), android.os.Process.myUid());
+            int result = ContextCompat.checkSelfPermission(context, permission);
             if (result == PackageManager.PERMISSION_DENIED) {
                 return false;
             }
-
             String op = AppOpsManager.permissionToOp(permission);
             if (TextUtils.isEmpty(op)) {
                 continue;
             }
-
             if (opsManager == null)
                 opsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
-            result = opsManager.checkOpNoThrow(op, android.os.Process.myUid(), context.getPackageName());
+            if (opsManager != null) {
+                result = opsManager.checkOpNoThrow(op, android.os.Process.myUid(), context.getPackageName());
+            }
             if (result != AppOpsManager.MODE_ALLOWED && result != 4) {
                 return false;
             }
