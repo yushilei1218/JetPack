@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 
 /**
@@ -43,10 +44,7 @@ public abstract class RequestSource {
 
         @Override
         public boolean showRationale(String permission) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                return mActivity.shouldShowRequestPermissionRationale(permission);
-            }
-            return false;
+            return ActivityCompat.shouldShowRequestPermissionRationale(mActivity, permission);
         }
     }
 
@@ -66,7 +64,10 @@ public abstract class RequestSource {
 
         @Override
         public boolean showRationale(String permission) {
-            return mFragment.shouldShowRequestPermissionRationale(permission);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return mFragment.shouldShowRequestPermissionRationale(permission);
+            }
+            return false;
         }
     }
 }
