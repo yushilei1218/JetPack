@@ -3,22 +3,20 @@ package com.test.shileiyu.jetpack.common.permission;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-
-import com.yanzhenjie.permission.source.FragmentSource;
 
 /**
  * @author lanche.ysl
  * @date 2018/10/12 下午7:35
  */
-public abstract class Source {
+public abstract class RequestSource {
 
-    public abstract Context getContext();
+    public abstract Activity getActivity();
 
     public abstract boolean showRationale(String permission);
 
-    public IPermissionRequest createRequest() {
+    public final IPermissionRequest createRequest() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return new MRequest(this);
         } else {
@@ -26,21 +24,25 @@ public abstract class Source {
         }
     }
 
-    public static class ActivitySource extends Source {
-        final Activity mActivity;
+    public boolean isActivityValid() {
+        Activity activity = getActivity();
+        return activity != null && (!activity.isFinishing());
+    }
 
-        public ActivitySource(Activity activity) {
+    public static class ActivityRequestSource extends RequestSource {
+        private final Activity mActivity;
+
+        ActivityRequestSource(@NonNull Activity activity) {
             mActivity = activity;
         }
 
         @Override
-        public Context getContext() {
+        public Activity getActivity() {
             return mActivity;
         }
 
         @Override
         public boolean showRationale(String permission) {
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 return mActivity.shouldShowRequestPermissionRationale(permission);
             }
@@ -48,16 +50,18 @@ public abstract class Source {
         }
     }
 
-    public static class FragmentSource extends Source {
-        final Fragment mFragment;
+    public static class FragmentRequestSource extends RequestSource {
+        private final Fragment mFragment;
+        private final Activity mActivity;
 
-        FragmentSource(Fragment fragment) {
+        FragmentRequestSource(@NonNull Fragment fragment) {
             mFragment = fragment;
+            mActivity = fragment.getActivity();
         }
 
         @Override
-        public Context getContext() {
-            return mFragment.getActivity();
+        public Activity getActivity() {
+            return mActivity;
         }
 
         @Override

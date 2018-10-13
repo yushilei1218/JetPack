@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +18,11 @@ import com.test.shileiyu.jetpack.common.permission.PermissionAction;
 import com.test.shileiyu.jetpack.common.permission.AskPermission;
 import com.test.shileiyu.jetpack.common.permission.IRationale;
 import com.test.shileiyu.jetpack.common.permission.RequestExecutor;
+import com.test.shileiyu.jetpack.common.permission.RequestSource;
+import com.test.shileiyu.jetpack.common.permission.action.ExplainPermissionRationale;
+import com.test.shileiyu.jetpack.common.permission.action.GuideUser2SettingAction;
 import com.test.shileiyu.jetpack.common.util.Util;
+import com.test.shileiyu.jetpack.ui.fg.Permission2Fragment;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Rationale;
@@ -34,6 +39,27 @@ public class PermissionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_permission);
         mTv = (TextView) findViewById(R.id.tv_aaa);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            AskPermission.with(this).createRequest()
+                    .permission(Manifest.permission.CALL_PHONE,
+                            Manifest.permission_group.CONTACTS)
+                    .showRationale(new ExplainPermissionRationale())
+                    .onDenied(new GuideUser2SettingAction(this))
+                    .onGranted(new PermissionAction<List<String>>() {
+                        @Override
+                        public void onCall(List<String> data) {
+                            StringBuilder sb = new StringBuilder();
+                            sb.append("申请成功啦：");
+                            for (String p : data) {
+                                sb.append(p).append("\n");
+                            }
+                            Util.showToast(sb.toString());
+                        }
+                    }).start();
+        }
+
         findViewById(R.id.btn_aaa).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,6 +72,8 @@ public class PermissionActivity extends AppCompatActivity {
                 checkPermissionByAndPermission();
             }
         });
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container_fg, new Permission2Fragment()).commitAllowingStateLoss();
     }
 
     private void checkPermissionByAndPermission() {
@@ -99,7 +127,7 @@ public class PermissionActivity extends AppCompatActivity {
                         , Manifest.permission.ACCESS_COARSE_LOCATION)
                 .showRationale(new IRationale<List<String>>() {
                     @Override
-                    public void showRationale(List<String> data, final RequestExecutor executor) {
+                    public void showRationale(List<String> data, final RequestExecutor executor, RequestSource source) {
                         String str = "需要告知用户请求权限的原因：";
                         StringBuilder format = format(data, str);
                         final String text = format.toString();

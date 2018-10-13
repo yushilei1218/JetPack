@@ -5,5 +5,5 @@ package com.test.shileiyu.jetpack.common.permission;
  * @date 2018/10/12 下午7:19
  */
 public interface IRationale<T> {
-    void showRationale(T data, RequestExecutor executor);
+    void showRationale(T data, RequestExecutor executor, RequestSource source);
 }

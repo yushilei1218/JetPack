@@ -16,15 +16,15 @@ import java.util.List;
  * @date 2018/10/12 下午7:34
  */
 public class MRequest implements IPermissionRequest, RequestExecutor {
-    private PermissionChecker mChecker = new StandChecker();
-    private Source mSource;
+    private final PermissionChecker mChecker = new StandChecker();
+    private final RequestSource mRequestSource;
 
     private List<String> mRequestPermissions;
     private PermissionAction<List<String>> mGrantAction;
     private PermissionAction<List<String>> mDeniedAction;
     private IRationale<List<String>> mRationale;
 
-    private PermissionCallBack mCallBack = new PermissionCallBack() {
+    private final PermissionCallBack mCallBack = new PermissionCallBack() {
         @Override
         public void onPermissionFinish(@NonNull String[] permissions, @NonNull int[] grantResults) {
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
@@ -38,12 +38,15 @@ public class MRequest implements IPermissionRequest, RequestExecutor {
     };
 
 
-    public MRequest(Source source) {
-        mSource = source;
+    public MRequest(RequestSource requestSource) {
+        mRequestSource = requestSource;
     }
 
     @Override
     public IPermissionRequest permission(@NonNull String... permission) {
+        if (permission == null || permission.length == 0) {
+            throw new RuntimeException("申请的权限数组为空");
+        }
         if (mRequestPermissions == null) {
             mRequestPermissions = new ArrayList<>();
         }
@@ -72,7 +75,7 @@ public class MRequest implements IPermissionRequest, RequestExecutor {
 
     @Override
     public void start() {
-        Context context = mSource.getContext();
+        Context context = mRequestSource.getActivity();
         if (context == null) {
             return;
         }
@@ -89,36 +92,34 @@ public class MRequest implements IPermissionRequest, RequestExecutor {
 
     @Override
     public void execute() {
-        String[] permission = new String[mRequestPermissions.size()];
-        mRequestPermissions.toArray(permission);
-        Context context = mSource.getContext();
-        if (context == null)
-            return;
-        PermissionGetActivity.requestPermission(context, permission, mCallBack);
+        if (mRequestSource.isActivityValid()) {
+            String[] permission = new String[mRequestPermissions.size()];
+            mRequestPermissions.toArray(permission);
+            PermissionGetActivity.requestPermission(mRequestSource.getActivity(), permission, mCallBack);
+        }
     }
 
     private boolean doRationale() {
         List<String> mNeedRationalePermission = new ArrayList<>();
         for (String p : mRequestPermissions) {
-            boolean showRationale = mSource.showRationale(p);
+            boolean showRationale = mRequestSource.showRationale(p);
             if (showRationale) {
                 mNeedRationalePermission.add(p);
             }
         }
         if (mNeedRationalePermission.size() > 0) {
             if (mRationale != null) {
-                mRationale.showRationale(mNeedRationalePermission, this);
+                mRationale.showRationale(mNeedRationalePermission, this, mRequestSource);
             }
         }
         return mNeedRationalePermission.size() > 0;
     }
 
     private void dispatchCallBack() {
-        Context context = mSource.getContext();
-        if (context != null) {
+        if (mRequestSource.isActivityValid()) {
             boolean isCallRationale = doRationale();
             if (!isCallRationale) {
-                List<String> deniedPermission = getDeniedPermission(context, mChecker, mRequestPermissions);
+                List<String> deniedPermission = getDeniedPermission(mRequestSource.getActivity(), mChecker, mRequestPermissions);
                 if (deniedPermission == null || deniedPermission.size() == 0) {
                     callBackSuccess();
                 } else {
