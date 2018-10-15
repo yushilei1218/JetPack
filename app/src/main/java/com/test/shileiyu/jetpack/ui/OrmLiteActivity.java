@@ -13,6 +13,7 @@ import com.test.shileiyu.jetpack.common.base.BaseActivity;
 import com.test.shileiyu.jetpack.common.db.ATable;
 import com.test.shileiyu.jetpack.common.db.DemoDbHelper;
 import com.test.shileiyu.jetpack.common.db.IDaoCall;
+import com.test.shileiyu.jetpack.common.db.IDaoListCall;
 import com.test.shileiyu.jetpack.common.util.Util;
 
 
@@ -22,6 +23,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscriber;
 import rx.functions.Action1;
 
 public class OrmLiteActivity extends BaseActivity {
@@ -50,6 +52,7 @@ public class OrmLiteActivity extends BaseActivity {
             R.id.clear_a,
             R.id.save_or_update_list,
             R.id.query_builder,
+            R.id.observable_list,
             R.id.observable
     })
     public void onClick(View view) {
@@ -72,13 +75,45 @@ public class OrmLiteActivity extends BaseActivity {
             case R.id.observable:
                 queryObservable();
                 break;
+            case R.id.observable_list:
+                queryObservableList();
+                break;
             default:
                 break;
         }
     }
 
+    private void queryObservableList() {
+        mDbHelper.rx(ATable.class, new IDaoListCall<ATable>() {
+            @Override
+            public List<ATable> call(Dao<ATable, ?> dao) {
+                try {
+                    return dao.queryBuilder().where().eq("name", "Name+3").query();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }).subscribe(new Subscriber<List<ATable>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<ATable> aTables) {
+                showInTextView(aTables);
+            }
+        });
+    }
+
     private void queryObservable() {
-        mDbHelper.observable(ATable.class, new IDaoCall<ATable>() {
+        mDbHelper.rx(ATable.class, new IDaoCall<ATable>() {
             @Override
             public ATable call(Dao<ATable, ?> dao) {
                 Log.d("ATable", "Call thread" + Thread.currentThread().getName());
@@ -87,6 +122,7 @@ public class OrmLiteActivity extends BaseActivity {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+//                throw new RuntimeException("Test");
                 return null;
             }
         }).subscribe(new Action1<ATable>() {
@@ -100,6 +136,11 @@ public class OrmLiteActivity extends BaseActivity {
                     showInTextView(null);
                 }
                 Log.d("ATable", "Subscribe thread" + Thread.currentThread().getName());
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                Util.showToast(throwable.getMessage());
             }
         });
     }

@@ -44,7 +44,26 @@ public class DemoDbHelper extends OrmLiteSqliteOpenHelper {
         return super.getDao(clazz);
     }
 
-    public <T> Observable<T> observable(final Class<T> clazz, final IDaoCall<T> call) {
+    public <T> Observable<List<T>> rx(final Class<T> clazz, final IDaoListCall<T> call) {
+        return Observable
+                .create(new Observable.OnSubscribe<List<T>>() {
+                    @Override
+                    public void call(Subscriber<? super List<T>> subscriber) {
+                        try {
+                            Dao<T, ?> dao = getDao(clazz);
+                            List<T> data = call.call(dao);
+                            subscriber.onNext(data);
+                            subscriber.onCompleted();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public <T> Observable<T> rx(final Class<T> clazz, final IDaoCall<T> call) {
         return Observable
                 .create(new Observable.OnSubscribe<T>() {
                     @Override
@@ -54,7 +73,7 @@ public class DemoDbHelper extends OrmLiteSqliteOpenHelper {
                             T data = call.call(dao);
                             subscriber.onNext(data);
                             subscriber.onCompleted();
-                        } catch (SQLException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                             subscriber.onError(e);
                         }
