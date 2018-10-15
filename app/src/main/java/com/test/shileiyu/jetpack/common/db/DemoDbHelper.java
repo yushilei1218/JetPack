@@ -35,7 +35,7 @@ public class DemoDbHelper extends OrmLiteSqliteOpenHelper {
     }
 
     public DemoDbHelper(Context context, String databaseName) {
-        super(context, databaseName, null, 3);
+        super(context, databaseName, null, 4);
     }
 
     @Override
@@ -74,7 +74,24 @@ public class DemoDbHelper extends OrmLiteSqliteOpenHelper {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public <T> Observable<T> rx(final Class<T> clazz, final IDaoCall<T> call) {
+    public <T, C> Observable<T> rx2(final Class<C> table, final IDaoCall<T, C> call) {
+        return Observable.create(new Observable.OnSubscribe<T>() {
+            @Override
+            public void call(Subscriber<? super T> subscriber) {
+                Dao<C, ?> dao = null;
+                try {
+                    dao = getDao(table);
+                    T call1 = call.call(dao);
+                    subscriber.onNext(call1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
+    public <T> Observable<T> rx(final Class<T> clazz, final IDaoCall<T, T> call) {
         return Observable
                 .create(new Observable.OnSubscribe<T>() {
                     @Override

@@ -6,6 +6,6 @@ import com.j256.ormlite.dao.Dao;
  * @author lanche.ysl
  * @date 2018/10/15 下午5:55
  */
-public interface IDaoCall<T> {
-    T call(Dao<T, ?> dao);
+public interface IDaoCall<R,P> {
+    R call(Dao<P, ?> dao);
 }

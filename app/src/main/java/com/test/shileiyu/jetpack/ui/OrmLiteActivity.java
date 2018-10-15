@@ -54,6 +54,7 @@ public class OrmLiteActivity extends BaseActivity {
             R.id.query_builder,
             R.id.observable_list,
             R.id.create_or_update,
+            R.id.count,
             R.id.observable
     })
     public void onClick(View view) {
@@ -82,9 +83,43 @@ public class OrmLiteActivity extends BaseActivity {
             case R.id.create_or_update:
                 createOrUpdate();
                 break;
+            case R.id.count:
+                count();
+                break;
             default:
                 break;
         }
+    }
+
+    private void count() {
+        mDbHelper.rx2(ATable.class, new IDaoCall<Long, ATable>() {
+            @Override
+            public Long call(Dao<ATable, ?> dao) {
+                try {
+                    return dao.queryBuilder().where()
+                            .eq("name", "Name+3")
+                            .and().eq("state", 1).countOf();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }).subscribe(new Subscriber<Long>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Util.showToast("count查询报错" + e.getMessage());
+            }
+
+            @Override
+            public void onNext(Long integer) {
+                Util.showToast("查询到" + integer + "个");
+            }
+        });
     }
 
     private void createOrUpdate() {
@@ -133,7 +168,7 @@ public class OrmLiteActivity extends BaseActivity {
     }
 
     private void queryObservable() {
-        mDbHelper.rx(ATable.class, new IDaoCall<ATable>() {
+        mDbHelper.rx(ATable.class, new IDaoCall<ATable, ATable>() {
             @Override
             public ATable call(Dao<ATable, ?> dao) {
                 Log.d("ATable", "Call thread" + Thread.currentThread().getName());
