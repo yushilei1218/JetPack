@@ -2,6 +2,7 @@ package com.test.shileiyu.jetpack.common.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
@@ -34,11 +35,12 @@ public class DemoDbHelper extends OrmLiteSqliteOpenHelper {
     }
 
     public DemoDbHelper(Context context, String databaseName) {
-        super(context, databaseName, null, 2);
+        super(context, databaseName, null, 3);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource) {
+        Log.d("DemoDbHelper", "onCreate");
         for (Class table : TABLES) {
             try {
                 TableUtils.createTableIfNotExists(connectionSource, table);
@@ -96,6 +98,7 @@ public class DemoDbHelper extends OrmLiteSqliteOpenHelper {
     @Override
 
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource, int i, int i1) {
+        Log.d("DemoDbHelper", "onUpgrade " + i + " " + i1);
         for (Class t : TABLES) {
             try {
                 TableUtils.dropTable(connectionSource, t, true);
