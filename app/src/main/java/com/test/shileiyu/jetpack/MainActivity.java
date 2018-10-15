@@ -29,6 +29,7 @@ import com.test.shileiyu.jetpack.ui.MyBehaviorActivity;
 import com.test.shileiyu.jetpack.ui.NestScrooViewRecyActivity;
 import com.test.shileiyu.jetpack.ui.NineGirdActivity;
 import com.test.shileiyu.jetpack.ui.NumberPickerActivity;
+import com.test.shileiyu.jetpack.ui.OrmLiteActivity;
 import com.test.shileiyu.jetpack.ui.PageSnapRecyclerViewActivity;
 import com.test.shileiyu.jetpack.ui.PermissionActivity;
 import com.test.shileiyu.jetpack.ui.PhotoActivity;
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             , R.id.main_34_tab
             , R.id.main_35_tab
             , R.id.main_36_tab
+            , R.id.main_37_tab
             , R.id.main_15_tab, R.id.main_23_tab
             , R.id.main_17_tab, R.id.main_22_tab
             , R.id.main_20_tab, R.id.main_21_tab
@@ -184,6 +186,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_36_tab:
                 startActivity(new Intent(this, TextureMediaActivity.class));
+                break;
+            case R.id.main_37_tab:
+                startActivity(new Intent(this, OrmLiteActivity.class));
                 break;
             case R.id.main_34_tab:
                 Intent intent = new Intent();

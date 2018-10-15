@@ -96,7 +96,8 @@
         <activity
             android:name=".ui.PermissionGetActivity"
             android:theme="@style/Permission.Theme" />
-        <activity android:name=".ui.TextureMediaActivity"></activity>
+        <activity android:name=".ui.TextureMediaActivity" />
+        <activity android:name=".ui.OrmLiteActivity"></activity>
     </application>
 
 </manifest>
