@@ -48,6 +48,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="save or update list" />
+
+        <Button
+            android:id="@+id/observable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rx Java observable" />
     </LinearLayout>
 
 
