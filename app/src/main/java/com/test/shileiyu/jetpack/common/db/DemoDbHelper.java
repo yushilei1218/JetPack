@@ -11,6 +11,7 @@ import com.j256.ormlite.table.TableUtils;
 import java.io.File;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -25,17 +26,25 @@ import rx.schedulers.Schedulers;
  * @date 2018/10/15 下午4:16
  */
 public class DemoDbHelper extends OrmLiteSqliteOpenHelper {
+    private static final List<Class> TABLES = new ArrayList<>();
+
+    static {
+        TABLES.add(ATable.class);
+        TABLES.add(BTable.class);
+    }
+
     public DemoDbHelper(Context context, String databaseName) {
-        super(context, databaseName, null, 1);
+        super(context, databaseName, null, 2);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource) {
-        try {
-            TableUtils.createTableIfNotExists(connectionSource, ATable.class);
-            TableUtils.createTableIfNotExists(connectionSource, BTable.class);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        for (Class table : TABLES) {
+            try {
+                TableUtils.createTableIfNotExists(connectionSource, table);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -83,8 +92,17 @@ public class DemoDbHelper extends OrmLiteSqliteOpenHelper {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+
     @Override
 
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource, int i, int i1) {
+        for (Class t : TABLES) {
+            try {
+                TableUtils.dropTable(connectionSource, t, true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        onCreate(sqLiteDatabase, connectionSource);
     }
 }

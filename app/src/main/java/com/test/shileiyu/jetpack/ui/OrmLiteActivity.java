@@ -53,6 +53,7 @@ public class OrmLiteActivity extends BaseActivity {
             R.id.save_or_update_list,
             R.id.query_builder,
             R.id.observable_list,
+            R.id.create_or_update,
             R.id.observable
     })
     public void onClick(View view) {
@@ -78,9 +79,28 @@ public class OrmLiteActivity extends BaseActivity {
             case R.id.observable_list:
                 queryObservableList();
                 break;
+            case R.id.create_or_update:
+                createOrUpdate();
+                break;
             default:
                 break;
         }
+    }
+
+    private void createOrUpdate() {
+        ATable aTable = new ATable();
+        aTable.setId(1);
+        aTable.setName("createOrUpdate 1");
+        ATable btable = new ATable();
+        btable.setId(72);
+        btable.setName("createOrUpdate 72");
+        try {
+            mDao.createOrUpdate(aTable);
+            mDao.createOrUpdate(btable);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        queryAll();
     }
 
     private void queryObservableList() {
@@ -148,11 +168,13 @@ public class OrmLiteActivity extends BaseActivity {
     private void saveOrUpdateList() {
         try {
             List<ATable> name = mDao.queryBuilder().where().eq("name", "Name+3").query();
-
+            ATable e = new ATable();
+            e.setName("没错 我是一个新增的");
+            name.add(e);
             if (!Util.isEmpty(name)) {
                 for (ATable a : name) {
                     a.setName(a.getName() + " saveOrUpdate");
-                    mDao.update(a);
+                    mDao.createOrUpdate(a);
                 }
             }
             queryAll();
