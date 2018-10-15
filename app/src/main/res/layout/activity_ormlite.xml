@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,29 +7,48 @@
     android:orientation="vertical"
     tools:context=".ui.OrmLiteActivity">
 
-    <TextView
-        android:id="@+id/data_base_tv"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ff8585"
-        android:padding="5dp" />
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/add_bean"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="add Bean" />
+        <TextView
+            android:id="@+id/data_base_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ff8585"
+            android:padding="5dp" />
 
-    <Button
-        android:id="@+id/add_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="add List" />
+        <Button
+            android:id="@+id/add_bean"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="add Bean" />
 
-    <Button
-        android:id="@+id/clear_a"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="clear a" />
+        <Button
+            android:id="@+id/add_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="add List" />
 
-</LinearLayout>
+        <Button
+            android:id="@+id/clear_a"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="clear a" />
+
+        <Button
+            android:id="@+id/query_builder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="query builder" />
+
+        <Button
+            android:id="@+id/save_or_update_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="save or update list" />
+    </LinearLayout>
+
+
+</ScrollView>

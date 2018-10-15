@@ -38,12 +38,15 @@ public class OrmLiteActivity extends BaseActivity {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        queryAll();
     }
 
     @OnClick({
             R.id.add_bean,
             R.id.add_list,
-            R.id.clear_a
+            R.id.clear_a,
+            R.id.save_or_update_list,
+            R.id.query_builder
     })
     public void onClick(View view) {
         switch (view.getId()) {
@@ -56,8 +59,39 @@ public class OrmLiteActivity extends BaseActivity {
             case R.id.clear_a:
                 clearATable();
                 break;
+            case R.id.query_builder:
+                queryBuilder();
+                break;
+            case R.id.save_or_update_list:
+                saveOrUpdateList();
+                break;
             default:
                 break;
+        }
+    }
+
+    private void saveOrUpdateList() {
+        try {
+            List<ATable> name = mDao.queryBuilder().where().eq("name", "Name+3").query();
+
+            if (!Util.isEmpty(name)) {
+                for (ATable a : name) {
+                    a.setName(a.getName() + " saveOrUpdate");
+                    mDao.update(a);
+                }
+            }
+            queryAll();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void queryBuilder() {
+        try {
+            List<ATable> name = mDao.queryBuilder().where().eq("name", "Name+3").query();
+            showInTextView(name);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -102,17 +136,21 @@ public class OrmLiteActivity extends BaseActivity {
     private void queryAll() {
         try {
             List<ATable> aTables = mDao.queryForAll();
-            if (!Util.isEmpty(aTables)) {
-                StringBuilder sb = new StringBuilder();
-                for (ATable a : aTables) {
-                    sb.append(Util.toJson(a)).append("\n");
-                }
-                mTv.setText(sb.toString());
-            } else {
-                mTv.setText("");
-            }
+            showInTextView(aTables);
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void showInTextView(List aTables) {
+        if (!Util.isEmpty(aTables)) {
+            StringBuilder sb = new StringBuilder();
+            for (Object a : aTables) {
+                sb.append(Util.toJson(a)).append("\n");
+            }
+            mTv.setText(sb.toString());
+        } else {
+            mTv.setText("");
         }
     }
 
