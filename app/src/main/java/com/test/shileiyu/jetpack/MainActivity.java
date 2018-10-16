@@ -22,6 +22,7 @@ import com.test.shileiyu.jetpack.ui.DragActivity;
 import com.test.shileiyu.jetpack.ui.DragHead2ZoomActivity;
 import com.test.shileiyu.jetpack.ui.ItemTouchHelperActivity;
 import com.test.shileiyu.jetpack.ui.FlexBoxLayoutActivity;
+import com.test.shileiyu.jetpack.ui.LinearActivity;
 import com.test.shileiyu.jetpack.ui.LinearSnapActivity;
 import com.test.shileiyu.jetpack.ui.MatrixActivity;
 import com.test.shileiyu.jetpack.ui.MoveActivity;
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
             , R.id.main_35_tab
             , R.id.main_36_tab
             , R.id.main_37_tab
+            , R.id.main_38_tab
             , R.id.main_15_tab, R.id.main_23_tab
             , R.id.main_17_tab, R.id.main_22_tab
             , R.id.main_20_tab, R.id.main_21_tab
@@ -189,6 +191,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_37_tab:
                 startActivity(new Intent(this, OrmLiteActivity.class));
+                break;
+            case R.id.main_38_tab:
+                startActivity(new Intent(this, LinearActivity.class));
                 break;
             case R.id.main_34_tab:
                 Intent intent = new Intent();
