@@ -12,8 +12,7 @@ import com.test.shileiyu.jetpack.R;
 import com.test.shileiyu.jetpack.common.base.BaseActivity;
 import com.test.shileiyu.jetpack.common.db.ATable;
 import com.test.shileiyu.jetpack.common.db.DemoDbHelper;
-import com.test.shileiyu.jetpack.common.db.IDaoCall;
-import com.test.shileiyu.jetpack.common.db.IDaoListCall;
+import com.test.shileiyu.jetpack.common.db.ITransfer;
 import com.test.shileiyu.jetpack.common.util.Util;
 
 
@@ -92,7 +91,7 @@ public class OrmLiteActivity extends BaseActivity {
     }
 
     private void count() {
-        mDbHelper.rx2(ATable.class, new IDaoCall<Long, ATable>() {
+        mDbHelper.rx(ATable.class, new ITransfer<Long, ATable>() {
             @Override
             public Long call(Dao<ATable, ?> dao) {
                 try {
@@ -120,6 +119,12 @@ public class OrmLiteActivity extends BaseActivity {
                 Util.showToast("查询到" + integer + "个");
             }
         });
+        mDbHelper.rx(ATable.class, new ITransfer<List<ATable>, ATable>() {
+            @Override
+            public List<ATable> call(Dao<ATable, ?> dao) {
+                return null;
+            }
+        });
     }
 
     private void createOrUpdate() {
@@ -139,7 +144,7 @@ public class OrmLiteActivity extends BaseActivity {
     }
 
     private void queryObservableList() {
-        mDbHelper.rx(ATable.class, new IDaoListCall<ATable>() {
+        mDbHelper.rx(ATable.class, new ITransfer<List<ATable>, ATable>() {
             @Override
             public List<ATable> call(Dao<ATable, ?> dao) {
                 try {
@@ -168,7 +173,7 @@ public class OrmLiteActivity extends BaseActivity {
     }
 
     private void queryObservable() {
-        mDbHelper.rx(ATable.class, new IDaoCall<ATable, ATable>() {
+        mDbHelper.rx(ATable.class, new ITransfer<ATable, ATable>() {
             @Override
             public ATable call(Dao<ATable, ?> dao) {
                 Log.d("ATable", "Call thread" + Thread.currentThread().getName());
@@ -177,7 +182,6 @@ public class OrmLiteActivity extends BaseActivity {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-//                throw new RuntimeException("Test");
                 return null;
             }
         }).subscribe(new Action1<ATable>() {

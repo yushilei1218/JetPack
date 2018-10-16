@@ -9,15 +9,11 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
-import java.io.File;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import rx.Observable;
-import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -55,62 +51,28 @@ public class DemoDbHelper extends OrmLiteSqliteOpenHelper {
         return super.getDao(clazz);
     }
 
-    public <T> Observable<List<T>> rx(final Class<T> clazz, final IDaoListCall<T> call) {
-        return Observable
-                .create(new Observable.OnSubscribe<List<T>>() {
-                    @Override
-                    public void call(Subscriber<? super List<T>> subscriber) {
-                        try {
-                            Dao<T, ?> dao = getDao(clazz);
-                            List<T> data = call.call(dao);
-                            subscriber.onNext(data);
-                            subscriber.onCompleted();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    public <T, C> Observable<T> rx2(final Class<C> table, final IDaoCall<T, C> call) {
-        return Observable.create(new Observable.OnSubscribe<T>() {
+    public <R, T> Observable<R> rx(final Class<T> table, final ITransfer<R, T> transfer) {
+        return Observable.create(new Observable.OnSubscribe<R>() {
             @Override
-            public void call(Subscriber<? super T> subscriber) {
-                Dao<C, ?> dao = null;
+            public void call(Subscriber<? super R> subscriber) {
                 try {
-                    dao = getDao(table);
-                    T call1 = call.call(dao);
-                    subscriber.onNext(call1);
-                } catch (SQLException e) {
+                    Dao<T, ?> dao = getDao(table);
+                    R back = transfer.call(dao);
+                    subscriber.onNext(back);
+                    subscriber.onCompleted();
+                } catch (Exception e) {
                     e.printStackTrace();
+                    subscriber.onError(e);
                 }
-
             }
-        });
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public <T> Observable<T> rx(final Class<T> clazz, final IDaoCall<T, T> call) {
-        return Observable
-                .create(new Observable.OnSubscribe<T>() {
-                    @Override
-                    public void call(Subscriber<? super T> subscriber) {
-                        try {
-                            Dao<T, ?> dao = getDao(clazz);
-                            T data = call.call(dao);
-                            subscriber.onNext(data);
-                            subscriber.onCompleted();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            subscriber.onError(e);
-                        }
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
+    @Override
+    public SQLiteDatabase getWritableDatabase() {
 
+        return super.getWritableDatabase();
+    }
 
     @Override
 
