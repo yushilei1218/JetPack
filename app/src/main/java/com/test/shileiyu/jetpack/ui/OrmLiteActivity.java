@@ -43,6 +43,21 @@ public class OrmLiteActivity extends BaseActivity {
             e.printStackTrace();
         }
         queryAll();
+        mDbHelper.rx(ATable.class, new ITransfer<Void, ATable>() {
+            @Override
+            public Void call(Dao<ATable, ?> dao) {
+                Log.d("ATable", "Thread " + Thread.currentThread().getName());
+                try {
+                    ATable t = new ATable();
+                    t.setName("啊啊啊啊");
+                    t.setState(321);
+                    dao.create(t);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }).subscribe();
     }
 
     @OnClick({
