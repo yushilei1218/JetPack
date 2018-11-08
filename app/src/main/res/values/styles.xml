@@ -91,4 +91,16 @@
         <item name="item_select_area_color">#ff3939</item>
         <item name="item_none_select_area_color">#5b5b5b</item>
     </style>
+
+    <style name="Permission_Delegate_Theme" parent="@style/Theme.AppCompat.Light">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
 </resources>

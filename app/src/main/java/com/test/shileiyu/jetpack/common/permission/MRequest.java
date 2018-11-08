@@ -1,11 +1,11 @@
 package com.test.shileiyu.jetpack.common.permission;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-
-import com.test.shileiyu.jetpack.ui.PermissionGetActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,22 +15,30 @@ import java.util.List;
  * @author lanche.ysl
  * @date 2018/10/12 下午7:34
  */
-public class MRequest implements IPermissionRequest, RequestExecutor {
-    private final PermissionChecker mChecker = new StandChecker();
+public class MRequest implements IPermissionRequest, IRequestExecutor {
+
+    private final IPermissionChecker mChecker = new StandChecker();
     private final RequestSource mRequestSource;
 
     private List<String> mRequestPermissions;
-    private PermissionAction<List<String>> mGrantAction;
-    private PermissionAction<List<String>> mDeniedAction;
-    private IRationale<List<String>> mRationale;
 
-    private final PermissionCallBack mCallBack = new PermissionCallBack() {
+    private IPermissionAction mGrantAction;
+
+    private IPermissionAction mDeniedAction;
+
+    private IRationale mRationale;
+
+    private boolean isNeedRequestDelegateActivity = true;
+
+    private static final int CODE_PERMISSION_REQUEST = 0x536;
+
+    private final IPermissionCallBack mCallBack = new IPermissionCallBack() {
         @Override
         public void onPermissionFinish(@NonNull String[] permissions, @NonNull int[] grantResults) {
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    dispatchCallBack();
+                    dispatchRequestPermissionResult();
                 }
             }, 100);
 
@@ -42,6 +50,12 @@ public class MRequest implements IPermissionRequest, RequestExecutor {
         mRequestSource = requestSource;
     }
 
+    public MRequest(RequestSource requestSource, boolean needDelegate) {
+        mRequestSource = requestSource;
+        isNeedRequestDelegateActivity = needDelegate;
+    }
+
+    @SuppressWarnings("ConstantConditions")
     @Override
     public IPermissionRequest permission(@NonNull String... permission) {
         if (permission == null || permission.length == 0) {
@@ -56,19 +70,19 @@ public class MRequest implements IPermissionRequest, RequestExecutor {
     }
 
     @Override
-    public IPermissionRequest onGranted(PermissionAction<List<String>> grantAction) {
+    public IPermissionRequest onGranted(IPermissionAction grantAction) {
         mGrantAction = grantAction;
         return this;
     }
 
     @Override
-    public IPermissionRequest showRationale(IRationale<List<String>> rationale) {
+    public IPermissionRequest showRationale(IRationale rationale) {
         mRationale = rationale;
         return this;
     }
 
     @Override
-    public IPermissionRequest onDenied(PermissionAction<List<String>> deniedAction) {
+    public IPermissionRequest onDenied(IPermissionAction deniedAction) {
         mDeniedAction = deniedAction;
         return this;
     }
@@ -79,12 +93,16 @@ public class MRequest implements IPermissionRequest, RequestExecutor {
         if (context == null) {
             return;
         }
+        //1.首先检查 申请的权限是否已经拥有
         boolean hasPermission = mChecker.hasPermission(context, mRequestPermissions);
         if (hasPermission) {
+            //2.如果申请的权限全部已获得，则回调成功
             callBackSuccess();
         } else {
+            //3.一个或者多个权限未获得，优先检查是否有一个或多个权限需要给用户展示解释对话框
             boolean isCallRationale = doRationale();
             if (!isCallRationale) {
+                //4.申请的权限中至少有一个未获得，且没有权限需要解释
                 execute();
             }
         }
@@ -95,7 +113,20 @@ public class MRequest implements IPermissionRequest, RequestExecutor {
         if (mRequestSource.isActivityValid()) {
             String[] permission = new String[mRequestPermissions.size()];
             mRequestPermissions.toArray(permission);
-            PermissionGetActivity.requestPermission(mRequestSource.getActivity(), permission, mCallBack);
+
+            Activity activity = mRequestSource.getActivity();
+
+            if (isNeedRequestDelegateActivity) {
+                //如果需要使用代理Activity
+                PermissionDelegateActivity.requestPermission(activity, permission, mCallBack);
+            } else {
+                //否则使用权限发起者 申请权限
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (activity != null) {
+                        activity.requestPermissions(permission, CODE_PERMISSION_REQUEST);
+                    }
+                }
+            }
         }
     }
 
@@ -115,16 +146,23 @@ public class MRequest implements IPermissionRequest, RequestExecutor {
         return mNeedRationalePermission.size() > 0;
     }
 
-    private void dispatchCallBack() {
+    /**
+     * 该方法用于分发权限请求回调后的结果
+     */
+    private void dispatchRequestPermissionResult() {
         if (mRequestSource.isActivityValid()) {
-            boolean isCallRationale = doRationale();
-            if (!isCallRationale) {
-                List<String> deniedPermission = getDeniedPermission(mRequestSource.getActivity(), mChecker, mRequestPermissions);
-                if (deniedPermission == null || deniedPermission.size() == 0) {
-                    callBackSuccess();
-                } else {
-                    callBackFailed(deniedPermission);
+            List<String> deniedPermission = getDeniedPermission(mRequestSource.getActivity(), mChecker, mRequestPermissions);
+            if (deniedPermission == null || deniedPermission.size() == 0) {
+                //1.如果所有权限均已获得，success
+                callBackSuccess();
+            } else {
+                //2.如果仍然有权限没能获取，优先检查是否包含需要解释的权限
+                boolean isCanRationale = doRationale();
+                if (isCanRationale) {
+                    return;
                 }
+                //3.存在未获取的权限，并且不存在需要解释的权限则回调failed
+                callBackFailed(deniedPermission);
             }
         }
     }
@@ -135,18 +173,25 @@ public class MRequest implements IPermissionRequest, RequestExecutor {
     }
 
     private void callBackSuccess() {
-        if (mGrantAction != null) {
-            mGrantAction.onCall(mRequestPermissions);
+        //当利用系统API检测已经获取权限时（实际并未授权），真正使用权限时报错情况下，则会触发调用callBackFailed()
+        try {
+            if (mGrantAction != null) {
+                mGrantAction.onCall(mRequestSource, mRequestPermissions);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            callBackFailed(mRequestPermissions);
         }
     }
 
     private void callBackFailed(List<String> denied) {
         if (mDeniedAction != null) {
-            mDeniedAction.onCall(denied);
+            mDeniedAction.onCall(mRequestSource, denied);
         }
     }
 
-    private static List<String> getDeniedPermission(Context context, PermissionChecker checker, List<String> requestPermissions) {
+    private static List<String> getDeniedPermission(Context context, IPermissionChecker checker, List<String> requestPermissions) {
         if (checker != null) {
             if (requestPermissions != null && requestPermissions.size() > 0) {
                 List<String> denied = new ArrayList<>();
@@ -160,5 +205,12 @@ public class MRequest implements IPermissionRequest, RequestExecutor {
             }
         }
         return null;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == CODE_PERMISSION_REQUEST) {
+            dispatchRequestPermissionResult();
+        }
     }
 }

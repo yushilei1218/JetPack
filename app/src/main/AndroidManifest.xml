@@ -93,12 +93,14 @@
         <activity android:name=".ui.LinearSnapActivity" />
         <activity android:name=".ui.ScrollViewViewPagerActivity" />
         <activity android:name=".ui.PermissionActivity" />
-        <activity
-            android:name=".ui.PermissionGetActivity"
-            android:theme="@style/Permission.Theme" />
         <activity android:name=".ui.TextureMediaActivity" />
         <activity android:name=".ui.OrmLiteActivity" />
         <activity android:name=".ui.LinearActivity"></activity>
+
+
+        <activity android:name=".common.permission.PermissionDelegateActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:theme="@style/Permission_Delegate_Theme" />
     </application>
 
 </manifest>

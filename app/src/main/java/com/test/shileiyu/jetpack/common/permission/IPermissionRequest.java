@@ -2,9 +2,12 @@ package com.test.shileiyu.jetpack.common.permission;
 
 import android.support.annotation.NonNull;
 
-import java.util.List;
-
 /**
+ * 权限请求接口
+ * <p>
+ * 子类参见{@link MRequest} && {@link LRequest}
+ * 分别代码系统API >=23的请求处理，和<23的请求处理
+ *
  * @author lanche.ysl
  * @date 2018/10/12 下午7:12
  */
@@ -24,7 +27,7 @@ public interface IPermissionRequest {
      * @param grantAction 成功回调处理对象
      * @return 权限Request
      */
-    IPermissionRequest onGranted(PermissionAction<List<String>> grantAction);
+    IPermissionRequest onGranted(IPermissionAction grantAction);
 
     /**
      * 需求告知用户 请求权限的原因
@@ -32,7 +35,7 @@ public interface IPermissionRequest {
      * @param rationale 再次确认执行对象
      * @return 权限Request
      */
-    IPermissionRequest showRationale(IRationale<List<String>> rationale);
+    IPermissionRequest showRationale(IRationale rationale);
 
     /**
      * 权限被拒绝回调
@@ -40,8 +43,12 @@ public interface IPermissionRequest {
      * @param deniedAction 拒绝回调处理对象
      * @return 权限Request
      */
-    IPermissionRequest onDenied(PermissionAction<List<String>> deniedAction);
+    IPermissionRequest onDenied(IPermissionAction deniedAction);
 
+    void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
 
+    /**
+     * 开始触发权限检测
+     */
     void start();
 }

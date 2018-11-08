@@ -13,12 +13,6 @@ import android.widget.TextView;
 
 import com.test.shileiyu.jetpack.R;
 import com.test.shileiyu.jetpack.common.permission.AskPermission;
-import com.test.shileiyu.jetpack.common.permission.IRationale;
-import com.test.shileiyu.jetpack.common.permission.PermissionAction;
-import com.test.shileiyu.jetpack.common.permission.RequestExecutor;
-import com.test.shileiyu.jetpack.common.permission.action.ExplainPermissionRationale;
-import com.test.shileiyu.jetpack.common.permission.action.GuideUser2SettingAction;
-import com.test.shileiyu.jetpack.common.util.Util;
 
 import java.util.List;
 
@@ -48,24 +42,6 @@ public class Permission2Fragment extends Fragment {
         view.findViewById(R.id.btn_fg).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AskPermission.with(Permission2Fragment.this).createRequest()
-                        .permission(Manifest.permission.READ_CALENDAR,
-                                Manifest.permission.WRITE_CALENDAR,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                Manifest.permission.READ_EXTERNAL_STORAGE)
-                        .showRationale(new ExplainPermissionRationale())
-                        .onDenied(new GuideUser2SettingAction(getActivity()))
-                        .onGranted(new PermissionAction<List<String>>() {
-                            @Override
-                            public void onCall(List<String> data) {
-                                StringBuilder sb = new StringBuilder();
-                                sb.append("申请成功啦：");
-                                for (String p : data) {
-                                    sb.append(p).append("\n");
-                                }
-                                mTv.setText(sb.toString());
-                            }
-                        }).start();
             }
         });
     }

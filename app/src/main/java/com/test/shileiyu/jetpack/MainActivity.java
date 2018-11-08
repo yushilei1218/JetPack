@@ -10,6 +10,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.test.shileiyu.jetpack.common.bean.Bean;
+import com.test.shileiyu.jetpack.common.permission.AskPermission;
+import com.test.shileiyu.jetpack.common.permission.ExplainPermissionRationale;
+import com.test.shileiyu.jetpack.common.permission.GuideUser2SettingAction;
+import com.test.shileiyu.jetpack.common.permission.IPermissionAction;
+import com.test.shileiyu.jetpack.common.permission.PermissionsGroup;
+import com.test.shileiyu.jetpack.common.permission.RequestSource;
+import com.test.shileiyu.jetpack.common.util.Util;
 import com.test.shileiyu.jetpack.ui.ActivityLifeCycleActivity;
 import com.test.shileiyu.jetpack.ui.AppBarLayoutActivity;
 import com.test.shileiyu.jetpack.ui.AreaViewActivity;
@@ -47,6 +54,8 @@ import com.test.shileiyu.jetpack.ui.ViewPageRecyclerActivity;
 import com.test.shileiyu.jetpack.ui.home.TabActivity;
 import com.test.shileiyu.jetpack.ui.search.SearchActivity;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -57,6 +66,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        AskPermission.with(this)
+                .createRequest()
+                .permission(PermissionsGroup.concat(PermissionsGroup.PHONE, PermissionsGroup.LOCATION))
+                .onDenied(new GuideUser2SettingAction())
+                .onGranted(new IPermissionAction() {
+                    @Override
+                    public void onCall(RequestSource source, List<String> permissions) {
+                        Util.showToast("成功");
+                    }
+                }).showRationale(new ExplainPermissionRationale())
+                .start();
     }
 
     @OnClick({R.id.main_2_tab, R.id.main_3_tab,
